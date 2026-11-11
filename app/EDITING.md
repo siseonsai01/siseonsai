@@ -10,7 +10,7 @@
 | `app/src/index.html` | 페이지 뼈대 (head, 폰트, `styles.css`·`app.js` 연결) | 약 2KB |
 | `app/src/styles.css` | 모든 디자인(CSS) | 약 57KB |
 | `app/src/app.js` | 모든 화면과 동작(JavaScript) | 약 124KB |
-| `app/src/assets/` | 그림(.webp), 나레이션(.mp3), 오프닝 영상(.mp4) 133개 | 약 12MB |
+| `app/src/assets/` | 그림(.webp)과 나레이션(.mp3) | 약 8MB |
 | `app/build.py` | `src/`를 합쳐 `app/index.html` 한 파일로 만드는 스크립트 | |
 
 ## 고치는 순서
@@ -23,7 +23,7 @@
 
 ## 그림·소리 바꾸기
 
-- 같은 이름의 파일로 `app/src/assets/`의 파일을 덮어쓰면 됩니다. (예: 표지 그림 `cover-art.webp`)
+- 같은 이름의 파일로 `app/src/assets/`의 파일을 덮어쓰면 됩니다. (예: 결과지 표지 그림 `report-cover.webp`)
 - 새 파일을 추가할 때는 `assets/`에 넣고, 코드에서 `"assets/새파일이름.webp"`처럼 부르면 빌드할 때 자동으로 한 파일 안에 들어갑니다.
 - 파일 이름은 영문·숫자·`-`·`_`만 쓰고, 확장자는 webp, png, jpg, svg, gif, mp3, mp4 중 하나여야 합니다.
 
@@ -33,13 +33,10 @@
 
 | 화면·기능 | 찾을 이름 |
 |---|---|
-| 첫 화면(표지) 문구·버튼 | `function hero()` |
 | 첫 화면 전체 구성 | `function home()` |
 | 나레이션 재생·정지 | `function narrate(`, `function stopNarration(` |
 | 나레이션 음성 목록 | `const offlineVoice` |
-| 첫 화면 오프닝 모션(토끼 이야기 듣기) | `function startCoverMotion(`, `COVER_MOTION_LEAD` |
-| 오프닝 자막 문장·시간 | `const coverCaptions` (나레이션 기준 초) |
-| 표지 그림 드래그·움직임 | `function queueCoverMotion(`, `function wireSceneMotion(` |
+| 화면 속 움직임 연결 | `function wireSceneMotion(` |
 | 가운데 카드 캐릭터 간지럼 반응 | `function guideMascot(`, `const tickleLines`(말풍선 문장), `function tickle(`, `function giggle(`(웃음소리) |
 | 놀이 방법 연습(폭죽 장면) | `function openPractice(`, `function startFinale(` |
 | 질문 문항·보기 | `const reviewQuestions`, `function reviewQuiz(` |
@@ -48,10 +45,8 @@
 
 ## 어디를 고치면 되나 (styles.css)
 
-- 첫 화면 레이아웃: `.hero-stage`, `.hero-inner`, `.hero-copy`, `.cover-art`
-- 오프닝 모션 영상(그림 자리에서만 재생): `.cover-motion-video`
+- 첫 화면은 표지 없이 카드 묶음(`.guide-section`, `.guide-grid`, `.guide-item`)부터 시작합니다. `.hero-` 로 시작하는 규칙은 예전 표지용이라 지금은 쓰이지 않습니다.
 - 카드 캐릭터 간지럼 움직임·말풍선: `.tickle-bubble`, `.tickle-bit`, `@keyframes tickle-squish / tickle-shimmy / tickle-laugh`
-- 오프닝 자막(제목 아래 설명 글 자리): `.hero-text.is-caption`, `.caption-in`
 - 같은 선택자가 여러 번 나옵니다. **파일 아래쪽에 있는 규칙이 이깁니다.** 표지 디자인은 `/* The same sunlit playroom, from cover to family record. */` 주석 아래가 현재 적용 중인 부분입니다.
 - 휴대폰 화면은 `@media (max-width: 680px)` 안에 있습니다.
 

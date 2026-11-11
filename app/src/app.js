@@ -375,91 +375,7 @@ function highlightSpokenChoice() {
   });
 }
 
-const coverMotionSrc = "assets/cover-motion.mp4";
-const COVER_MOTION_LEAD = 0.4; // the motion starts 0.4s before the narration
-// captions for the cover narration, in narration seconds
-const coverCaptions = [
-  [0.0, "안녕, 토끼야!"],
-  [2.05, "같은 방인데, 너는 장난감이 먼저 보이고"],
-  [6.15, "부모님은 다른 게 먼저 보일 수도 있어."],
-  [9.5, "우리 서로 뭘 봤는지 알아볼까?"],
-  [12.8, "그러고 나서 우리 집에 맞는 정리 방법을 같이 찾아보자!"],
-];
-let coverMotion = null;
-
-// The motion plays in the picture only; the title and buttons stay usable,
-// and the narration line replaces the description under the title.
-function startCoverMotion() {
-  stopCoverMotion(true);
-  const stage = app.querySelector(".hero-stage");
-  if (!stage) return;
-  const text = stage.querySelector(".hero-text");
-  const m = { stage, text, original: text?.textContent ?? "", line: -1, video: null, frame: 0 };
-  if (text) text.classList.add("is-caption");
-  if (motionAllowed()) {
-    const art = stage.querySelector(".cover-art");
-    const video = document.createElement("video");
-    video.className = "cover-art cover-motion-video screen-only";
-    Object.assign(video, { muted: true, playsInline: true, preload: "auto" });
-    video.setAttribute("aria-hidden", "true");
-    video.addEventListener("loadeddata", () => {
-      if (coverMotion !== m) return;
-      video.currentTime = Math.min(voiceAudio.currentTime + COVER_MOTION_LEAD, video.duration || 18);
-      video.play().catch(() => {});
-      requestAnimationFrame(() => video.classList.add("is-on"));
-    }, { once: true });
-    video.addEventListener("ended", () => { if (coverMotion === m) stopCoverMotion(); });
-    video.src = coverMotionSrc;
-    art?.after(video);
-    m.video = video;
-  }
-  const tick = () => {
-    if (coverMotion !== m) return;
-    const now = voiceAudio.currentTime;
-    if (playingScene === "cover" && !voiceAudio.paused) {
-      const want = now + COVER_MOTION_LEAD;
-      if (m.video && m.video.readyState >= 2 && Math.abs(m.video.currentTime - want) > 0.25) m.video.currentTime = want;
-      let line = 0;
-      while (line + 1 < coverCaptions.length && now >= coverCaptions[line + 1][0]) line++;
-      if (line !== m.line && m.text) {
-        m.line = line;
-        m.text.textContent = coverCaptions[line][1];
-        m.text.classList.remove("caption-in");
-        void m.text.offsetWidth;
-        m.text.classList.add("caption-in");
-      }
-    }
-    m.frame = requestAnimationFrame(tick);
-  };
-  coverMotion = m;
-  m.frame = requestAnimationFrame(tick);
-}
-
-function stopCoverMotion(immediate = false) {
-  const m = coverMotion;
-  if (!m) return;
-  coverMotion = null;
-  cancelAnimationFrame(m.frame);
-  if (m.text) {
-    m.text.textContent = m.original;
-    m.text.classList.remove("is-caption", "caption-in");
-  }
-  const video = m.video;
-  if (!video) return;
-  const done = () => {
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-    video.remove();
-  };
-  if (immediate || !video.isConnected || !video.classList.contains("is-on") || !motionAllowed()) return done();
-  video.addEventListener("transitionend", done, { once: true });
-  video.classList.remove("is-on");
-}
-
 function stopNarration() {
-  // a natural end keeps the motion running to its last frame, then it fades out
-  if (coverMotion && !(playingScene === "cover" && voiceAudio.ended)) stopCoverMotion();
   playbackId++;
   voiceAudio.pause();
   playingScene = null;
@@ -479,7 +395,6 @@ function narrate(scene, tryAutomatically = false) {
   const id = playbackId;
   playingScene = scene;
   syncVoiceControls();
-  if (scene === "cover") startCoverMotion();
   voiceAudio.play().catch(() => {
     if (id !== playbackId) return;
     stopNarration();
@@ -522,29 +437,9 @@ function intro() {
   </section>`;
 }
 
-function hero() {
-  return `<section class="hero-stage" aria-label="시선사이 소개">
-    <div class="cover-window">
-      <img class="cover-art" src="assets/cover-art.webp" alt="햇살이 드는 놀이방에서 아이 토끼는 장난감 기차를, 보호자 토끼는 그림책을 보고 있어요." width="1536" height="1024" fetchpriority="high" draggable="false">
-    </div>
-    <div class="hero-inner shell">
-      <div class="hero-copy">
-        <h1 tabindex="-1">우리 방을<br><em>같이 볼까요?</em></h1>
-        <p class="hero-text">아이와 부모가 같은 방을 보고 다섯 가지 질문에 답해요. 서로 어떤 생각을 했는지 같이 볼까요?</p>
-        <div class="hero-actions">
-          <button type="button" class="hero-cta" data-action="begin-voice">${speakerIcon} 방 사진 놀이 시작 <span aria-hidden="true">›</span></button>
-          <button type="button" class="hero-secondary" data-action="demo">예시 결과 보기 <span aria-hidden="true">›</span></button>
-        </div>
-        <div class="hero-links">${voiceButton("cover", "토끼 이야기 듣기")}<button class="story-scroll" type="button" data-action="guide">놀이 방법 보기 <span aria-hidden="true">↓</span></button></div>
-      </div>
-    </div>
-  </section>`;
-}
-
 function home() {
   const started = hasAnswers();
-  return `${hero()}
-  <section class="guide-section shell" id="guide" aria-labelledby="guide-title">
+  return `<section class="guide-section shell" id="guide" aria-labelledby="guide-title">
     <header class="chapter-intro">
       <h2 id="guide-title" tabindex="-1">놀이를 미리 해 봐요</h2>
       <p>카드를 눌러 연습해요. 실제 놀이는 아이부터, 그다음 부모 차례예요.</p>
@@ -1595,7 +1490,7 @@ function show(screen, focus = true) {
   app.innerHTML = screens[screen]();
   if (screen === "home" || screen === "report") app.insertAdjacentHTML("beforeend", typeGallery());
   if (focus) {
-    app.querySelector("h1").focus({ preventScroll: true });
+    (app.querySelector("h1") ?? app.querySelector("h2"))?.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }
   wireSceneMotion();
@@ -2351,7 +2246,6 @@ document.addEventListener("click", (event) => {
     case "setup": return goToHomeSection(action);
     case "listen":
       voiceEnabled = true;
-      if (value === "cover" && playingScene === "cover") return stopNarration();
       return narrate(value);
     case "type-gallery":
       stopNarration();
@@ -2425,5 +2319,4 @@ app.addEventListener("input", (event) => {
 });
 
 show("home", false);
-narrate("cover", true);
 

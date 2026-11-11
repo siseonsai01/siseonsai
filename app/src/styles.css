@@ -858,19 +858,6 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 @media(prefers-reduced-motion:reduce) { .practice-motion .motion-finale { background:#fffdf8e8; } }
 
 
-/* Cover story: the motion plays inside the picture, the title and buttons stay usable. */
-.cover-art.cover-motion-video { opacity: 0; transition: opacity .45s ease; animation: none; pointer-events: none; }
-.cover-art.cover-motion-video.is-on { opacity: 1; }
-.hero-text.is-caption {
-  min-height: 3.1em; padding-left: .8em; border-left: 4px solid #e9b85a;
-  color: #4b3b2f; font-weight: 700; font-size: clamp(1.08rem, 1.6vw, 1.36rem); line-height: 1.5;
-  word-break: keep-all;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .hero-text.caption-in { animation: caption-in .35s ease-out both; }
-  @keyframes caption-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-}
-
 /* Guide cards: tickle the character */
 .tickle-wrap { position: relative; display: grid; place-items: center; }
 .guide-item .guide-art { cursor: pointer; touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
@@ -940,3 +927,7 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
     100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(1.1) rotate(var(--spin)); }
   }
 }
+
+/* The cover was removed: the home page starts with the guide cards under a normal header. */
+.home-view .site-header { position: relative; }
+.home-view .guide-section { padding-top: clamp(28px, 5vw, 56px); }
