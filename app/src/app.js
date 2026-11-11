@@ -209,7 +209,7 @@ const speakerIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" str
 
 function voiceButton(scene, label = "다시 듣기") {
   if (!offlineVoice[scene]) return "";
-  return `<button class="voice-button screen-only" type="button" data-action="listen" data-value="${scene}">${speakerIcon}<span>${label}</span></button>`;
+  return `<button class="voice-button screen-only" type="button" data-action="listen" data-value="${scene}" data-label="${label}">${speakerIcon}<span>${label}</span></button>`;
 }
 
 function voiceTools(scene) {
@@ -225,7 +225,13 @@ function syncVoiceControls() {
     button.textContent = voiceEnabled ? "소리 끄기" : "소리 켜기";
   }
   for (const button of app.querySelectorAll('[data-action="listen"]')) {
-    button.classList.toggle("voice-playing", button.dataset.value === playingScene);
+    const playing = button.dataset.value === playingScene;
+    button.classList.toggle("voice-playing", playing);
+    if (button.dataset.value === "cover") {
+      const label = button.querySelector("span");
+      if (label) label.textContent = playing ? "이야기 멈추기" : button.dataset.label;
+      button.setAttribute("aria-pressed", String(playing));
+    }
   }
 }
 
@@ -239,52 +245,85 @@ function highlightSpokenChoice() {
 }
 
 const coverMotionSrc = "assets/cover-motion.mp4";
-const COVER_MOTION_LEAD = 0.4; // the video starts 0.4s before the narration
+const COVER_MOTION_LEAD = 0.4; // the motion starts 0.4s before the narration
+// captions for the cover narration, in narration seconds
+const coverCaptions = [
+  [0.0, "안녕, 토끼야!"],
+  [2.05, "같은 방인데, 너는 장난감이 먼저 보이고"],
+  [6.15, "부모님은 다른 게 먼저 보일 수도 있어."],
+  [9.5, "우리 서로 뭘 봤는지 알아볼까?"],
+  [12.8, "그러고 나서 우리 집에 맞는 정리 방법을 같이 찾아보자!"],
+];
 let coverMotion = null;
 
+// The motion plays in the picture only; the title and buttons stay usable,
+// and the narration line replaces the description under the title.
 function startCoverMotion() {
   stopCoverMotion(true);
-  if (!motionAllowed()) return;
   const stage = app.querySelector(".hero-stage");
   if (!stage) return;
-  const wrap = document.createElement("div");
-  wrap.className = "cover-motion screen-only";
-  wrap.innerHTML = `<video muted playsinline preload="auto" aria-hidden="true"></video><button type="button" class="cover-motion-skip">건너뛰기</button>`;
-  const video = wrap.querySelector("video");
-  const m = { wrap, video, sync: null };
-  m.sync = () => {
-    if (coverMotion !== m || playingScene !== "cover" || voiceAudio.paused) return;
-    const want = voiceAudio.currentTime + COVER_MOTION_LEAD;
-    if (Math.abs(video.currentTime - want) > 0.25) video.currentTime = want;
-  };
-  wrap.querySelector("button").addEventListener("click", () => stopNarration());
-  video.addEventListener("loadeddata", () => {
+  const text = stage.querySelector(".hero-text");
+  const m = { stage, text, original: text?.textContent ?? "", line: -1, video: null, frame: 0 };
+  if (text) text.classList.add("is-caption");
+  if (motionAllowed()) {
+    const art = stage.querySelector(".cover-art");
+    const video = document.createElement("video");
+    video.className = "cover-art cover-motion-video screen-only";
+    Object.assign(video, { muted: true, playsInline: true, preload: "auto" });
+    video.setAttribute("aria-hidden", "true");
+    video.addEventListener("loadeddata", () => {
+      if (coverMotion !== m) return;
+      video.currentTime = Math.min(voiceAudio.currentTime + COVER_MOTION_LEAD, video.duration || 18);
+      video.play().catch(() => {});
+      requestAnimationFrame(() => video.classList.add("is-on"));
+    }, { once: true });
+    video.addEventListener("ended", () => { if (coverMotion === m) stopCoverMotion(); });
+    video.src = coverMotionSrc;
+    art?.after(video);
+    m.video = video;
+  }
+  const tick = () => {
     if (coverMotion !== m) return;
-    video.currentTime = Math.min(voiceAudio.currentTime + COVER_MOTION_LEAD, video.duration || 18);
-    video.play().catch(() => {});
-    requestAnimationFrame(() => wrap.classList.add("is-on"));
-  }, { once: true });
-  video.addEventListener("ended", () => { if (coverMotion === m) stopCoverMotion(); });
-  voiceAudio.addEventListener("timeupdate", m.sync);
+    const now = voiceAudio.currentTime;
+    if (playingScene === "cover" && !voiceAudio.paused) {
+      const want = now + COVER_MOTION_LEAD;
+      if (m.video && m.video.readyState >= 2 && Math.abs(m.video.currentTime - want) > 0.25) m.video.currentTime = want;
+      let line = 0;
+      while (line + 1 < coverCaptions.length && now >= coverCaptions[line + 1][0]) line++;
+      if (line !== m.line && m.text) {
+        m.line = line;
+        m.text.textContent = coverCaptions[line][1];
+        m.text.classList.remove("caption-in");
+        void m.text.offsetWidth;
+        m.text.classList.add("caption-in");
+      }
+    }
+    m.frame = requestAnimationFrame(tick);
+  };
   coverMotion = m;
-  video.src = coverMotionSrc;
-  stage.append(wrap);
+  m.frame = requestAnimationFrame(tick);
 }
 
 function stopCoverMotion(immediate = false) {
   const m = coverMotion;
   if (!m) return;
   coverMotion = null;
-  voiceAudio.removeEventListener("timeupdate", m.sync);
+  cancelAnimationFrame(m.frame);
+  if (m.text) {
+    m.text.textContent = m.original;
+    m.text.classList.remove("is-caption", "caption-in");
+  }
+  const video = m.video;
+  if (!video) return;
   const done = () => {
-    m.video.pause();
-    m.video.removeAttribute("src");
-    m.video.load();
-    m.wrap.remove();
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.remove();
   };
-  if (immediate || !m.wrap.isConnected || !m.wrap.classList.contains("is-on") || !motionAllowed()) return done();
-  m.wrap.addEventListener("transitionend", done, { once: true });
-  m.wrap.classList.remove("is-on");
+  if (immediate || !video.isConnected || !video.classList.contains("is-on") || !motionAllowed()) return done();
+  video.addEventListener("transitionend", done, { once: true });
+  video.classList.remove("is-on");
 }
 
 function stopNarration() {
@@ -2181,6 +2220,7 @@ document.addEventListener("click", (event) => {
     case "setup": return goToHomeSection(action);
     case "listen":
       voiceEnabled = true;
+      if (value === "cover" && playingScene === "cover") return stopNarration();
       return narrate(value);
     case "type-gallery":
       stopNarration();

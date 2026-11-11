@@ -38,6 +38,7 @@
 | 나레이션 재생·정지 | `function narrate(`, `function stopNarration(` |
 | 나레이션 음성 목록 | `const offlineVoice` |
 | 첫 화면 오프닝 모션(토끼 이야기 듣기) | `function startCoverMotion(`, `COVER_MOTION_LEAD` |
+| 오프닝 자막 문장·시간 | `const coverCaptions` (나레이션 기준 초) |
 | 표지 그림 드래그·움직임 | `function queueCoverMotion(`, `function wireSceneMotion(` |
 | 놀이 방법 연습(폭죽 장면) | `function openPractice(`, `function startFinale(` |
 | 질문 문항·보기 | `const reviewQuestions`, `function reviewQuiz(` |
@@ -47,7 +48,8 @@
 ## 어디를 고치면 되나 (styles.css)
 
 - 첫 화면 레이아웃: `.hero-stage`, `.hero-inner`, `.hero-copy`, `.cover-art`
-- 오프닝 모션 겹침 화면·건너뛰기 버튼: `.cover-motion`, `.cover-motion-skip`
+- 오프닝 모션 영상(그림 자리에서만 재생): `.cover-motion-video`
+- 오프닝 자막(제목 아래 설명 글 자리): `.hero-text.is-caption`, `.caption-in`
 - 같은 선택자가 여러 번 나옵니다. **파일 아래쪽에 있는 규칙이 이깁니다.** 표지 디자인은 `/* The same sunlit playroom, from cover to family record. */` 주석 아래가 현재 적용 중인 부분입니다.
 - 휴대폰 화면은 `@media (max-width: 680px)` 안에 있습니다.
 

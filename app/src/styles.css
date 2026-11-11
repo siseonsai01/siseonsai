@@ -396,22 +396,6 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
   background: linear-gradient(90deg, transparent 39%, #fff7e720 50%, #fff7e7d9 62%, var(--cover) 94%);
 }
 
-.cover-motion {
-  position: absolute; z-index: 1; inset: 70px 0 0; display: grid; place-items: center;
-  background: var(--cover); opacity: 0; transition: opacity .6s ease; pointer-events: none;
-}
-.cover-motion.is-on { opacity: 1; pointer-events: auto; }
-.cover-motion video { width: 100%; height: 100%; object-fit: contain; object-position: center; }
-.cover-motion-skip {
-  position: absolute; right: 16px; bottom: 16px; min-height: 44px; padding: 6px 14px;
-  border: 1px solid #ddd0b8; border-radius: 14px; background: #fffaf0e6; color: #3e5e55;
-  font: inherit; font-size: .84rem; font-weight: 800; cursor: pointer;
-}
-.cover-motion-skip:hover { background: #f5efdf; }
-@media (max-width: 680px) {
-  .cover-motion { inset: 0 0 auto; height: clamp(294px, 92vw, 430px); padding-top: 56px; }
-  .cover-motion-skip { top: 64px; right: 10px; bottom: auto; min-height: 38px; padding: 4px 12px; }
-}
 .hero-inner {
   grid-template-columns: minmax(0,1.34fr) minmax(0,1fr);
   min-height: clamp(565px, 86svh, 850px); align-items: center;
@@ -873,3 +857,16 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 .practice-motion .motion-finale .g { font-family:ui-monospace,monospace; }
 @media(prefers-reduced-motion:reduce) { .practice-motion .motion-finale { background:#fffdf8e8; } }
 
+
+/* Cover story: the motion plays inside the picture, the title and buttons stay usable. */
+.cover-art.cover-motion-video { opacity: 0; transition: opacity .45s ease; animation: none; pointer-events: none; }
+.cover-art.cover-motion-video.is-on { opacity: 1; }
+.hero-text.is-caption {
+  min-height: 3.1em; padding-left: .8em; border-left: 4px solid #e9b85a;
+  color: #4b3b2f; font-weight: 700; font-size: clamp(1.08rem, 1.6vw, 1.36rem); line-height: 1.5;
+  word-break: keep-all;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-text.caption-in { animation: caption-in .35s ease-out both; }
+  @keyframes caption-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
