@@ -1,0 +1,42 @@
+/* 시선사이 · 공동관찰 입체방 */
+.rs-root {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;               /* 스크롤·확대 대신 터치를 그림에 전달 */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.rs-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: default;                  /* 호버로 장난감을 드러내지 않도록 커서 변화 없음 */
+  outline: none;
+}
+.rs-sr {                            /* 화면낭독기 전용, 화면에는 보이지 않음 */
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.rs-root.rs-error::after {
+  content: attr(data-error);
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font: 600 16px/1.5 system-ui, sans-serif;
+  color: #7a4a2a;
+}
+.rs-debug {
+  position: absolute; left: 12px; bottom: 12px;
+  padding: 6px 10px; border-radius: 8px;
+  background: rgba(0,0,0,.65); color: #fff;
+  font: 600 13px/1.3 ui-monospace, Menlo, monospace;
+  pointer-events: none;
+}

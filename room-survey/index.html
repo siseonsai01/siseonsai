@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>시선사이 · 함께 보는 방</title>
+  <link rel="preload" as="image" href="assets/room.png">
+  <link rel="stylesheet" href="css/room-survey.css">
+  <style>
+    html, body { margin: 0; height: 100%; background: #f1dfc0; overscroll-behavior: none; }
+    /* 화면 전체를 쓰는 무대. 그림은 비율을 유지한 채 가운데 맞춤(contain) */
+    #room {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+    }
+  </style>
+</head>
+<body>
+  <div id="room"></div>
+
+  <script src="js/hotspots.js"></script>
+  <script src="js/room-survey.js"></script>
+  <script>
+    // 주소 옵션: ?who=parent | ?who=child , ?fit=cover , ?debug=1 , ?max=1
+    var q = new URLSearchParams(location.search);
+
+    var room = SiseonRoom.create(document.getElementById('room'), {
+      imageSrc: 'assets/room.png',
+      hotspots: window.SISEON_ROOM_HOTSPOTS,
+      respondent: q.get('who') || 'unknown',
+      fit: q.get('fit') === 'cover' ? 'cover' : 'contain',
+      maxSelections: q.get('max') ? Number(q.get('max')) : Infinity,
+      debug: q.get('debug') === '1',
+
+      // 설문 응답 연결 지점: 서버 저장, 다음 문항 이동 등은 여기서 처리하세요.
+      onSelect: function (sel) {
+        console.log('[시선사이] 선택', sel);
+        // 예) fetch('/api/survey/answer', { method: 'POST',
+        //       headers: { 'Content-Type': 'application/json' },
+        //       body: JSON.stringify(sel) });
+      }
+    });
+  </script>
+</body>
+</html>

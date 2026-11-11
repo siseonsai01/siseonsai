@@ -1,0 +1,62 @@
+# 시선사이 · 함께 보는 방 (인터랙티브 Canvas)
+
+## 파일 구성
+```
+시선사이_공동관찰방_인터랙티브/
+├─ index.html            실행 페이지 (태블릿 전체 화면용 예시)
+├─ assets/room.png       원본 PNG (1536×1024, 수정하지 않은 원본 그대로)
+├─ css/room-survey.css   터치·확대 방지, 화면낭독기용 숨은 버튼 스타일
+└─ js/
+   ├─ hotspots.js        장난감 42종의 터치 영역 (원본 픽셀 좌표)
+   └─ room-survey.js     그리기·깊이감·폭죽·터치 판정 엔진
+```
+빌드 도구는 필요 없습니다. 폴더를 그대로 웹서버에 올리고 `index.html`을 열면 됩니다.
+(로컬에서 `index.html`을 더블클릭해 열어도 동작합니다.)
+
+## 주소 옵션
+| 옵션 | 뜻 |
+|---|---|
+| `?who=parent` / `?who=child` | 응답자 구분(선택 기록에 함께 저장) |
+| `?max=1` | 한 번 고르면 더 이상 반응하지 않음 |
+| `?fit=cover` | 여백 없이 화면을 꽉 채움(가장자리 일부가 잘릴 수 있음) |
+| `?debug=1` | 터치 영역 윤곽과 터치한 원본 좌표 표시(영역 조정용) |
+
+## 선택 결과 받기
+장난감을 누르면 다음 형태의 데이터가 생깁니다.
+```json
+{ "type": "siseon:toy-select", "toyId": "red-train", "toyLabel": "빨간 나무 기차",
+  "zone": "floor", "respondent": "child", "sessionId": "3fa1c2d9", "order": 1,
+  "imageX": 742, "imageY": 638, "input": "touch", "at": "2026-11-11T06:40:12.345Z" }
+```
+받는 방법은 세 가지이며 필요한 것만 쓰면 됩니다.
+1. `index.html`의 `onSelect` 함수 (서버 저장 예시 주석 포함)
+2. 컨테이너 요소의 `toyselect` 이벤트: `el.addEventListener('toyselect', e => e.detail)`
+3. iframe으로 넣은 경우 부모 창으로 `postMessage` 자동 전송
+
+`room.getSelections()`, `room.reset()`, `room.setLocked(true)`, `room.setRespondent('parent')`로 제어할 수 있습니다.
+
+## 기존 페이지에 넣기
+```html
+<link rel="stylesheet" href="css/room-survey.css">
+<div id="room" style="width:100%; aspect-ratio:3/2;"></div>
+<script src="js/hotspots.js"></script>
+<script src="js/room-survey.js"></script>
+<script>
+  const room = SiseonRoom.create(document.getElementById('room'), {
+    imageSrc: 'assets/room.png', hotspots: SISEON_ROOM_HOTSPOTS,
+    respondent: 'parent', onSelect: sel => { /* 응답 저장 */ }
+  });
+</script>
+```
+컨테이너 크기는 자유롭게 정해도 됩니다. 그림은 비율을 지키며 맞춰지고, 터치 판정도 같은 변환을 거꾸로 계산하므로 항상 일치합니다.
+
+## 동작 원칙
+- **원본 유지**: PNG는 픽셀 그대로 그리고, 깊이감은 그 위에 얹는 별도 레이어입니다(`depth:false`로 끌 수 있음).
+- **입체감**: 천장 쪽 그늘, 두 벽이 만나는 모서리 그늘, 벽과 바닥 경계 접지선, 바닥 원근 명암, 가구 다리·선반 밑 접지 그림자, 창문 주광과 비네팅. 시작할 때 카메라가 살짝 물러나며 방이 펼쳐지고, 기울이거나 마우스를 움직이면 빛과 먼지가 미세하게 시차 이동합니다.
+- **선택 전 중립**: 호버·커서 변화·깜빡임이 없고, 빛과 먼지는 방 전체에 고르게 퍼져 있으며, 접지 그림자는 장난감이 아닌 가구에만 넣었습니다.
+- **선택 반응**: 고른 장난감이 통통 튀며 살짝 반짝이고 그 자리에서 폭죽이 약 1.2초 터진 뒤 원래 그림으로 돌아옵니다. 흩어진 장난감(자석 조각·작은 블록 등)은 조각마다 함께 반응합니다.
+- **터치**: 포인터 이벤트 기반이라 두 손가락을 동시에 대도 각각 처리됩니다. 끌기·길게 누르기는 선택으로 치지 않고, 더블탭 확대와 스크롤도 막혀 있습니다. 경계 밖 22px까지는 가장 가까운 장난감으로 인정합니다.
+- **접근성**: 움직임 줄이기 설정을 켠 기기에서는 효과가 작아지고, 화면낭독기에서는 장난감 이름 버튼으로 고를 수 있습니다.
+
+## 터치 영역 고치기
+`?debug=1`로 열고 원하는 위치를 누르면 원본 좌표가 표시됩니다. 그 값을 `js/hotspots.js`에 `rect`, `ellipse`, `poly` 형태로 적으면 됩니다. 영역이 겹치면 더 작은 장난감이 먼저 선택됩니다.
