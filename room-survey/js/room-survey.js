@@ -99,7 +99,7 @@
    *    그림의 테두리는 제자리에 고정되어 빈틈이 보이지 않습니다.
    * ================================================================ */
   function makeWeight(W, H) {
-    var CX = 885, Z0 = 0.22, EDGE = 110;
+    var CX = 885;
     function wallZ(x) {
       return x <= CX ? 0.26 + 0.74 * Math.pow(x / CX, 1.35)
                      : 0.26 + 0.74 * Math.pow((W - x) / (W - CX), 1.35);
@@ -116,10 +116,21 @@
       if (y < c) return wz * (0.72 + 0.28 * (y / c));
       return wz;
     }
-    return function (x, y) {
-      var e = smooth(Math.min(x, W - x) / EDGE) * smooth(Math.min(y, H - y) / EDGE);
-      return (depth(x, y) - Z0) * e;
-    };
+    return depth;
+  }
+
+  /* 방 전체 3D 회전: 원본 좌표 p와 깊이 z로 3D 점을 만들고, 방 가운데를 축으로
+   * 돌린 뒤 원근 투영합니다. 회전 전과 후의 투영 차이만 더하므로 정지 상태에서는
+   * 원본 그림과 픽셀 단위로 똑같습니다. o(오버스캔)는 회전해도 빈 가장자리가
+   * 보이지 않도록 살짝 확대하는 비율입니다. */
+  var ROOM3D = { cx: 768, cy: 520, D: 950, zp: 470, F: 1700 };
+  function rot3d(x, y, z01, R) {
+    var X = x - ROOM3D.cx, Y = y - ROOM3D.cy, z = z01 * ROOM3D.D, Z = z - ROOM3D.zp;
+    var x1 = X * R.cy + Z * R.sy, z1 = -X * R.sy + Z * R.cy;
+    var y2 = Y * R.cp - z1 * R.sp, z2 = Y * R.sp + z1 * R.cp;
+    var f1 = ROOM3D.F / (ROOM3D.F + z2 + ROOM3D.zp), f0 = ROOM3D.F / (ROOM3D.F + z);
+    var Xd = X + (x1 * f1 - X * f0), Yd = Y + (y2 * f1 - Y * f0);
+    return { x: Xd * R.o - X, y: Yd * R.o - Y, Xd: Xd, Yd: Yd };
   }
 
   /* ================================================================
@@ -134,10 +145,17 @@
     if (!gl) { this.ok = false; return; }
     this.ok = true; this.gl = gl; this.W = W; this.H = H;
 
-    var vs = 'attribute vec2 a_uv; attribute float a_w;' +
-      'uniform vec2 u_size; uniform vec2 u_tilt; uniform vec2 u_off; uniform float u_k; uniform vec2 u_css;' +
+    var vs = 'attribute vec2 a_uv; attribute float a_z;' +
+      'uniform vec2 u_size; uniform vec4 u_rot; uniform vec4 u_room; uniform vec2 u_c; uniform float u_o;' +
+      'uniform vec2 u_off; uniform float u_k; uniform vec2 u_css;' +
       'varying vec2 v_uv;' +
-      'void main(){ vec2 p = a_uv*u_size + u_tilt*a_w; vec2 s = u_off + u_k*p;' +
+      'void main(){ vec2 q = a_uv*u_size; float X = q.x-u_c.x; float Y = q.y-u_c.y;' +
+      ' float z = a_z*u_room.x; float Z = z-u_room.y;' +
+      ' float x1 = X*u_rot.x + Z*u_rot.y; float z1 = -X*u_rot.y + Z*u_rot.x;' +
+      ' float y2 = Y*u_rot.z - z1*u_rot.w; float z2 = Y*u_rot.w + z1*u_rot.z;' +
+      ' float f1 = u_room.z/(u_room.z+z2+u_room.y); float f0 = u_room.z/(u_room.z+z);' +
+      ' vec2 d = vec2(X + x1*f1 - X*f0, Y + y2*f1 - Y*f0);' +
+      ' vec2 p = u_c + d*u_o; vec2 s = u_off + u_k*p;' +
       ' vec2 c = s/u_css*2.0-1.0; gl_Position = vec4(c.x, -c.y, 0.0, 1.0); v_uv = a_uv; }';
     var fs = 'precision mediump float; uniform sampler2D u_tex; varying vec2 v_uv;' +
       'void main(){ gl_FragColor = texture2D(u_tex, v_uv); }';
@@ -178,7 +196,7 @@
       gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0);
     }
     buf(uv, 'a_uv', 2);
-    buf(w, 'a_w', 1);
+    buf(w, 'a_z', 1);
     var ib = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
@@ -194,13 +212,15 @@
 
     this.u = {};
     var self = this;
-    ['u_size', 'u_tilt', 'u_off', 'u_k', 'u_css', 'u_tex'].forEach(function (n) { self.u[n] = gl.getUniformLocation(pr, n); });
+    ['u_size', 'u_rot', 'u_room', 'u_c', 'u_o', 'u_off', 'u_k', 'u_css', 'u_tex'].forEach(function (n) { self.u[n] = gl.getUniformLocation(pr, n); });
     gl.uniform1i(this.u.u_tex, 0);
     gl.uniform2f(this.u.u_size, W, H);
+    gl.uniform4f(this.u.u_room, ROOM3D.D, ROOM3D.zp, ROOM3D.F, 0);
+    gl.uniform2f(this.u.u_c, ROOM3D.cx, ROOM3D.cy);
     var m = /^#?(..)(..)(..)$/.exec(bg) || [0, 'f1', 'df', 'c0'];
     this.bg = [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255];
   }
-  GLRoom.prototype.draw = function (cssW, cssH, offX, offY, k, tiltX, tiltY) {
+  GLRoom.prototype.draw = function (cssW, cssH, offX, offY, k, R) {
     var gl = this.gl;
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.clearColor(this.bg[0], this.bg[1], this.bg[2], 1);
@@ -208,7 +228,8 @@
     gl.uniform2f(this.u.u_css, cssW, cssH);
     gl.uniform2f(this.u.u_off, offX, offY);
     gl.uniform1f(this.u.u_k, k);
-    gl.uniform2f(this.u.u_tilt, tiltX, tiltY);
+    gl.uniform4f(this.u.u_rot, R.cy, R.sy, R.cp, R.sp);
+    gl.uniform1f(this.u.u_o, R.o);
     gl.drawElements(gl.TRIANGLES, this.count, gl.UNSIGNED_SHORT, 0);
   };
 
@@ -311,9 +332,10 @@
 
     this.W = this.o.hotspots.imageWidth;
     this.H = this.o.hotspots.imageHeight;
-    this.weight = makeWeight(this.W, this.H);
-    this.Ax = 58 * this.o.tiltStrength;
-    this.Ay = 36 * this.o.tiltStrength;
+    this.weight = makeWeight(this.W, this.H);   // 깊이(0=가까움 ~ 1=가장 멂)
+    this.maxYaw = 10 * Math.PI / 180 * this.o.tiltStrength;    // 좌우 최대 회전
+    this.maxPitch = 5.5 * Math.PI / 180 * this.o.tiltStrength;   // 위아래 최대 회전
+    this.R = { cy: 1, sy: 0, cp: 1, sp: 0, o: 1 };
     this.sessionId = uid();
     this.selections = [];
     this.locked = false;
@@ -609,8 +631,8 @@
   // 깊이에 따른 이동량(원본 좌표 → 움직인 좌표의 차이)
   RoomSurvey.prototype.disp = function (x, y) {
     if (this.flat) return { x: 0, y: 0 };
-    var w = this.weight(x, y);
-    return { x: this.tl.ox * this.Ax * w, y: this.tl.oy * this.Ay * w };
+    var r = rot3d(x, y, this.weight(x, y), this.R);
+    return { x: r.x, y: r.y };
   };
 
   // 화면(CSS px) → 원본 이미지 좌표 : 지금 화면에 보이는 그대로 역변환
@@ -619,9 +641,11 @@
     var qx = cam.fx + ((cx - this.ox) / this.s - cam.fx) / cam.z;
     var qy = cam.fy + ((cy - this.oy) / this.s - cam.fy) / cam.z;
     var px = qx, py = qy;
-    for (var i = 0; i < 10; i++) {       // p + D(p) = q 를 반복법으로 풂
+    for (var i = 0; i < 40; i++) {       // p + D(p) = q 를 반복법으로 풂
       var d = this.disp(px, py);
-      px = qx - d.x; py = qy - d.y;
+      var nx = qx - d.x, ny = qy - d.y;
+      px += (nx - px) * 0.7; py += (ny - py) * 0.7;
+      if (Math.abs(nx - px) + Math.abs(ny - py) < 0.01) break;
     }
     return { x: px, y: py };
   };
@@ -721,8 +745,8 @@
         // 손가락을 따라 방이 돌아감
         var span = Math.min(self.cssW, self.cssH) * 0.45;
         self.dragT = {
-          x: clamp(self._dragBase.x + dx / span, -1.15, 1.15),
-          y: clamp(self._dragBase.y + dy / span, -1.15, 1.15)
+          x: clamp(self._dragBase.x + dx / span, -1, 1),
+          y: clamp(self._dragBase.y + dy / span, -1, 1)
         };
         self._kick();
       }
@@ -1017,6 +1041,25 @@
     }
     T.ox = clamp(T.x + ix, -1.2, 1.2);
     T.oy = clamp(T.y + iy, -1.2, 1.2);
+    this._updateRot();
+  };
+
+  // 회전각과, 가장자리 빈틈을 가리는 최소 확대율 계산
+  RoomSurvey.prototype._updateRot = function () {
+    var yaw = this.tl.ox * this.maxYaw, pitch = -this.tl.oy * this.maxPitch;
+    var R = { cy: Math.cos(yaw), sy: Math.sin(yaw), cp: Math.cos(pitch), sp: Math.sin(pitch), o: 1 };
+    if (!this.flat && (yaw || pitch)) {
+      var W = this.W, H = this.H, cx = ROOM3D.cx, cyy = ROOM3D.cy, need = 1, N = 16, i, f, q;
+      for (i = 0; i <= N; i++) {
+        f = i / N;
+        q = rot3d(0, f * H, this.weight(0, f * H), R);       if (q.Xd < 0) need = Math.max(need, cx / -q.Xd); else need = 2;
+        q = rot3d(W, f * H, this.weight(W, f * H), R);       if (q.Xd > 0) need = Math.max(need, (W - cx) / q.Xd); else need = 2;
+        q = rot3d(f * W, 0, this.weight(f * W, 0), R);       if (q.Yd < 0) need = Math.max(need, cyy / -q.Yd); else need = 2;
+        q = rot3d(f * W, H, this.weight(f * W, H), R);       if (q.Yd > 0) need = Math.max(need, (H - cyy) / q.Yd); else need = 2;
+      }
+      R.o = clamp(need * 1.004, 1, 1.6);
+    }
+    this.R = R;
   };
 
   RoomSurvey.prototype._busy = function (t) {
@@ -1050,7 +1093,7 @@
     // 1) 방(원본 PNG + 깊이감) — WebGL 메시
     if (this.gl) {
       this.glCanvas.style.opacity = fade;
-      this.gl.draw(this.cssW, this.cssH, offX, offY, k, this.tl.ox * this.Ax, this.tl.oy * this.Ay);
+      this.gl.draw(this.cssW, this.cssH, offX, offY, k, this.R);
     }
 
     // 2) 효과 레이어
