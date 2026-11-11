@@ -1,0 +1,28 @@
+name: Build app/index.html
+
+on:
+  push:
+    branches: [main]
+    paths: ["app/src/**", "app/build.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python app/build.py
+      - name: Commit rebuilt app/index.html
+        run: |
+          if git diff --quiet app/index.html; then echo "no change"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add app/index.html
+          git commit -m "Rebuild app/index.html from app/src"
+          git push
