@@ -205,6 +205,137 @@ function mascot(code, className = "", interactive = false, hint = "") {
   </button>`;
 }
 
+// Guide cards: the character is a tickle spot; the label under it opens the practice.
+function guideMascot(code, index, prompt) {
+  return `<div class="tickle-wrap">
+    <button class="mascot mascot-toggle guide-art" type="button" data-action="tickle" data-character="${code}"
+      aria-label="${characters[code]} 간지럽히기" aria-pressed="false">
+      <img src="${offline_paper_mascot[code]}" alt="" width="240" height="240" class="mascot-still">
+      <img src="${offline_paper_smile[code]}" alt="" width="240" height="240" class="mascot-smile">
+      <span class="mascot-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    </button>
+    <span class="tickle-bubble" role="status" aria-live="polite"></span>
+    <button class="mascot-hint" type="button" data-action="practice" data-index="${index}">${prompt}</button>
+  </div>`;
+}
+
+const tickleLines = {
+  FVMD: [["어? 왜 그래~", "응? 나 불렀어?"], ["히히, 간지러워~", "거기 간지러워~!"], ["꺄르르르! 그만~", "꺄하하! 못 참겠어~"]],
+  FVMB: [["으응? 왜 그래~", "어? 나야?"], ["간지러워~ 히히", "히히, 귀는 간지러워~"], ["꺄르르~ 귀는 안 돼!", "꺄하하! 그만그만~"]],
+  FHMB: [["어라? 뭐야~", "응? 왜 그래~"], ["간지러워~ 히히", "히히, 배는 간지러워~"], ["꺄르르~ 또 해 줘!", "꺄하하! 간질간질~"]],
+};
+const tickleVoice = { FVMD: 1, FVMB: 1.18, FHMB: 0.88 };
+const tickles = new WeakMap();
+let tickleAudio = null;
+
+function giggle(level, pitch = 1) {
+  if (voiceEnabled === false) return;
+  try {
+    tickleAudio ||= new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = tickleAudio;
+    ctx.resume?.().catch(() => {});
+    const out = ctx.createGain();
+    out.gain.value = 0.2;
+    out.connect(ctx.destination);
+    const formant = ctx.createBiquadFilter();
+    formant.type = "bandpass"; formant.frequency.value = 1500 * pitch; formant.Q.value = 0.9;
+    formant.connect(out);
+    const noise = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * 0.06), ctx.sampleRate);
+    const data = noise.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+    let t = ctx.currentTime + 0.01;
+    const notes = [3, 5, 7][level - 1];
+    for (let i = 0; i < notes; i++) {
+      const f = pitch * (560 + Math.random() * 90) * (1 + 0.18 * Math.sin(i * 1.7)) * (1 - i * 0.025);
+      const dur = 0.075 + Math.random() * 0.03;
+      const osc = ctx.createOscillator(), env = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(f * 1.35, t);
+      osc.frequency.exponentialRampToValueAtTime(f, t + dur * 0.6);
+      env.gain.setValueAtTime(0.0001, t);
+      env.gain.exponentialRampToValueAtTime(1, t + 0.012);
+      env.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      osc.connect(env); env.connect(formant);
+      osc.start(t); osc.stop(t + dur + 0.02);
+      const breath = ctx.createBufferSource(), bg = ctx.createGain(), hp = ctx.createBiquadFilter();
+      breath.buffer = noise; hp.type = "highpass"; hp.frequency.value = 2200;
+      bg.gain.value = 0.18;
+      breath.connect(hp); hp.connect(bg); bg.connect(out);
+      breath.start(t);
+      t += dur + 0.028 + Math.random() * 0.02;
+    }
+  } catch {}
+}
+
+function tickle(button, point) {
+  const wrap = button.closest(".tickle-wrap");
+  const bubble = wrap?.querySelector(".tickle-bubble");
+  const now = performance.now();
+  const st = tickles.get(button) ?? { n: 0, last: 0, timer: 0, line: "" };
+  st.n = now - st.last < 1700 ? st.n + 1 : 1;
+  st.last = now;
+  tickles.set(button, st);
+  const level = Math.min(st.n, 3);
+  const code = button.dataset.character;
+  const options = (tickleLines[code] ?? tickleLines.FVMD)[level - 1];
+  const line = options.find((text) => text !== st.line && Math.random() < 0.6) ?? options.find((text) => text !== st.line) ?? options[0];
+  st.line = line;
+  const box = button.getBoundingClientRect();
+  const side = point && point.clientX ? Math.max(-1, Math.min(1, (point.clientX - (box.left + box.width / 2)) / (box.width / 2))) : 0;
+  button.style.setProperty("--lean", side.toFixed(2));
+  button.setAttribute("aria-pressed", "true");
+  button.dataset.tickle = String(level);
+  if (bubble) {
+    bubble.textContent = line;
+    bubble.classList.remove("is-on");
+    void bubble.offsetWidth;
+    bubble.classList.add("is-on");
+  }
+  if (motionAllowed()) {
+    button.classList.remove("is-tickled");
+    void button.offsetWidth;
+    button.classList.add("is-tickled");
+    for (let i = 0; i < level * 2 + 1; i++) {
+      const bit = document.createElement("span");
+      bit.className = "tickle-bit";
+      bit.setAttribute("aria-hidden", "true");
+      bit.textContent = i % 3 === 2 ? "♥" : "히";
+      const angle = -Math.PI / 2 + (Math.random() < 0.5 ? -1 : 1) * (0.45 + Math.random() * 0.75);
+      const dist = 46 + Math.random() * 30 + level * 8;
+      bit.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
+      bit.style.setProperty("--dy", `${Math.sin(angle) * dist}px`);
+      bit.style.setProperty("--spin", `${(Math.random() - 0.5) * 50}deg`);
+      bit.style.animationDelay = `${i * 45}ms`;
+      bit.addEventListener("animationend", () => bit.remove(), { once: true });
+      wrap.append(bit);
+    }
+  }
+  giggle(level, tickleVoice[code] ?? 1);
+  clearTimeout(st.timer);
+  st.timer = setTimeout(() => {
+    button.setAttribute("aria-pressed", "false");
+    button.classList.remove("is-tickled");
+    delete button.dataset.tickle;
+    bubble?.classList.remove("is-on");
+  }, 1500 + level * 350);
+}
+
+// rubbing the character tickles it too
+let tickleRub = null;
+document.addEventListener("pointerdown", (event) => {
+  const button = event.target.closest?.('[data-action="tickle"]');
+  tickleRub = button ? { button, x: event.clientX, y: event.clientY, moved: 0 } : null;
+}, { passive: true });
+document.addEventListener("pointermove", (event) => {
+  if (!tickleRub || !(event.buttons || event.pointerType === "touch")) return;
+  const r = tickleRub;
+  r.moved += Math.hypot(event.clientX - r.x, event.clientY - r.y);
+  r.x = event.clientX; r.y = event.clientY;
+  if (r.moved > 70) { r.moved = 0; r.rubbed = true; tickle(r.button, event); }
+}, { passive: true });
+document.addEventListener("pointerup", () => { setTimeout(() => { tickleRub = null; }, 0); }, { passive: true });
+document.addEventListener("pointercancel", () => { tickleRub = null; }, { passive: true });
+
 const speakerIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6h4l5 4V5L7 9H3Z"/><path d="M16 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg>';
 
 function voiceButton(scene, label = "다시 듣기") {
@@ -423,7 +554,7 @@ function home() {
         <p class="chapter-step">${index + 1}단계</p>
         <h3>${label}</h3>
         <p class="chapter-description">${detail}</p>
-        <div class="chapter-art-stage">${mascot(code, "guide-art", true, prompt)}</div>
+        <div class="chapter-art-stage">${guideMascot(code, index, prompt)}</div>
       </article>`).join("")}
     </div>
     <section id="guide-practice" class="practice-panel screen-only" aria-labelledby="practice-title" hidden></section>
@@ -2246,6 +2377,9 @@ document.addEventListener("click", (event) => {
     case "share": return shareResult(true);
     case "copy": return shareResult(false);
     case "expression": return celebrateMascot(target);
+    case "tickle":
+      if (tickleRub?.rubbed) return;
+      return tickle(target, event);
     case "chart-view": {
       const chart = target.closest(".habit-compare");
       chart.dataset.chartView = value;
