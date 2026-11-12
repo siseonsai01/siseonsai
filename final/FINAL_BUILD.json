@@ -1,8 +1,9 @@
 {
   "edition": "시선사이 원안",
   "revision": "final-survey-v7-20261113",
-  "compiledHtmlSHA256": "9b5566f004f67a956447516a2b50adeeaf1ba9b7598cea2724b7ac0e62d66e9d",
-  "cloudBackendChecks": 19,
+  "connectionRevision": "fixed-tablets-v8-20261113",
+  "compiledHtmlSHA256": "3a90632e791e9ca1c4b7b3675aba0eaf501b469ddd6fed2afa7ccc65e302f06f",
+  "cloudBackendChecks": 36,
   "containsFamilyRecords": false,
   "containsDeviceCredentials": false
 }

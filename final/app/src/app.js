@@ -1759,7 +1759,7 @@ function stationRoleUrl(role,connect=false) {
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('station',role);if(connect)url.searchParams.set('connect','1');return url.href;
 }
 function stationLinkPage() {
-  return `<section class="book-foyer station-setup"><p class="book-eyebrow">${stationEntryRole==='child'?'아이':'부모님'} 전용 화면</p><h1 tabindex="-1">${stationLinkError?'연결을 다시 확인해 주세요':'두 책을 연결하고 있어요'}</h1><p role="status">${stationLinkError?'인터넷 연결을 확인한 뒤 다시 눌러 주세요. 계속 열리지 않으면 진행자에게 새 전용 링크를 받아 주세요.':'번호를 입력할 필요 없어요. 잠시만 기다려 주세요.'}</p>${stationLinkError?'<button class="button primary" data-action="station-link-retry">다시 연결하기 →</button>':''}</section>`;
+  return `<section class="book-foyer station-setup"><p class="book-eyebrow">${stationEntryRole==='child'?'아이':'부모님'} 전용 화면</p><h1 tabindex="-1">${stationLinkError?'연결을 다시 확인해 주세요':'두 책을 연결하고 있어요'}</h1><p role="status">${stationLinkError?'인터넷 연결을 확인한 뒤 다시 눌러 주세요. 이 고정 주소로 다시 열어도 돼요.':'번호를 입력할 필요 없어요. 잠시만 기다려 주세요.'}</p>${stationLinkError?'<button class="button primary" data-action="station-link-retry">다시 연결하기 →</button>':''}</section>`;
 }
 async function openStationLink(role,params) {
   if(stationLinkBusy)return;
@@ -1771,7 +1771,7 @@ async function openStationLink(role,params) {
   history.replaceState(null,'',stationRoleUrl(['adult','child'].includes(role)?role:'adult'));
   stationLinkBusy=true;stationLinkError=false;show('stationLink',false);
   try {
-    if(!candidate || !['adult','child'].includes(candidate.role) || !/^[a-f0-9]{24}$/.test(candidate.id) || !/^[A-Za-z0-9_-]{43}$/.test(candidate.token))throw new Error('invalid link');
+    if(!candidate || !['adult','child'].includes(candidate.role) || !/^[a-f0-9]{24}$/.test(candidate.id) || !(/^[A-Za-z0-9_-]{43}$/.test(candidate.token) || /^[a-f0-9]{64}$/.test(candidate.token)))throw new Error('invalid link');
     const data=await stationRequest('/'+candidate.id,'GET',undefined,candidate);
     if(data.id!==candidate.id || data.role!==candidate.role || !data.connected?.child)throw new Error('wrong tablet link');
     stopStationPolling();stationSession={...candidate};stationView=null;
@@ -3213,4 +3213,5 @@ if(requestedStationLink.has('pair') || requestedStationLink.has('key')) {
   else if(["child","adult"].includes(stationRole))openStationRole(stationRole);
   else show("home",false);
 }
+
 

@@ -27,6 +27,13 @@ const read=async(db,table,key)=>db.prepare(`SELECT data FROM ${table} WHERE ${ta
 const insert=(db,table,key,value)=>db.prepare(`INSERT INTO ${table} VALUES (?,?,?)`).bind(key,JSON.stringify(value),now());
 const update=(db,table,key,value,old)=>db.prepare(`UPDATE ${table} SET data=?,updated=? WHERE ${table==='families'?'code':'id'}=? AND data=?`).bind(JSON.stringify(value),now(),key,old);
 const changed=r=>r.meta.changes===1;
+const digest=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text))),v=>v.toString(16).padStart(2,'0')).join('');
+async function expire(db){
+  await db.batch([
+    db.prepare("DELETE FROM families WHERE updated<? AND code NOT IN (SELECT json_extract(data,'$.code') FROM stations WHERE json_extract(data,'$.permanent')=1)").bind(now()-86400),
+    db.prepare("DELETE FROM stations WHERE updated<? AND COALESCE(json_extract(data,'$.permanent'),0)<>1").bind(now()-86400)
+  ]);
+}
 function auth(req,roles){const supplied=req.headers.get('authorization')?.replace(/^Bearer /,'');const r=Object.keys(roles).find(r=>(roles[r].token??roles[r])===supplied);if(!supplied||!r)fail(403,'이 기기의 연결을 확인해 주세요.');return r;}
 async function rate(db,req,kind){
   const address=req.headers.get('cf-connecting-ip')||'local';
@@ -78,6 +85,27 @@ async function stationView(db,sid,s,role,fresh){
 }
 async function stationApi(req,db,url,p){
   const path=url.pathname,m=req.method;
+  const pin=path.match(/^\/api\/stations\/([a-f0-9]{24})\/links$/);
+  if(pin&&m==='POST'){
+    const sid=pin[1],keys=p.keys;
+    if(!keys||!['adult','child'].every(r=>/^[a-f0-9]{32}$/.test(keys[r]))||keys.adult===keys.child)fail(400,'고정 주소를 다시 확인해 주세요.');
+    for(let n=0;n<8;n++){
+      const row=await read(db,'stations',sid);if(!row)fail(404,'현장 연결을 찾지 못했어요.');
+      const s=JSON.parse(row.data);if(auth(req,s.tokens)!=='adult')fail(403,'부모님 화면에서 준비해 주세요.');
+      if(!s.connected.child)fail(409,'두 화면을 먼저 연결해 주세요.');
+      const hashes=await Promise.all(['adult','child'].map(r=>digest(keys[r])));
+      if(s.linkHashes&&['adult','child'].some((r,i)=>s.linkHashes[r]!==hashes[i]))fail(409,'이미 고정 주소가 있어요. 기존 주소를 사용해 주세요.');
+      for(const [i,r] of ['adult','child'].entries()){
+        const existing=await db.prepare('SELECT station_id,role FROM tablet_links WHERE key_hash=?').bind(hashes[i]).first();
+        if(existing&&(existing.station_id!==sid||existing.role!==r))fail(409,'다른 연결의 주소를 사용할 수 없어요.');
+      }
+      s.permanent=true;s.linkHashes={adult:hashes[0],child:hashes[1]};
+      const statements=['adult','child'].map((r,i)=>db.prepare('INSERT INTO tablet_links (key_hash,station_id,role) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM stations WHERE id=? AND data=?) ON CONFLICT(key_hash) DO NOTHING').bind(hashes[i],sid,r,sid,row.data));
+      const result=await db.batch([...statements,update(db,'stations',sid,s,row.data)]);
+      if(!changed(result[2]))continue;
+      return {permanent:true,links:{adult:url.origin+'/parent/'+keys.adult,child:url.origin+'/child/'+keys.child}};
+    }fail(409,'고정 주소 준비를 다시 시도해 주세요.');
+  }
   if(m==='POST'&&path==='/api/stations'){
     for(let n=0;n<5;n++){
       const sid=token(12),code=digits(),f=newFamily(),s={round:1,code,pair:digits(),pairUntil:now()+600,tokens:{adult:token()},connected:{adult:true,child:false}};
@@ -115,6 +143,21 @@ async function stationApi(req,db,url,p){
 }
 export default {async fetch(req,env,ctx){
   const url=new URL(req.url);
+  const launch=url.pathname.match(/^\/(parent|child)\/([a-f0-9]{32})$/);
+  if(launch){
+    if(!['GET','HEAD'].includes(req.method))return json(405,{error:'지원하지 않는 요청이에요.'});
+    try{
+      const link=await env.DB.prepare('SELECT station_id,role FROM tablet_links WHERE key_hash=?').bind(await digest(launch[2])).first();
+      const role=launch[1]==='parent'?'adult':'child';
+      if(!link||link.role!==role)return json(404,{error:'주소를 다시 확인해 주세요.'});
+      const row=await read(env.DB,'stations',link.station_id);
+      if(!row)return json(404,{error:'연결을 찾지 못했어요.'});
+      const s=JSON.parse(row.data);
+      if(!s.permanent||!s.connected.child)return json(409,{error:'두 화면 연결을 확인해 주세요.'});
+      const location=url.origin+'/app/?station='+role+'#'+new URLSearchParams({pair:link.station_id,key:s.tokens[role]});
+      return new Response(null,{status:302,headers:{location,'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
+    }catch{return json(503,{error:'잠시 뒤 같은 주소로 다시 열어 주세요.'});}
+  }
   if(!url.pathname.startsWith('/api/')){
     if(url.pathname==='/')return Response.redirect(url.origin+'/app/index.html'+url.search,302);
     if(!url.pathname.startsWith('/app/'))return new Response('Not found',{status:404});
@@ -126,13 +169,10 @@ export default {async fetch(req,env,ctx){
     if(Number(req.headers.get('content-length'))>2500000)fail(413,'사진이 너무 커요.');
     let p={};if(req.method!=='GET'){const raw=await req.text();if(new TextEncoder().encode(raw).length>2500000)fail(413,'사진이 너무 커요.');try{p=raw?JSON.parse(raw):{};}catch{fail(400,'입력 내용을 다시 확인해 주세요.');}if(!p||Array.isArray(p)||typeof p!=='object')fail(400,'입력 내용을 다시 확인해 주세요.');}
     // Opportunistic expiration is schema-only at deployment; never create tables in requests.
-    if(Math.random()<.01)ctx.waitUntil(env.DB.batch([
-      env.DB.prepare('DELETE FROM families WHERE updated<?').bind(now()-86400),
-      env.DB.prepare('DELETE FROM stations WHERE updated<?').bind(now()-86400),
-      env.DB.prepare('DELETE FROM attempts WHERE updated<?').bind(now()-120)
-    ]));
+    if(Math.random()<.01)ctx.waitUntil(env.DB.prepare('DELETE FROM attempts WHERE updated<?').bind(now()-120).run());
     // Deterministic reads also enforce retention when opportunistic cleanup has not run.
-    await env.DB.batch([env.DB.prepare('DELETE FROM families WHERE updated<?').bind(now()-86400),env.DB.prepare('DELETE FROM stations WHERE updated<?').bind(now()-86400)]);
+    await expire(env.DB);
     return json(200,await (url.pathname.startsWith('/api/stations')?stationApi(req,env.DB,url,p):familyApi(req,env.DB,url,p)));
   }catch(e){return json(e.status||500,{error:e.status?e.message:'저장하지 못했어요. 연결을 확인하고 다시 시도해 주세요.'});}
 }};
+
