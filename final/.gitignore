@@ -1,0 +1,7 @@
+dist/
+node_modules/
+*.sqlite*
+*.db
+.env*
+*tablet-links*
+__pycache__/

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="부모와 아이가 같은 방을 보고 서로의 시선을 발견하는 가족 체험 설문">
+  <meta name="theme-color" content="#fff7e7">
+  <meta name="siseon-voice-revision" content="storybook-narrator-v3-20261112">
+  <meta name="siseon-flow-revision" content="final-survey-v7-20261113">
+  <title>시선사이 · 두 토끼의 방, 두 권의 이야기</title>
+  <link rel="stylesheet" href="styles.css" data-inline>
+  <link rel="stylesheet" href="room-motion.css" data-inline>
+  <link rel="stylesheet" href="mission-motion.css" data-inline>
+  
+  
+</head>
+<body>
+  <div class="site-page">
+      <header class="site-header">
+        <div class="shell topbar">
+          <button class="brand" type="button" data-action="home" aria-label="시선사이 시작 화면">
+            <svg class="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M5 23V12a9 9 0 0 1 18 0v11Z" fill="#f9e9c4"/>
+              <path d="M5 23V12a9 9 0 0 1 18 0v11M3 23h22M14 3v20M5 14h18" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>시선사이
+          </button>
+          <nav class="site-nav" aria-label="주 메뉴">
+            <button type="button" data-action="begin-voice">이야기 시작</button>
+            <button type="button" data-action="guide">진행 안내</button>
+            <button type="button" data-action="demo">예시 결과</button>
+          </nav>
+          <a class="station-entry-link" data-action="station-child-entry" href="?station=child&amp;connect=1">아이 연결번호 입력</a>
+        </div>
+      </header>
+      <main class="shell" id="app"></main>
+      <footer class="site-footer"><div class="shell footer-inner"><strong>시선사이</strong><span>우리 가족이 함께 쓰는 이야기</span></div></footer>
+  </div>
+  <img class="print-sheet" id="print-sheet" alt="시선사이 가족 결과지">
+  <dialog class="camera-dialog" id="camera-dialog" aria-labelledby="camera-title">
+    <div class="camera-heading">
+      <h2 id="camera-title">사진 찍기</h2>
+      <form method="dialog"><button class="button" type="submit" autofocus>닫기</button></form>
+    </div>
+    <video autoplay playsinline muted hidden></video>
+    <p class="photo-status" id="camera-status" role="status"></p>
+    <div class="actions">
+      <button class="button primary" type="button" data-action="capture" disabled>찰칵! 이 사진 넣기</button>
+      <button class="button" type="button" data-action="camera-fallback">기기에서 사진 고르기</button>
+    </div>
+  </dialog>
+<script src="room-hotspots.js" data-inline></script>
+<script src="room-motion.js" data-inline></script>
+<script src="mission-motion.js" data-inline></script>
+<script src="app.js" data-inline></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>정리 친구 미션 시범 미리보기</title>
+<link rel="stylesheet" href="../mission-motion.css">
+<style>
+  :root { --bg: #efe6da; --ink: #5b3a24; --card: #fffaf2; --line: #e3cfb3; --accent: #ff8c5a; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; display: grid; gap: 16px; }
+  h1 { margin: 0; font-size: 22px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+  .bar label { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; }
+  select, button { font: inherit; font-size: 15px; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--line); background: #fff; color: var(--ink); }
+  button { cursor: pointer; }
+  button.on, button:focus-visible { border-color: var(--accent); }
+  .pats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stagewrap { margin: 0 auto; width: 100%; }
+  .stagewrap.phone { max-width: 390px; }
+  #host { width: 100%; }
+  .meta { font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .log { font-size: 13px; background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 8px 10px; max-height: 160px; overflow: auto; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>정리 친구의 가족 미션 시범 · 미리보기</h1>
+  <div class="bar">
+    <label>친구 <select id="code"></select></label>
+    <div class="pats" id="pats" role="group" aria-label="미션"></div>
+    <label>아이 단계 <select id="child"><option value="0">1단계가 아이</option><option value="1">2단계가 아이</option></select></label>
+    <label><input type="checkbox" id="reduced"> 동작 줄이기</label>
+    <label><input type="checkbox" id="sound"> 효과음</label>
+    <label><input type="checkbox" id="phone"> 휴대폰 너비</label>
+  </div>
+  <div class="bar">
+    <button id="play" type="button">▶ 재생</button>
+    <button id="pause" type="button">⏸ 일시정지</button>
+    <label>재생 선택 <select id="playback"><option value="ready">준비</option><option value="play">재생</option><option value="pause">일시정지</option></select></label>
+    <span class="meta">상태: <b id="phase">-</b></span>
+  </div>
+  <div class="stagewrap" id="wrap"><div id="host"></div></div>
+  <div class="log" id="log" aria-label="onStageChanged 기록"></div>
+</main>
+<script src="../mission-motion.js"></script>
+<script>
+(function () {
+  var IMG_BASE = '../egg/a/';
+  var M = window.SiseonMission;
+  var codeSel = document.getElementById('code'), pats = document.getElementById('pats');
+  var child = document.getElementById('child'), reduced = document.getElementById('reduced');
+  var sound = document.getElementById('sound'), phone = document.getElementById('phone');
+  var host = document.getElementById('host'), log = document.getElementById('log'), phaseEl = document.getElementById('phase');
+  var pattern = 0, inst = null;
+  M.codes.forEach(function (c) { var o = document.createElement('option'); o.value = c; o.textContent = c + ' ' + M.names[c]; codeSel.appendChild(o); });
+  M.titles.forEach(function (t, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = i + ' ' + t;
+    b.onclick = function () { pattern = i; mark(); make(); };
+    pats.appendChild(b);
+  });
+  function mark() { [].forEach.call(pats.children, function (b, i) { b.classList.toggle('on', i === pattern); b.setAttribute('aria-pressed', i === pattern); }); }
+  function make() {
+    if (inst) inst.destroy();
+    log.textContent = '';
+    inst = M.create(host, {
+      code: codeSel.value,
+      imageSrc: IMG_BASE + 'hog_' + codeSel.value + '.png',
+      pattern: pattern,
+      childIndex: +child.value,
+      reducedMotion: reduced.checked,
+      soundAllowed: sound.checked,
+      onStageChanged: function (text, info) { log.textContent += '[' + info.kind + (info.role ? ' · ' + info.role : '') + '] ' + text + '\n'; log.scrollTop = 1e6; }
+    });
+  }
+  [codeSel, child, reduced, sound].forEach(function (e) { e.onchange = make; });
+  phone.onchange = function () { document.getElementById('wrap').classList.toggle('phone', phone.checked); };
+  document.getElementById('play').onclick = function () { inst.play(); };
+  document.getElementById('pause').onclick = function () { inst.pause(); };
+  document.getElementById('playback').onchange = function(e) { if(e.target.value==='play')inst.play();else if(e.target.value==='pause')inst.pause(); };
+  new MutationObserver(function () { phaseEl.textContent = host.getAttribute('data-phase') || '-'; }).observe(host, { attributes: true, attributeFilter: ['data-phase'] });
+  reduced.checked = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  mark(); make();
+  phaseEl.textContent = host.getAttribute('data-phase');
+})();
+</script>
+</body>
+</html>

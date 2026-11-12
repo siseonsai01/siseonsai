@@ -1,0 +1,34 @@
+name: Validate and package final storybook
+on:
+  push:
+    branches: [main]
+    paths: ['final/**', '.github/workflows/build-final.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  final:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: final
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node tests/backend.mjs
+      - run: python app/build.py
+      - run: python build_cloud.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: siseonsai-final-v7
+          path: |
+            final/app/
+            final/server.py
+            final/README.md
+            final/FINAL_BUILD.json
+          retention-days: 30
