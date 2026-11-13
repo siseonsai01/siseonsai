@@ -1,6 +1,57 @@
 /* One gesture-unlocked narration clock for iPad Safari and asynchronous page changes. */
 (() => {
+  // iPad narration stays on one native media element. It avoids a second audio
+  // clock/session competing with Safari's speech-recognition microphone.
+  function nativePlayer(media,env){
+    const listeners=new Map(),later=env.setInterval||setInterval,cancel=env.clearInterval||clearInterval;
+    let source='',serial=0,unlocked=false,priming=false,capturing=false,expectedPlaying=false,timer=0,seek=0;
+    const silent='data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAAAAAA==';
+    const stopped=()=>{if(timer)cancel(timer);timer=0;};
+    function session(type){try{if(navigator.audioSession&&navigator.audioSession.type!==type)navigator.audioSession.type=type;}catch{}}
+    function emit(type){for(const item of [...(listeners.get(type)||[])]){if(item.once)api.removeEventListener(type,item.fn);item.fn.call(api,{type});}}
+    function pause(){serial++;expectedPlaying=false;priming=false;stopped();media.pause();}
+    function unlock(){
+      if(capturing)return Promise.resolve();
+      session('playback');if(unlocked)return Promise.resolve();unlocked=true;
+      const id=++serial;priming=true;media.src=silent;
+      let playing;try{playing=media.play();}catch(error){playing=Promise.reject(error);}
+      return Promise.resolve(playing).then(()=>{if(id===serial&&priming){expectedPlaying=false;media.pause();media.src=source;priming=false;}}).catch(error=>{if(id===serial&&priming){priming=false;media.src=source;if(error.name==='NotAllowedError')unlocked=false;}throw error;});
+    }
+    async function play(){
+      if(!unlocked||capturing)throw Object.assign(new Error('Tap to enable narration'),{name:'NotAllowedError'});
+      const id=++serial;priming=false;expectedPlaying=true;stopped();
+      if(media.getAttribute('src')!==source)media.src=source;
+      try{if(seek)media.currentTime=seek;}catch{}
+      let deadline;
+      try{
+        const playing=media.play();
+        await Promise.race([playing,new Promise((_,reject)=>{deadline=setTimeout(()=>reject(new Error('Audio did not start')),12000);})]);
+        if(id!==serial)throw Object.assign(new Error('Playback cancelled'),{name:'AbortError'});
+        let clock=media.currentTime,changed=Date.now();
+        timer=later(()=>{if(id!==serial)return;if(media.currentTime>clock){clock=media.currentTime;changed=Date.now();}else if(media.readyState>=3&&!media.paused&&Date.now()-changed>2500){expectedPlaying=false;stopped();media.pause();emit('interrupted');}},150);
+      }catch(error){if(id===serial){expectedPlaying=false;media.pause();if(error.name==='NotAllowedError')unlocked=false;}throw error;}finally{clearTimeout(deadline);}
+    }
+    const api={element:media,unlock,play,pause,
+      get src(){return source;},set src(value){pause();source=value;seek=0;media.src=value;},
+      get currentTime(){return media.currentTime||0;},set currentTime(value){seek=Math.max(0,Number(value)||0);try{media.currentTime=seek;}catch{}},
+      get duration(){return media.duration;},get paused(){return media.paused;},get ended(){return media.ended;},
+      getAttribute(name){return name==='src'?source:media.getAttribute(name);},
+      addEventListener(type,fn,options={}){if(options.signal?.aborted)return;const list=listeners.get(type)||new Set();list.add({fn,once:options.once});listeners.set(type,list);options.signal?.addEventListener('abort',()=>api.removeEventListener(type,fn),{once:true});},
+      removeEventListener(type,fn){for(const item of listeners.get(type)||[])if(item.fn===fn)listeners.get(type).delete(item);},
+      beginCapture(){capturing=true;pause();session('play-and-record');},
+      async endCapture(){if(!capturing)return;capturing=false;session('playback');},
+      warm(){},dispose(){pause();listeners.clear();}
+    };
+    media.addEventListener('loadedmetadata',()=>{if(!priming&&seek)try{media.currentTime=seek;}catch{}});
+    for(const type of ['playing','timeupdate','waiting','error','seeked'])media.addEventListener(type,()=>{if(!priming)emit(type);});
+    media.addEventListener('ended',()=>{if(priming||!expectedPlaying||!media.ended)return;expectedPlaying=false;stopped();emit('ended');});
+    media.addEventListener('pause',()=>{if(priming||!expectedPlaying||!media.paused||media.ended)return;expectedPlaying=false;stopped();emit('interrupted');});
+    if(media.dataset)media.dataset.narrationEngine='native';
+    return api;
+  }
   function create(media,env={}){
+    if(env.native)return nativePlayer(media,env);
+    if(media.dataset)media.dataset.narrationEngine='web-audio';
     const Context=env.Context||window.AudioContext||window.webkitAudioContext;
     const fetchAudio=env.fetch||window.fetch.bind(window),later=env.setInterval||setInterval,cancel=env.clearInterval||clearInterval;
     const listeners=new Map(),cache=new Map(),loading=new Map();

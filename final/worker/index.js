@@ -1,4 +1,11 @@
+const APP_RELEASE='20261113-17';
 const json=(status,data)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
+async function appAsset(req,env){
+  const response=await env.ASSETS.fetch(req),type=response.headers.get('content-type')||'',path=new URL(req.url).pathname;
+  if(!/html|javascript|css/.test(type)&&!/(?:\.html|\.js|\.css|voice-release\.json)$/.test(path)&&!path.endsWith('/'))return response;
+  const headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.set('x-siseon-release',APP_RELEASE);
+  return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
+}
 const fail=(status,error)=>{throw Object.assign(new Error(error),{status})};
 const now=()=>Date.now()/1000;
 const token=(bytes=32)=>Array.from(crypto.getRandomValues(new Uint8Array(bytes)),v=>v.toString(16).padStart(2,'0')).join('');
@@ -198,14 +205,16 @@ export default {async fetch(req,env,ctx){
       if(!row)return json(404,{error:'연결을 찾지 못했어요.'});
       const s=JSON.parse(row.data);
       if(!s.permanent||!s.connected.child)return json(409,{error:'두 화면 연결을 확인해 주세요.'});
-      const location=url.origin+'/app/?station='+role+'#'+new URLSearchParams({pair:link.station_id,key:s.tokens[role],entry:url.pathname});
+      const location=url.origin+'/app/?station='+role+'&release='+APP_RELEASE+'#'+new URLSearchParams({pair:link.station_id,key:s.tokens[role],entry:url.pathname});
       return new Response(null,{status:302,headers:{location,'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
     }catch{return json(503,{error:'잠시 뒤 같은 주소로 다시 열어 주세요.'});}
   }
   if(!url.pathname.startsWith('/api/')){
+    const oldEgg=url.pathname.match(/^\/(?:parent|child)\/src\/egg\/(.+)$/);
+    if(oldEgg){const asset=new URL(req.url);asset.pathname='/app/src/egg/'+oldEgg[1];return appAsset(new Request(asset,req),env);}
     if(url.pathname==='/')return Response.redirect(url.origin+'/app/index.html'+url.search,302);
     if(!url.pathname.startsWith('/app/'))return new Response('Not found',{status:404});
-    return env.ASSETS.fetch(req);
+    return appAsset(req,env);
   }
   try{
     if(!['GET','POST','PATCH'].includes(req.method))fail(405,'지원하지 않는 요청이에요.');

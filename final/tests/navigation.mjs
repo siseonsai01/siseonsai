@@ -14,7 +14,7 @@ for(const role of ['child','adult'])for(const status of ['blank','partial','comp
   assert.deepEqual(shown,['home'],role+' '+status);assert.deepEqual(c.restored,answers);assert.equal(c.familySession.code,family.code);checks++;
 }
 const start=s.match(/case "begin-voice": ([^\n]+)/)[1];
-for(const role of ['child','adult']){let called=0;vm.runInNewContext('(function(){'+start+'})()',{voiceEnabled:null,beginFreshBook:()=>called++});assert.equal(called,1);checks++;}
+for(const role of ['child','adult']){let called=0;vm.runInNewContext('(function(){'+start+'})()',{voiceEnabled:false,localStorage:{setItem(){}},event:{},unlockNarration(){},beginFreshBook:()=>called++});assert.equal(called,1);checks++;}
 const home=s.match(/case "home": ([^\n]+)/)[1];const shown=[];vm.runInNewContext('(function(){'+home+'})()',{show:x=>shown.push(x),restoreStation:()=>{throw Error('Home must stay on the cover');}});assert.deepEqual(shown,['home']);checks++;
 const roleFunctions=s.slice(s.indexOf('function bookRoleLabel()'),s.indexOf('function familyIntro()'));
 const badge={hidden:true,textContent:'',dataset:{}};
@@ -25,7 +25,7 @@ c.stationSession=null;c.stationEntryRole='child';c.syncBookRoleBadge();assert.eq
 const hero=s.slice(s.indexOf('function hero()'),s.indexOf('function home()'));
 for(const label of ['아이용','부모용']){const h={bookRoleLabel:()=>label,voiceTools:()=>'',voiceButton:()=>''};vm.runInNewContext(hero,h);const html=h.hero();assert.ok(html.includes(label+' · 소개 표지'));assert.ok(html.includes('data-action="begin-voice"'));assert.ok(!html.includes('resume-book'));checks++;}
 const intro=s.slice(s.indexOf('function familyIntro()'),s.indexOf('function acceptStation('));
-const p={stationSession:{role:'child'},stationView:{connected:{child:true},prepared:true},familyView:{ownAnswers:Array.from({length:5},()=>({choice:null}))},stationRibbon:()=>'<p>두 책이 연결됐어요</p>',room:()=>'<figure>공통 그림</figure>',voiceTools:scene=>'<button>'+scene+'</button>'};
+const p={stationBusy:false,stationSession:{role:'child'},stationView:{connected:{child:true},prepared:true},familyView:{ownAnswers:Array.from({length:5},()=>({choice:null}))},stationRibbon:()=>'<p>두 책이 연결됐어요</p>',room:()=>'<figure>공통 그림</figure>',voiceTools:scene=>'<button>'+scene+'</button>'};
 vm.runInNewContext(intro,p);
 for(const role of ['child','adult']){p.stationSession.role=role;const html=p.familyIntro();assert.ok(html.includes('준비 화면')&&!html.includes('이 설문은 왜 할까요?')&&html.includes('room-play'));assert.ok(!html.includes('station-code'));checks++;}
 for(const prepared of [false,true])for(const saved of [false,true]){

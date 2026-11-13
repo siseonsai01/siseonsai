@@ -170,7 +170,7 @@ narrationMedia.preload = "auto";
 narrationMedia.id = 'narration-audio';
 narrationMedia.hidden = true;
 document.body.appendChild(narrationMedia);
-const voiceAudio = window.SiseonNarration.create(narrationMedia);
+const voiceAudio = window.SiseonNarration.create(narrationMedia,{native:appleMobile || new URLSearchParams(location.search).get('audio')==='native'});
 let voiceEnabled = localStorage.getItem('siseonsai-storybook2-sound') !== 'off';
 let playingScene = null;
 let playbackId = 0;
@@ -1936,14 +1936,16 @@ async function beginFreshBook() {
   stationBusy=true;
   const button=app.querySelector('[data-action="begin-voice"]'),label=button?.innerHTML;
   if(button){button.disabled=true;button.textContent='준비 화면을 열고 있어요…';}
+  show('intro',true,false);
+  let prepared=false;
   try {
     const session=stationSession;
     const latest=await stationRequest('/'+session.id,'GET');
     const data=session.role==='adult' && latest.connected.child ? await stationRequest('/'+session.id,'PATCH',{begin:true,round:latest.round}) : latest;
     if(session!==stationSession)return;
-    acceptStation(data,true);startStationPolling();show('intro');
+    acceptStation(data,true,'intro');startStationPolling();prepared=true;
     if(!data.prepared)narrate('waiting-start');
-  } catch(error){familyNotice(error.message || '준비 화면을 열지 못했어요. 시작 버튼을 다시 눌러 주세요.');} finally {stationBusy=false;if(button?.isConnected){button.disabled=false;button.innerHTML=label;}markNextReady();}
+  } catch(error){familyNotice(error.message || '준비 화면을 열지 못했어요. 다시 시도해 주세요.');if(!app.querySelector('[data-action="retry-preparation"]'))app.querySelector('.station-ready .actions')?.insertAdjacentHTML('beforeend','<button class="button primary" data-action="retry-preparation">준비 다시 하기 →</button>');} finally {stationBusy=false;if(button?.isConnected){button.disabled=false;button.innerHTML=label;}const start=app.querySelector('[data-action="station-start"]');if(start&&prepared)start.disabled=!(stationView?.connected.child&&stationView?.prepared&&!familyView?.ownAnswers.some(a=>a.choice));markNextReady();}
 }
 function bookRoleLabel() {
   const role=stationSession?.role || familySession?.role || stationEntryRole;
@@ -1959,10 +1961,10 @@ function syncBookRoleBadge() {
 }
 function familyIntro() {
   if(!stationSession)return stationSetup();
-  const ready=stationView?.connected.child && stationView?.prepared===true && !familyView?.ownAnswers.some(a=>a.choice);
+  const ready=!stationBusy && stationView?.connected.child && stationView?.prepared===true && !familyView?.ownAnswers.some(a=>a.choice);
   return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">${stationSession.role==='adult'?'큰 방 그림을 살펴보신 뒤 첫 장을 펼쳐 주세요.':'큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.'}</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div>${familyView?.ownAnswers.some(a=>a.choice)?'<button class="text-link" data-action="resume-review">내가 고른 답 다시 보기</button>':''}<p class="small family-status" data-family-status role="status">${ready?'각자의 마음에 가까운 그림을 골라 주세요.':'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.'}</p></section>`;
 }
-function acceptStation(data,initial=false) {
+function acceptStation(data,initial=false,initialScreen='home') {
   if(stationView && data.round<stationView.round)return;
   const priorScreen=currentScreen;
   const changed=stationView && data.round!==stationView.round;
@@ -1980,7 +1982,7 @@ function acceptStation(data,initial=false) {
     localStorage.setItem(familyStorage(data.role),JSON.stringify(familySession));
     familyView=null;currentScreen='home';receiveFamily(data.family,true);
     history.replaceState(null,'',location.pathname+'?station='+data.role);
-    if(initial)show('home');
+    if(initial)show(initialScreen);
     else if(changed)show(priorScreen==='intro'?'intro':'home');
     else if(data.family.bothComplete)show('report');
     else if(data.family.complete)show('waiting');
@@ -1989,7 +1991,7 @@ function acceptStation(data,initial=false) {
   } else {
     receiveFamily(data.family);
     app.querySelectorAll('[data-station-status]').forEach(n=>n.textContent=data.connected.child?'두 책이 연결됐어요 ✓':'다른 태블릿을 기다려요');
-    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!(data.connected.child && data.prepared && !data.family.ownAnswers.some(a=>a.choice));
+    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!(!stationBusy && data.connected.child && data.prepared && !data.family.ownAnswers.some(a=>a.choice));
     if(data.connected.child)app.querySelector('.station-pair')?.remove();
     const status=app.querySelector('.station-ready [data-family-status]');if(status)status.textContent=start?.disabled?'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.':'두 화면이 연결됐어요. 첫 장을 펼쳐 주세요.';
     if(start && wasDisabled!==start.disabled)markNextReady();
@@ -2299,7 +2301,7 @@ async function finishBookPage() {
   finally {familyBusy=false;}
 }
 function markNextReady() {
-  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','hatch-skip','mission-open','mission-play','family-results','resume-voice','start','next','adult','report'];
+  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','retry-preparation','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','hatch-skip','mission-open','mission-play','family-results','resume-voice','start','next','adult','report'];
   app.querySelectorAll(actions.map(action=>'button[data-action="'+action+'"]').join(',')+',.voice-next').forEach(button=>{
     button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])'));
   });
@@ -2459,7 +2461,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&familySes
 
 const screens = { home, roomPreview, stationLink: stationLinkPage, intro: familyIntro, bookCover: familyBookCover, ready: familyReady, waiting: familyWaiting, quiz: reviewQuiz, handoff, report };
 
-function show(screen, focus = true) {
+function show(screen, focus = true, readVoice = true) {
   cancelReasonVoice();
   if(screen==='home' && location.search) history.replaceState(null,'',location.pathname+(stationSession?'?station='+stationSession.role:''));
   const nextBookPage=screen==='quiz'?state.role+':'+state.index:null;
@@ -2509,6 +2511,7 @@ function show(screen, focus = true) {
   animateBookTurn(previous);
   const pageSoundStarted=turnPage && playPageTurnSound();
   queueMicrotask(markNextReady);
+  if(!readVoice)return;
   if (screen === "quiz") {
     const role=state.role,index=state.index;
     const readQuestion=()=>{
@@ -3229,7 +3232,8 @@ document.addEventListener("click", (event) => {
     case "family-results": return openFamilyResults();
     case "mission-pause": return pauseMission();
 
-    case "begin-voice": voiceEnabled ??= true; return beginFreshBook();
+    case "begin-voice": voiceEnabled=true;localStorage.setItem('siseonsai-storybook2-sound','on');unlockNarration(event);return beginFreshBook();
+    case "retry-preparation": return beginFreshBook();
     case 'reason-mic': return toggleReasonVoice();
     case 'resume-review': return edit(familySession.role,0);
     case 'station-create': return createStation();

@@ -10,9 +10,9 @@ MIME = {'webp': 'image/webp', 'mp3': 'audio/mpeg', 'mp4': 'video/mp4', 'png': 'i
 
 def build():
     html = (src / 'index.html').read_text(encoding='utf-8')
-    html = re.sub(r'<link rel="stylesheet" href="([A-Za-z0-9_-]+\.css)" data-inline>',
+    html = re.sub(r'<link rel="stylesheet" href="([A-Za-z0-9_-]+\.css)(?:\?[^\"]+)?" data-inline>',
                   lambda m: '<style>' + (src / m.group(1)).read_text(encoding='utf-8') + '</style>', html)
-    html = re.sub(r'<script src="([A-Za-z0-9_-]+\.js)" data-inline></script>',
+    html = re.sub(r'<script src="([A-Za-z0-9_-]+\.js)(?:\?[^\"]+)?" data-inline></script>',
                   lambda m: '<script>' + (src / m.group(1)).read_text(encoding='utf-8') + '</script>', html)
     missing = []
     def inline(m):
