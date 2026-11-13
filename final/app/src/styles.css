@@ -1278,3 +1278,10 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 .survey-purpose p{font-size:.94rem;line-height:1.8;word-break:keep-all}
 .survey-purpose .small{font-size:.8rem;margin-top:6px;color:#79664e}
 @media(max-width:480px){.brand-caption{font-size:10px}.survey-purpose{padding:12px 14px}.survey-purpose p{font-size:.88rem}.hero-copy .cover-flow{font-size:11px}}
+
+/* A persistent role marker makes the two facing tablets easy to distinguish. */
+.book-role-badge{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:6px 13px;border:1px solid #c6b793;border-radius:999px;background:#f8edcf;color:#654b25;font-size:14px;font-weight:800;white-space:nowrap}
+.book-role-badge[hidden]{display:none}
+.book-role-badge[data-role="child"]{border-color:#afc7bd;background:#e4f0e9;color:#30594a}
+.home-view .book-role-badge{margin-left:auto}
+@media(max-width:480px){.book-role-badge{padding:5px 9px;font-size:12px}.topbar{gap:7px}.brand{gap:6px}}

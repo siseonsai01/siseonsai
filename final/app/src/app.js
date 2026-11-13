@@ -505,13 +505,13 @@ function hero() {
     </div>
     <div class="hero-inner shell">
       <div class="hero-copy">
-        <p class="cover-step">소개 표지</p>
+        <p class="cover-step">${bookRoleLabel()?bookRoleLabel()+' · ':''}소개 표지</p>
         <h1 tabindex="-1">두 토끼의 방,<br><em>두 권의 이야기</em></h1>
         <p class="story-purpose">같은 방도 서로 다르게 볼 수 있어요.<br>서로의 생각을 알고, 우리 집 정리 방법을 함께 찾아요.</p>
         <div class="hero-actions">
-          <button type="button" class="hero-cta" data-action="${stationSession || familySession?'resume-book':'begin-voice'}">우리 이야기 시작 <span aria-hidden="true">›</span></button>
+          <button type="button" class="hero-cta" data-action="begin-voice">우리 이야기 시작 <span aria-hidden="true">›</span></button>
         </div>
-        <p class="cover-flow">${stationSession || familySession?'연결과 답을 유지하고, 하던 곳에서 이어 가요.':'소개 표지 → 같은 방에서 준비 → 다섯 질문 → 우리 가족 이야기'}</p>
+        <p class="cover-flow">소개 표지 → 같은 방에서 준비 → 다섯 질문 → 우리 가족 이야기</p>
         <div class="opening-audio">${voiceTools("cover","놀이 소개 듣기")}<p class="opening-caption">안녕, 우리 친구! 여기는 토끼들의 방이야.</p></div>
         <details class="cover-more"><summary>놀이 안내 · 소리 설정</summary>
           <div class="cover-more-content">
@@ -1824,19 +1824,17 @@ function stationSetup() {
   const childPanel=`<article><h2>아이 화면</h2><p>부모님 화면에 나온 번호를 넣어 주세요.</p><label for="station-code">연결 번호</label><input id="station-code" name="station-code" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="숫자 8자리" aria-describedby="station-code-help"><p class="small" id="station-code-help">번호는 부모님 화면에만 나와요. 여기에 입력하면 두 화면이 연결돼요.</p><button class="button primary" data-action="station-join" disabled>아이의 책으로 연결 →</button></article>`;
   return `<section class="book-foyer station-setup"><p class="book-eyebrow">처음 한 번만 준비해요</p><h1 tabindex="-1">${child?'연결 번호를 입력해요':adult?'부모님 화면에서 시작해요':'두 화면을 연결해요'}</h1><div class="station-setup-grid${child||adult?' single-role':''}">${child?'':parentPanel}${adult?'':childPanel}</div><p class="small">노트북·태블릿·휴대폰을 함께 써도 돼요.<br>한 번 연결하면 다음 가족도 번호 입력 없이 시작해요.</p><p class="family-status" data-family-status role="status"></p><div class="station-role-links">${!adult?'<button class="text-link" data-action="station-role" data-role="adult">부모님 화면 열기</button>':''}${!child?'<button class="text-link" data-action="station-role" data-role="child">아이 화면 열기</button>':''}</div><details class="lobby-details"><summary>기존 가족 코드로 연결하기</summary>${legacyFamilyIntro()}</details><button class="text-link" data-action="demo">연결 없이 결과 미리보기</button></section>`;
 }
-function resumeCurrentBook() {
-  const role=stationSession?.role || familySession?.role;
-  if(!role)return show('intro');
-  state.demo=false;
-  if(familyView?.bothComplete)return show('report');
-  if(familyView?.complete)return show('waiting');
-  const answers=reviewAnswers[role];
-  if(answers.some(answer=>answer.choice)) {
-    const index=state.role===role && Number.isInteger(state.index) && state.index>=0 && state.index<5 ? state.index : Math.max(0,answers.findIndex(answer=>!answer.choice));
-    return edit(role,index);
-  }
-  state.role=role;
-  return show('intro');
+function bookRoleLabel() {
+  const role=stationSession?.role || familySession?.role || stationEntryRole;
+  return role==='child'?'아이용':role==='adult'?'부모용':'';
+}
+function syncBookRoleBadge() {
+  const badge=document.querySelector('[data-book-role]');
+  if(!badge)return;
+  const label=bookRoleLabel();
+  badge.hidden=!label;
+  badge.textContent=label;
+  badge.dataset.role=label==='아이용'?'child':'adult';
 }
 function familyIntro() {
   if(!stationSession)return stationSetup();
@@ -1860,7 +1858,7 @@ function acceptStation(data,initial=false) {
     localStorage.setItem(familyStorage(data.role),JSON.stringify(familySession));
     familyView=null;currentScreen='home';receiveFamily(data.family,true);
     history.replaceState(null,'',location.pathname+'?station='+data.role);
-    if(changed)show('home');
+    if(changed || initial)show('home');
     else if(data.family.bothComplete)show('report');
     else if(data.family.complete)show('waiting');
     else if(data.family.ownAnswers.some(a=>a.choice))edit(data.role,0);
@@ -1893,7 +1891,7 @@ function updateStationJoin() {
 function joinStation(){const input=app.querySelector('[name="station-code"]');if(input?.value.replace(/\D/g,'').length!==8){familyNotice('부모님 화면에 나온 숫자 8자리를 입력해 주세요.');input?.focus();return;}return connectStation('/join',{code:input.value});}
 async function openStationRole(role) {
   stationEntryRole=role;
-  if(!await restoreStation(role))show('intro',false);
+  if(!await restoreStation(role))show('home',false);
 }
 async function copyStationChildUrl() {
   try{await navigator.clipboard.writeText(stationRoleUrl('child',true));familyNotice('아이 화면 주소를 복사했어요. 다른 기기에서 열어 주세요.');}
@@ -2177,7 +2175,7 @@ async function finishBookPage() {
   finally {familyBusy=false;}
 }
 function markNextReady() {
-  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','resume-book','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','start','next','adult','report'];
+  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','start','next','adult','report'];
   app.querySelectorAll(actions.map(action=>'button[data-action="'+action+'"]').join(',')+',.voice-next').forEach(button=>{
     button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])') && !playingScene && !coverMotion?.silent);
   });
@@ -2367,6 +2365,7 @@ function show(screen, focus = true) {
   document.body.classList.toggle('station-paired',Boolean(stationView?.connected.child));
   document.body.classList.toggle("report-view", screen === "report");
   document.body.classList.toggle('storybook-view', ['stationLink','intro','bookCover','ready','quiz','waiting'].includes(screen));
+  syncBookRoleBadge();
   app.innerHTML = screens[screen]();
   if(familySession && screen === 'report' && !state.demo) {
     app.insertAdjacentHTML('afterbegin', familyRibbon());
@@ -3094,7 +3093,6 @@ document.addEventListener("click", (event) => {
   queueMicrotask(markNextReady);
   switch (action) {
     case "home": return show('home');
-    case 'resume-book': return resumeCurrentBook();
     case "hatch-start": return startEndingEgg();
     case "mission-open": return openMissionTheater();
     case "mission-play": return playMission();

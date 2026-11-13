@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "purpose-and-navigation-v10-20261113",
+  "revision": "role-cover-first-v11-20261113",
   "cloudBackendChecks": 36,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -11,5 +11,5 @@
     "local browser preview unavailable",
     "automatic transcription and local speaker similarity screening do not equal human listening"
   ],
-  "navigationChecks": 10
+  "navigationChecks": 18
 }
