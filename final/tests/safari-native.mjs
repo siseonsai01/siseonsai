@@ -51,13 +51,13 @@ input.start();r=instances.at(-1);r.onstart();fire(30000);check(ended===4&&!input
 
 // Runtime files cannot be mixed with a previously cached release.
 const requests=[];const env={ASSETS:{fetch:async req=>{requests.push(new URL(req.url));return new Response('asset',{headers:{'content-type':req.url.includes('.png')?'image/png':'text/javascript','cache-control':'public,max-age=31536000,immutable'}});}}};
-for(const path of ['/app/app.js?release=20261114-19','/app/narration-player.js?release=20261114-19','/app/speech-input.js?release=20261114-19','/app/styles.css?release=20261114-19','/app/']){
- const response=await worker.fetch(new Request('https://example.test'+path),env,{});check(response.headers.get('cache-control')==='no-store'&&response.headers.get('x-siseon-release')==='20261114-19','runtime response requires the new release');
+for(const path of ['/app/app.js?release=20261114-20','/app/narration-player.js?release=20261114-20','/app/speech-input.js?release=20261114-20','/app/styles.css?release=20261114-20','/app/']){
+ const response=await worker.fetch(new Request('https://example.test'+path),env,{});check(response.headers.get('cache-control')==='no-store'&&response.headers.get('x-siseon-release')==='20261114-20','runtime response requires the new release');
 }
 for(const role of ['parent','child'])for(const file of ['15_FVMD.html','a/egg.png','a/hog_FVMD.png']){
  const response=await worker.fetch(new Request('https://example.test/'+role+'/src/egg/'+file),env,{});check(response.status===200&&requests.at(-1).pathname==='/app/src/egg/'+file,'already-open old pages can still load egg assets');
 }
-const html=fs.readFileSync(new URL('../app/src/index.html',import.meta.url),'utf8');check([...html.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^\"]+\.(?:js|css)[^\"]*)"[^>]+data-inline/g)].every(m=>m[1].includes('release=20261114-19')),'all runtime dependencies select one release');
+const html=fs.readFileSync(new URL('../app/src/index.html',import.meta.url),'utf8');check([...html.matchAll(/<(?:script|link)[^>]+(?:src|href)="([^\"]+\.(?:js|css)[^\"]*)"[^>]+data-inline/g)].every(m=>m[1].includes('release=20261114-20')),'all runtime dependencies select one release');
 const app=fs.readFileSync(new URL('../app/src/app.js',import.meta.url),'utf8'),begin=app.slice(app.indexOf('async function beginFreshBook()'),app.indexOf('function bookRoleLabel()'));
 for(const success of [true,false]){
  let resolve,reject;const pending=new Promise((ok,no)=>{resolve=ok;reject=no;}),shown=[],notices=[];const first={disabled:true};let retry=false;

@@ -9,7 +9,7 @@ const turn=()=>new Promise(resolve=>setImmediate(resolve));
 // an older pending restore instead of letting it switch the session mid-word.
 {
  const window={},sleeps=[],nav={audioSession:{type:'auto'}};
- vm.runInNewContext(read('audio-route.js'),{window,navigator:nav,setTimeout});
+ vm.runInNewContext(read('audio-route.js'),{window,navigator:nav,setTimeout,clearTimeout});
  const route=window.SiseonCreateAudioRoute({navigator:nav,document:{hidden:false,querySelectorAll:()=>[]},wait:ms=>new Promise(resolve=>sleeps.push({ms,resolve}))});
  const fx={state:'running',addEventListener(){},suspend(){this.state='suspended';return Promise.resolve();}};route.registerContext(fx);
  const first=route.startCapture();await first.ready;check(fx.state==='suspended'&&!route.canPlayEffects(),'capture silences all registered sound contexts');
@@ -40,7 +40,7 @@ const reason=source.slice(source.indexOf('function reasonVoiceSupported()'),sour
 for(const role of ['child','adult']){
  const media=new Media(),button={isConnected:true,setAttribute(){},disabled:false},field={value:'',dispatchEvent(){}},status={textContent:''};
  const c={window:{SpeechRecognition:Recognition},navigator:{audioSession:{type:'auto'}},document:{hidden:false,baseURI:'https://test.example/app/',querySelectorAll:()=>[media],addEventListener(){}},URL,AbortController,Event,setTimeout,clearTimeout,setInterval:()=>1,clearInterval(){},Date,
-  offlineVoice:voices,state:{role,index:0},currentScreen:'home',familySession:null,voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,reasonVoice:null,reasonVoiceKey:null,
+  offlineVoice:voices,micResumeByTap:false,state:{role,index:0},currentScreen:'home',familySession:null,voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,reasonVoice:null,reasonVoiceKey:null,
   app:{querySelector:selector=>selector.includes('reason-mic')?button:selector.includes('reason-mic-status')?status:selector.includes('[name=')?field:null,querySelectorAll:()=>[],insertAdjacentHTML(){}},
   stopNextCue(){},stopCoverMotion(){},stopPageTurnSound(){},syncVoiceControls(){},highlightSpokenChoice(){},markNextReady(){},clearNextReady(){},startCoverMotion(){},syncGuidePointer(){},motionAllowed:()=>false,missionMotion:null,bookRoleLabel:()=>role==='adult'?'부모용':'아이용'};
  vm.createContext(c);vm.runInContext(read('audio-route.js'),c);c.window.SiseonAudioRoute=c.window.SiseonCreateAudioRoute({navigator:c.navigator,document:c.document,wait:async()=>{}});
@@ -69,6 +69,18 @@ for(const role of ['child','adult']){
   check(media.loads>=index+1,'same activated native element is reset after capture');
   const replay=await complete(role+'-'+index);assert.deepEqual(replay,q.map(scene=>voices[scene]));checks++;
  }
+ // Optional real-device A/B: an explicit tap rebuilds the complete question queue.
+ c.currentScreen='audioCheck';c.state.index=4;c.micResumeByTap=true;
+ await c.toggleReasonVoice();instances.at(-1).onend();await turn();
+ check(Boolean(c.narrationRecovery?.restart)&&!c.playingScene,'tap diagnostic waits without autoplay');
+ const beforeTap=media.played.length;c.resumeNarration();await turn();
+ while(c.playingScene){media.finish();await turn();}
+ assert.deepEqual(media.played.slice(beforeTap),[voices[role+'-4']]);checks++;
+ c.currentScreen='quiz';c.narrateAfterMic(role+'-4');const quizStart=media.played.length;c.resumeNarration();await turn();
+ while(c.playingScene){media.finish();await turn();}
+ const replayScenes=['story-4',role+'-4',...(role==='child'?['option-child-4-A','option-child-4-B']:[]),'choices-ready'];
+ assert.deepEqual(media.played.slice(quizStart),replayScenes.map(scene=>voices[scene]));checks++;
+ c.micResumeByTap=false;
  c.currentScreen='report';
  for(const scene of ['ending','egg-loading','egg-ready','friend-'+(role==='child'?'PVMD':'FHMB'),'description-'+(role==='child'?'PVMD':'FHMB'),'motion-0-0','motion-0-1','mission-done','chart','result-answers','photo-intro','print-options']){
   const actual=await complete(scene);assert.ok(actual.length>=1);checks++;

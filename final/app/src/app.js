@@ -7,7 +7,7 @@ const offline_paper_mascot = {"FHMB":"assets/paper_mascot-FHMB.webp","FHMD":"ass
 "use strict";
 
 const roles = { child: "아이", adult: "부모님" };
-document.documentElement.dataset.appRelease='20261114-19';
+document.documentElement.dataset.appRelease='20261114-20';
 document.documentElement.dataset.startView=new URLSearchParams(location.search).get('view')||'';
 const activityIntro = [
   "장난감을 어디에 두면 너도 부모님도 찾기 쉬울까?",
@@ -173,6 +173,7 @@ narrationMedia.id = 'narration-audio';
 narrationMedia.hidden = true;
 document.body.appendChild(narrationMedia);
 const voiceAudio = window.SiseonNarration.create(narrationMedia,{native:appleMobile || new URLSearchParams(location.search).get('audio')==='native'});
+const micResumeByTap = new URLSearchParams(location.search).get('mic-resume')==='tap';
 let voiceEnabled = localStorage.getItem('siseonsai-storybook2-sound') !== 'off';
 let playingScene = null;
 let playbackId = 0;
@@ -237,6 +238,11 @@ function syncVoiceControls() {
 
 let reasonVoice=null,reasonVoiceKey=null,guideLastTarget=null;
 function reasonVoiceSupported(){return Boolean(window.SiseonVoiceInput?.supported());}
+function narrateAfterMic(scene){
+  if(!micResumeByTap)return narrate(scene);
+  holdNarration(scene,[],0);
+  if(narrationRecovery)narrationRecovery.restart=true;
+}
 function cancelReasonVoice(){reasonVoice?.cancel();reasonVoice=null;reasonVoiceKey=null;voiceAudio.endCapture?.();updateReasonMic();}
 function reasonVoiceStatus(text){const node=app.querySelector('.reason-mic-status');if(node)node.textContent=text;}
 function updateReasonMic(){
@@ -255,6 +261,7 @@ function setupReasonVoice(){
 }
 async function toggleReasonVoice(){
   if(reasonVoice?.active){reasonVoice.stop();return;}
+  if(window.SiseonAudioRoute.phase==='restoring'){reasonVoiceStatus('말을 마쳤어요. 소리를 준비하고 있어요…');return;}
   if(!reasonVoiceSupported())return setupReasonVoice();
   stopNarration();
   stopNextCue();stopPageTurnSound();const microphoneReady=voiceAudio.beginCapture?.();
@@ -266,7 +273,14 @@ async function toggleReasonVoice(){
   reasonVoice=request=window.SiseonVoiceInput.create({
     status:text=>{if(valid())reasonVoiceStatus(text);},
     text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"],[name="audio-check-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
-    end:async()=>{await voiceAudio.endCapture?.();if(!valid())return;updateReasonMic();if(currentScreen==='audioCheck'){reasonVoiceStatus('마이크 사용 전후에 같은 문장이 들려요. 크기가 같은지 확인해 주세요.');narrate(state.role+'-4');}else if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
+    end:async()=>{
+      if(valid())reasonVoiceStatus('말을 마쳤어요. 소리를 준비하고 있어요…');
+      await voiceAudio.endCapture?.();if(!valid())return;
+      updateReasonMic();
+      if(currentScreen==='audioCheck'){reasonVoiceStatus('마이크 사용 전후에 같은 문장이 들려요. 크기가 같은지 확인해 주세요.');narrateAfterMic(state.role+'-4');}
+      else if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrateAfterMic('speech-done');}
+      else syncGuidePointer();
+    }
   });
   const button=app.querySelector('[data-action="reason-mic"]');if(button){button.disabled=true;button.textContent='마이크 준비 중…';}
   try{await microphoneReady;if(!valid())return;if(!reasonVoice.start(base))await voiceAudio.endCapture?.();}finally{if(button?.isConnected)button.disabled=false;updateReasonMic();}
@@ -537,6 +551,7 @@ function holdNarration(scene,queue,time){
 }
 function resumeNarration(){
   const saved=narrationRecovery;if(!saved||!voiceEnabled||document.hidden||saved.screen!==narrationScreenKey())return;
+  if(saved.restart){stopNarration();return narrate(saved.scene);}
   stopNarration();narrationQueue=saved.queue;playNarrationClip(saved.scene,false,saved.time);
 }
 function unlockNarration(event){
@@ -3409,3 +3424,12 @@ if(requestedBook.get('view')==='sound-check'){
   else show("home",false);
 }
 
+
+// Explicit local diagnosis only: no answers, transcript, recording or network upload.
+if(new URLSearchParams(location.search).get('audio-debug')==='1'&&window.SiseonAudioRoute.trace){
+  const box=document.createElement('pre');box.setAttribute('aria-label','오디오 전환 점검 기록');
+  box.style.cssText='position:fixed;left:4px;bottom:4px;z-index:99999;max-height:35vh;overflow:auto;font:11px/1.3 monospace;background:#000d;color:#bfffbf;padding:6px;margin:0;white-space:pre-wrap;max-width:65vw';
+  document.body.appendChild(box);
+  const render=()=>{box.textContent=window.SiseonAudioRoute.trace().slice(-25).map(e=>[e.t,e.event,e.phase,e.type,e.state,e.result||'',e.src||''].join(' ')).join('\n');};
+  setInterval(render,500);render();
+}

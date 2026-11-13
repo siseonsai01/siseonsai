@@ -1,3 +1,14 @@
+# 2026-11-14 클로드 검토·마이크 복구 v20
+
+- User hardware: iPad 10th generation, iPadOS 18.7.8. Actual acoustic validation must be reported separately from simulated/browser checks. Do not claim constant physical volume until the user verifies it on those devices.
+- Claude review chat 0358f6b6-0297-462d-8517-b080f66501b1 identified skipped decoder reset on navigation, src/seek racing restoration, and restoration deadlock on exceptions. Reviewed core.diff is adopted with additional deferred src/seek setters and expectedPlaying gating. Decoder reset belongs to the capture lease rather than narration serial.
+- Restore observes the session leaving active (bounded 1.5s), then auto/playback/reset. Quiet contexts and reset promises are bounded; failures cannot strand restoring, and an older completion cannot change a newer capture. No volume, gain, rate or voice-file changes.
+- Normal behavior retains automatic narration. Optional mic-resume=tap uses the existing resume UI and rebuilds the proper story/question queue; audio-debug=1 shows a small local in-memory state trace without answers, transcript, microphone recordings or upload. Do not enable these debugging displays for ordinary participant links.
+- tests/microphone-recovery.mjs reproduces the old failing navigation scenario and covers both roles, reset exceptions, missing events, hung promises, stale capture, delayed source and seek. tests/full-audio-session.mjs covers cover through results and both automatic/manual resume diagnostics. Preserve the v19 independent first-page readiness and shared-picture narration rules.
+- Fixed URLs, permanent family retention and all 116 voice routes/109 unique recordings remain. Runtime release=20261114-20; QA must not reset or submit answers to any real family.
+
+---
+
 # 2026-11-14 새로고침·각 기기 준비 v19
 
 - Cover start resumes the current family. Either paired role may prepare an unprepared current round via idempotent prepare:true; it changes no answers, family code or round. New families require the existing explicit parent operator-menu action. Do not bring back parent-cover-as-reset behavior.

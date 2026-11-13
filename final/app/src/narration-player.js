@@ -19,32 +19,47 @@
     }
     async function play(){
       if(!unlocked||capturing)throw Object.assign(new Error('Tap to enable narration'),{name:'NotAllowedError'});
-      const id=++serial;priming=false;expectedPlaying=true;stopped();
-      if(media.getAttribute('src')!==source)media.src=source;
-      try{if(seek)media.currentTime=seek;}catch{}
+      const id=++serial;priming=false;expectedPlaying=false;stopped();
       let deadline;
       try{
+        // Touch the element only after the route has finished restoring, so the
+        // post-microphone reset cannot race with this src/seek assignment.
         if(route?.phase!=='playback')await route?.whenPlaybackReady();
         if(id!==serial)throw Object.assign(new Error('Playback cancelled'),{name:'AbortError'});
+        if(media.getAttribute('src')!==source)media.src=source;
+        try{if(seek)media.currentTime=seek;}catch{}
+        route?.log?.('narration-play',{src:String(source).startsWith('data:')?'embedded-audio':String(source).split('/').pop().split('?')[0].slice(0,120)});
+        expectedPlaying=true;
         const playing=media.play();
         await Promise.race([playing,new Promise((_,reject)=>{deadline=setTimeout(()=>reject(new Error('Audio did not start')),12000);})]);
         if(id!==serial)throw Object.assign(new Error('Playback cancelled'),{name:'AbortError'});
         let clock=media.currentTime,changed=Date.now();
         timer=later(()=>{if(id!==serial)return;if(media.currentTime>clock){clock=media.currentTime;changed=Date.now();}else if(media.readyState>=3&&!media.paused&&Date.now()-changed>2500){expectedPlaying=false;stopped();media.pause();emit('interrupted');}},150);
-      }catch(error){if(id===serial){expectedPlaying=false;media.pause();if(error.name==='NotAllowedError')unlocked=false;}throw error;}finally{clearTimeout(deadline);}
+      }catch(error){if(id===serial){expectedPlaying=false;media.pause();if(error.name==='NotAllowedError'&&!error.fromRoute)unlocked=false;}throw error;}finally{clearTimeout(deadline);}
     }
     const api={element:media,unlock,play,pause,
-      get src(){return source;},set src(value){pause();source=value;seek=0;media.src=value;},
-      get currentTime(){return media.currentTime||0;},set currentTime(value){seek=Math.max(0,Number(value)||0);try{media.currentTime=seek;}catch{}},
+      get src(){return source;},set src(value){pause();source=value;seek=0;if(!route||route.phase==='playback')media.src=value;},
+      get currentTime(){return media.currentTime||0;},set currentTime(value){seek=Math.max(0,Number(value)||0);if(!route||route.phase==='playback')try{media.currentTime=seek;}catch{}},
       get duration(){return media.duration;},get paused(){return media.paused;},get ended(){return media.ended;},
       getAttribute(name){return name==='src'?source:media.getAttribute(name);},
       addEventListener(type,fn,options={}){if(options.signal?.aborted)return;const list=listeners.get(type)||new Set();list.add({fn,once:options.once});listeners.set(type,list);options.signal?.addEventListener('abort',()=>api.removeEventListener(type,fn),{once:true});},
       removeEventListener(type,fn){for(const item of listeners.get(type)||[])if(item.fn===fn)listeners.get(type).delete(item);},
       beginCapture(){capturing=true;pause();captureLease=route?.startCapture();return captureLease?.ready;},
-      async endCapture(){if(!capturing)return route?.whenPlaybackReady().catch(()=>{});capturing=false;const lease=captureLease;captureLease=null;const id=serial;return route?.endCapture(lease.key,()=>{if(capturing||id!==serial)return;media.removeAttribute?.('src');media.load?.();media.src=source;});},
+      async endCapture(){
+        if(!capturing||!captureLease){capturing=false;return route?.whenPlaybackReady().catch(()=>{});}
+        capturing=false;const lease=captureLease;captureLease=null;
+        // Reset is tied to the capture lease, not to the narration serial: a page change
+        // (pause -> serial++) during restore must not silently skip it.
+        return route?.endCapture(lease.key,()=>{
+          if(capturing||!media.paused)return;
+          media.removeAttribute?.('src');media.load?.();
+          if(source)media.src=source;
+          route?.log?.('media-reset');
+        });
+      },
       warm(){},dispose(){pause();listeners.clear();}
     };
-    media.addEventListener('loadedmetadata',()=>{if(!priming&&seek)try{media.currentTime=seek;}catch{}});
+    media.addEventListener('loadedmetadata',()=>{if(!priming&&seek&&(!route||route.phase==='playback'))try{media.currentTime=seek;}catch{}});
     for(const type of ['playing','timeupdate','waiting','error','seeked'])media.addEventListener(type,()=>{if(!priming)emit(type);});
     media.addEventListener('ended',()=>{if(priming||!expectedPlaying||!media.ended)return;expectedPlaying=false;stopped();emit('ended');});
     media.addEventListener('pause',()=>{if(priming||!expectedPlaying||!media.paused||media.ended)return;expectedPlaying=false;stopped();emit('interrupted');});
