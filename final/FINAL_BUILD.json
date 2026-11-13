@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "fresh-play-dictation-v12-20261113",
+  "revision": "compact-parent-cover-v12b-20261113",
   "cloudBackendChecks": 43,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -11,7 +11,7 @@
     "local browser preview unavailable",
     "automatic transcription and local speaker similarity screening do not equal human listening"
   ],
-  "navigationChecks": 26,
+  "navigationChecks": 31,
   "dictationMockChecks": 14,
-  "voiceRenewal": "partial: 40 new complete clips; remaining scripts blocked by provider daily quota"
+  "voiceRenewal": "Current published audio unchanged; whole fresh voice v13 scheduled for 17:05 KST with role-specific parent introduction."
 }

@@ -9,13 +9,13 @@ const offline_paper_mascot = {"FHMB":"assets/paper_mascot-FHMB.webp","FHMD":"ass
 const roles = { child: "아이", adult: "부모님" };
 const activityIntro = [
   "장난감을 어디에 두면 너도 부모님도 찾기 쉬울까?",
-  "그림을 보고 너랑 부모님이 하고 싶은 걸 하나씩 골라 봐.",
+  "그림을 보고 아이와 부모님이 하고 싶은 것을 하나씩 골라요.",
   "다 고르면 집에서 같이 해 볼 정리 놀이가 나와. 어느 쪽도 좋아!",
 ];
 const photoQuestion = { child: "사진에서 어디가 먼저 보였어?", adult: "사진에서 어디가 먼저 보였나요?" };
 const chapters = [
-  { code: "FVMD", label: "눈에 띈 곳 콕!", detail: "예시 방에서 뭐가 먼저 보였어? 한 곳을 눌러 봐.", color: "amber", prompt: "그림 콕 눌러 보기" },
-  { code: "FVMB", label: "내가 하고 싶은 쪽", detail: "두 그림을 보고, 하고 싶은 쪽을 골라 봐.", color: "rose", prompt: "그림 골라 보기" },
+  { code: "FVMD", label: "눈에 띈 곳 콕!", detail: "예시 방에서 무엇이 먼저 보이나요? 한 곳을 눌러 보세요.", color: "amber", prompt: "그림 콕 눌러 보기" },
+  { code: "FVMB", label: "내가 하고 싶은 쪽", detail: "두 그림을 보고, 하고 싶은 쪽을 골라 보세요.", color: "rose", prompt: "그림 골라 보기" },
   { code: "FHMB", label: "정리 친구 만나기", detail: "놀이를 마치면 내가 고른 답으로 정리 친구를 만나요.", color: "blue", prompt: "정리 친구 미리 만나기" },
 ];
 const habitQuestions = [
@@ -308,6 +308,7 @@ const bookCoverMotionSrc = "assets/book-cover-full-motion.mp4";
 const COVER_MOTION_LEAD = 0.4;
 const coverCaptions = [[0, "안녕, 우리 친구! 여기는 토끼들의 방이야."], [4.719, "우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!"], [9.319, "맞고 틀린 답은 없어."], [11.299, "재미로 우리 집 정리 친구를 만나 보자!"], [14.479, "반짝이는 우리 이야기 시작 버튼을 눌러 줘!"]];
 
+const parentCoverCaptions = [[0, "부모님, 아이와 같은 방을 서로의 눈으로 살펴보세요."]];
 let coverMotion = null;
 let narrationQueue = [];
 let missionPausedVoice = null;
@@ -326,11 +327,12 @@ function updateCoverMotion(m) {
   if (coverMotion !== m) return;
   const time = m.silent ? Math.max(0,(m.video?.currentTime ?? 0)-COVER_MOTION_LEAD) : voiceAudio.currentTime;
   if (playingScene === "cover" || m.silent) {
+    const captions=roleVoiceScene('cover')==='parent-cover' ? parentCoverCaptions : coverCaptions;
     let line = 0;
-    while (line + 1 < coverCaptions.length && time >= coverCaptions[line + 1][0]) line++;
+    while (line + 1 < captions.length && time >= captions[line + 1][0]) line++;
     if (line !== m.line && m.text) {
       m.line = line;
-      m.text.textContent = coverCaptions[line][1];
+      m.text.textContent = captions[line][1];
       m.text.classList.remove("caption-in");
       if (motionAllowed()) {
         void m.text.offsetWidth;
@@ -485,9 +487,12 @@ function narrate(scene, tryAutomatically = false, resumeAt = 0) {
   narrationQueue=scenes.filter(s=>offlineVoice[s]);
   playNarrationClip(narrationQueue.shift(),tryAutomatically,resumeAt);
 }
+function roleVoiceScene(scene) {
+  return bookRoleLabel()==='부모용' && offlineVoice['parent-'+scene] ? 'parent-'+scene : scene;
+}
 function playNarrationClip(scene, tryAutomatically=false, resumeAt=0) {
   if(!scene || !voiceEnabled || document.hidden) {markNextReady();return;}
-  const source=offlineVoice[scene];
+  const source=offlineVoice[roleVoiceScene(scene)];
   if(!source) {markNextReady();return;}
   clearNextReady();
   if(voiceAudio.getAttribute('src')!==source)voiceAudio.src=source;
@@ -560,6 +565,7 @@ function intro() {
 }
 
 function hero() {
+  const parent = bookRoleLabel()==='부모용';
   return `<section class="hero-stage" aria-label="시선사이 소개">
     <div class="cover-window">
       <img class="cover-art" src="assets/cover-art.webp" alt="햇살이 드는 놀이방에서 두 토끼가 함께 있어요." width="1536" height="1024" fetchpriority="high" draggable="false">
@@ -568,15 +574,15 @@ function hero() {
       <div class="hero-copy">
         <p class="cover-step">${bookRoleLabel()?bookRoleLabel()+' · ':''}소개 표지</p>
         <h1 tabindex="-1">두 토끼의 방,<br><em>두 권의 이야기</em></h1>
-        <div class="cover-purpose"><h2>이 설문은 왜 할까요?</h2><p>우리 친구와 부모님이 좋아하는 것을 알아보고,<br>함께할 정리 놀이를 찾아요.</p><p class="play-note">맞고 틀린 답은 없어요. 재미로 만나는 시선 친구예요!</p><p class="parent-play-note">보호자님께 · 5개 질문으로 생각을 나누며 16가지 친구를 만나는 놀이입니다. 검증된 심리검사가 아니며, 성격·발달·정리 능력을 판정하지 않습니다.</p></div>
+        <div class="cover-purpose"><h2>같은 방, 다른 생각</h2><p>${parent?'아이와 서로의 생각을 나누고,<br>함께할 정리 놀이를 찾아보세요.':'서로 좋아하는 것을 알아보고,<br>함께할 정리 놀이를 찾아요.'}</p><p class="parent-play-note">5문항 · 16친구, 재미로 보는 시선 유형입니다.<br>검증된 심리검사가 아니며 성격·발달·정리 능력을 판정하지 않습니다.</p></div>
         <div class="hero-actions">
           <button type="button" class="hero-cta" data-action="begin-voice">우리 이야기 시작 <span aria-hidden="true">›</span></button>
         </div>
-        <p class="cover-flow">소개 표지 → 같은 방에서 준비 → 다섯 질문 → 우리 가족 이야기</p>
-        <div class="opening-audio">${voiceTools("cover","놀이 소개 듣기")}<p class="opening-caption">안녕, 우리 친구! 여기는 토끼들의 방이야.</p></div>
+        <div class="opening-audio">${voiceTools("cover","놀이 소개 듣기")}<p class="opening-caption" aria-live="off">${parent?'부모님, 아이와 같은 방을 서로의 눈으로 살펴보세요.':'안녕, 우리 친구! 여기는 토끼들의 방이야.'}</p></div>
         <details class="cover-more"><summary>놀이 안내 · 소리 설정</summary>
           <div class="cover-more-content">
             <p>아이와 부모가 두 태블릿에서 같은 방을 보고, 각자의 책에 답해요. 두 책이 완성되면 가족의 결말이 펼쳐져요.</p>
+            <p class="cover-flow">소개 표지 → 같은 방에서 준비 → 다섯 질문 → 우리 가족 이야기</p>
             ${voiceTools('child-0','질문 목소리 듣기')}
             <p class="cover-audio-note">토끼가 짧은 이야기와 질문을 읽어 줘요.</p>
             <div class="hero-links"><button class="text-link" data-action="demo">예시 결과 보기</button>${voiceButton("cover", "소개 다시 듣기")}<button class="story-scroll" type="button" data-action="guide">놀이 방법 보기 ↓</button></div>
@@ -1466,7 +1472,7 @@ function storyEnding() {
 function missionTheater(matches) {
   const {mission,pattern,childIndex}=missionPlan(matches);
   const code=characterCode(endingRole());
-  return `<section class="panel mission-theater" id="mission-theater" hidden data-pattern="${pattern}" data-child-index="${childIndex}" data-code="${code??''}"><p class="book-eyebrow">친구와 이어 쓰는 다음 이야기</p><h2 tabindex="-1">${mission.title}</h2><div id="mission-motion"></div><div class="actions"><button class="button primary" data-action="mission-play">정리하는 모습 보기</button><button class="button" data-action="mission-pause">잠깐 멈추기</button><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="ending-home-line">“다음 이야기는 우리 집에서 함께 해요!”</p></section>`;
+  return `<section class="panel mission-theater" id="mission-theater" hidden data-pattern="${pattern}" data-child-index="${childIndex}" data-code="${code??''}"><p class="book-eyebrow">친구와 이어 쓰는 다음 이야기</p><h2 tabindex="-1">${mission.title}</h2><div id="mission-motion"></div><div class="actions"><button class="button primary" data-action="family-results">우리 가족 결과지 보기 →</button><button class="button" data-action="mission-pause">잠깐 멈추기</button><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="ending-home-line">“다음 이야기는 우리 집에서 함께 해요!”</p></section>`;
 }
 const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":4.066},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.825},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.962},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":4.28},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":3.635},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":4.26},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":3.523},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.586},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.519},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":4.477},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":2.941},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.308}};
 let missionMotion=null;
@@ -1534,6 +1540,13 @@ function playMission() {
   else stopNarration();
   missionMotion?.play();
 }
+function openFamilyResults() {
+  pauseMission();
+  stopNarration();
+  const result=app.querySelector('#parent-back-pages');
+  result?.scrollIntoView({block:'start',behavior:motionAllowed()?'smooth':'auto'});
+  result?.querySelector('.record-title h2')?.focus({preventScroll:true});
+}
 function openMissionTheater() {
   const section=app.querySelector('#mission-theater'),code=characterCode(endingRole());
   if(!section || !code || !app.querySelector('.hatched-friend[data-hatched-code]'))return;
@@ -1562,7 +1575,7 @@ function report() {
     ${storyEnding()}
     ${missionTheater(matches)}
     <section class="parent-back-pages panel" id="parent-back-pages" aria-label="부모님용 가족 결과지">
-      <header class="record-heading"><div class="record-photo" id="family-photo-upload">${photoSlot()}</div><div class="record-title"><p class="record-kicker">시선사이 · 가족 활동 기록</p><h2>우리 가족의 시선 기록</h2><p>아이와 부모님의 정리 친구와 선택을 함께 담았어요.</p></div></header>
+      <header class="record-heading"><div class="record-photo" id="family-photo-upload">${photoSlot()}</div><div class="record-title"><p class="record-kicker">시선사이 · 가족 활동 기록</p><h2 tabindex="-1">우리 가족의 시선 기록</h2><p>아이와 부모님의 정리 친구와 선택을 함께 담았어요.</p></div></header>
       <section class="family-friends" aria-label="아이와 부모님의 정리 친구"><p class="record-number">두 사람의 정리 친구</p><div class="type-cards">${characterCard('child')}${characterCard('adult')}</div></section>
       <section class="family-graph-panel" id="family-choice-graph" tabindex="-1"><p class="record-number">01 · 선택 비교 그래프</p>${habitComparison(matches)}</section>
       ${resultComparison()}
@@ -1637,7 +1650,7 @@ function reviewIntro() {
     ${mascot("FVMB", "handoff-guide", true)}
     <h1 tabindex="-1">같은 방을 보면 같은 생각이 날까?</h1>
     <div class="intro-purpose">
-      <p>방 사진을 보고 너는 뭘 먼저 봤는지, 어디서 놀고 싶은지 골라 봐.</p>
+      <p>방 사진에서 먼저 보인 것과 놀고 싶은 곳을 골라 주세요.</p>
       <p>부모님도 같은 질문에 답하면 서로 어떤 생각을 했는지 같이 볼 수 있어!</p>
     </div>
     ${voiceTools("intro")}
@@ -1672,6 +1685,7 @@ const storyChapters = [
 ];
 
 function storyText(index, role) {
+  if(role==="adult" && index===0)return "두 토끼가 방을 가만히 바라봤어요. 부모님의 눈에는 무엇이 보이나요?";
   return storyChapters[index].text;
 }
 
@@ -1908,7 +1922,7 @@ function syncBookRoleBadge() {
 function familyIntro() {
   if(!stationSession)return stationSetup();
   const ready=stationView?.connected.child && stationView?.prepared===true && !familyView?.ownAnswers.some(a=>a.choice);
-  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div>${familyView?.ownAnswers.some(a=>a.choice)?'<button class="text-link" data-action="resume-review">내가 고른 답 다시 보기</button>':''}<p class="small family-status" data-family-status role="status">${ready?'각자의 마음에 가까운 그림을 골라 주세요.':'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.'}</p></section>`;
+  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">${stationSession.role==='adult'?'큰 방 그림을 살펴보신 뒤 첫 장을 펼쳐 주세요.':'큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.'}</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div>${familyView?.ownAnswers.some(a=>a.choice)?'<button class="text-link" data-action="resume-review">내가 고른 답 다시 보기</button>':''}<p class="small family-status" data-family-status role="status">${ready?'각자의 마음에 가까운 그림을 골라 주세요.':'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.'}</p></section>`;
 }
 function acceptStation(data,initial=false) {
   if(stationView && data.round<stationView.round)return;
@@ -2246,7 +2260,7 @@ async function finishBookPage() {
   finally {familyBusy=false;}
 }
 function markNextReady() {
-  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','start','next','adult','report'];
+  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','family-results','start','next','adult','report'];
   app.querySelectorAll(actions.map(action=>'button[data-action="'+action+'"]').join(',')+',.voice-next').forEach(button=>{
     button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])') && !playingScene && !coverMotion?.silent);
   });
@@ -3170,6 +3184,7 @@ document.addEventListener("click", (event) => {
     case "hatch-start": return startEndingEgg();
     case "mission-open": return openMissionTheater();
     case "mission-play": return playMission();
+    case "family-results": return openFamilyResults();
     case "mission-pause": return pauseMission();
 
     case "begin-voice": voiceEnabled ??= true; return beginFreshBook();

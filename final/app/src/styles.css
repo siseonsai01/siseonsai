@@ -1294,3 +1294,6 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 .parent-back-pages .record-heading{grid-template-columns:280px minmax(0,1fr);gap:28px}.report .family-photo{min-width:0;width:100%;max-width:300px}.report .record-photo .photo-box{min-height:0;aspect-ratio:4/3}.print-dialog .print-preview{width:100%;height:auto}
 @media(prefers-reduced-motion:no-preference){.guided-step::after{animation:guided-tap 1.15s ease-in-out infinite}@keyframes guided-tap{50%{transform:translateY(7px)}}}
 @media(max-width:680px){.cover-purpose .parent-play-note{font-size:12px}.cover-purpose>p{font-size:15px}.parent-back-pages .record-heading{grid-template-columns:minmax(0,1fr)}.report .family-photo{width:100%;max-width:300px}.cover-purpose{margin:12px 0}}
+
+/* Keep the introduction brief; spoken captions appear during playback. */
+.hero-stage .opening-caption:not(.is-caption){display:none}

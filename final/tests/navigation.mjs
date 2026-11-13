@@ -46,5 +46,12 @@ for(const role of ['adult','child']){
  vm.runInNewContext(begin,ctx);await ctx.beginFreshBook();assert.deepEqual(calls,['GET']);assert.deepEqual(shown,['intro']);checks++;
 }
 const coverFunction={bookRoleLabel:()=>'',voiceTools:()=>'',voiceButton:()=>''};vm.runInNewContext(hero,coverFunction);
-const coverHtml=coverFunction.hero();assert.ok(coverHtml.includes('이 설문은 왜 할까요?')&&coverHtml.includes('검증된 심리검사가 아니며')&&coverHtml.includes('재미로'));checks++;
+const coverHtml=coverFunction.hero();assert.ok(coverHtml.includes('같은 방, 다른 생각')&&coverHtml.includes('검증된 심리검사가 아니며')&&coverHtml.includes('재미로'));checks++;
 console.log(checks+' cover-first, role label, saved-answer and preparation checks passed');
+
+for(const label of ['부모용','아이용']){const ctx={bookRoleLabel:()=>label,voiceTools:()=>'',voiceButton:()=>''};vm.runInNewContext(hero,ctx);const html=ctx.hero();assert.equal(html.includes('아이와 서로의 생각을 나누고'),label==='부모용');const visible=html.slice(html.indexOf('cover-purpose'),html.indexOf('hero-actions')).replace(/<[^>]+>/g,'');assert.ok(visible.length<165);checks++;}
+const route=s.slice(s.indexOf('function roleVoiceScene('),s.indexOf('function playNarrationClip('));
+for(const label of ['부모용','아이용']){const c={bookRoleLabel:()=>label,offlineVoice:{'cover':'child.mp3','parent-cover':'parent.mp3'}};vm.runInNewContext(route,c);assert.equal(c.roleVoiceScene('cover'),label==='부모용'?'parent-cover':'cover');assert.equal(c.roleVoiceScene('room-play'),'room-play');checks++;}
+const results=s.slice(s.indexOf('function openFamilyResults('),s.indexOf('function openMissionTheater('));
+{const calls=[];const result={scrollIntoView:x=>calls.push('scroll'),querySelector:()=>({focus:()=>calls.push('focus')})};const c={pauseMission:()=>calls.push('pause'),stopNarration:()=>calls.push('stop'),motionAllowed:()=>false,app:{querySelector:()=>result}};vm.runInNewContext(results,c);c.openFamilyResults();assert.deepEqual(calls,['pause','stop','scroll','focus']);assert.ok(s.includes('data-action="family-results">우리 가족 결과지 보기'));checks++;}
+console.log('All '+checks+' cover and result navigation checks passed');
