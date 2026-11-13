@@ -1,9 +1,14 @@
 {
   "edition": "시선사이 원안",
-  "revision": "final-survey-v7-20261113",
-  "connectionRevision": "fixed-tablets-v8-20261113",
-  "compiledHtmlSHA256": "3a90632e791e9ca1c4b7b3675aba0eaf501b469ddd6fed2afa7ccc65e302f06f",
+  "revision": "accessible-storybook-v9-20261113",
   "cloudBackendChecks": 36,
+  "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
-  "containsDeviceCredentials": false
+  "containsDeviceCredentials": false,
+  "hostingStatus": "source saved; production publication pending Sites Git client support",
+  "verificationLimits": [
+    "actual tablet speakers and physical A4 print not verified",
+    "local browser preview unavailable",
+    "automatic transcription and local speaker similarity screening do not equal human listening"
+  ]
 }

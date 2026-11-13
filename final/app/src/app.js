@@ -1,5 +1,5 @@
 
-const offlineVoice = {"cover":"assets/storybookVoice-v3-cover.mp3","adult-0":"assets/storybookVoice-v7-adult-0.mp3","adult-1":"assets/storybookVoice-v3-adult-1.mp3","adult-2":"assets/storybookVoice-v7-adult-2.mp3","adult-3":"assets/storybookVoice-v3-adult-3.mp3","adult-4":"assets/storybookVoice-v3-adult-4.mp3","camera-error":"assets/storybookVoice-v3-camera-error.mp3","camera":"assets/storybookVoice-v3-camera.mp3","chart":"assets/storybookVoice-v3-chart.mp3","child-0":"assets/storybookVoice-v3-child-0.mp3","child-1":"assets/storybookVoice-v3-child-1.mp3","child-2":"assets/storybookVoice-v7-child-2.mp3","child-3":"assets/storybookVoice-v3-child-3.mp3","child-4":"assets/storybookVoice-v3-child-4.mp3","first-look":"assets/storybookVoice-v3-first-look.mp3","friend-FHMB":"assets/storybookVoice-v3-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v3-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v3-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v3-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v3-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v7-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v7-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v7-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v3-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v3-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v3-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v3-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v3-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v7-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v3-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v3-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v3-guide-1.mp3","guide-2":"assets/storybookVoice-v3-guide-2.mp3","guide-3":"assets/storybookVoice-v3-guide-3.mp3","guide":"assets/storybookVoice-v3-guide.mp3","intro":"assets/storybookVoice-v3-intro.mp3","print-options":"assets/storybookVoice-v3-print-options.mp3","report":"assets/storybookVoice-v7-report.mp3","result-answers":"assets/storybookVoice-v3-result-answers.mp3","setup":"assets/storybookVoice-v3-setup.mp3","reason-child-0":"assets/storybookVoice-v7-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v7-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v7-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v7-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v7-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v7-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v7-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v7-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v7-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v7-reason-adult-4.mp3","description-FHMB":"assets/storybookVoice-v3-description-FHMB.mp3","description-FHMD":"assets/storybookVoice-v3-description-FHMD.mp3","description-FHSB":"assets/storybookVoice-v3-description-FHSB.mp3","description-FHSD":"assets/storybookVoice-v3-description-FHSD.mp3","description-FVMB":"assets/storybookVoice-v3-description-FVMB.mp3","description-FVMD":"assets/storybookVoice-v3-description-FVMD.mp3","description-FVSB":"assets/storybookVoice-v3-description-FVSB.mp3","description-FVSD":"assets/storybookVoice-v3-description-FVSD.mp3","description-PHMB":"assets/storybookVoice-v3-description-PHMB.mp3","description-PHMD":"assets/storybookVoice-v3-description-PHMD.mp3","description-PHSB":"assets/storybookVoice-v3-description-PHSB.mp3","description-PHSD":"assets/storybookVoice-v3-description-PHSD.mp3","description-PVMB":"assets/storybookVoice-v3-description-PVMB.mp3","description-PVMD":"assets/storybookVoice-v3-description-PVMD.mp3","description-PVSB":"assets/storybookVoice-v3-description-PVSB.mp3","description-PVSD":"assets/storybookVoice-v7-description-PVSD.mp3","room-play":"assets/storybookVoice-v3-setup.mp3","story-0":"assets/storybookVoice-v7-story-0.mp3","story-1":"assets/storybookVoice-v7-story-1.mp3","story-2":"assets/storybookVoice-v7-story-2.mp3","story-3":"assets/storybookVoice-v7-story-3.mp3","story-4":"assets/storybookVoice-v7-story-4.mp3","waiting-child":"assets/storybookVoice-v3-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v3-waiting-adult.mp3","ending":"assets/storybookVoice-v7-report.mp3","mission-done":"assets/storybookVoice-v7-mission-done.mp3","motion-0-0":"assets/storybookVoice-v3-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v3-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v3-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v3-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v3-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v3-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v3-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v3-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v3-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v3-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v3-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v3-ending-quiet.mp3"};
+const offlineVoice = {"cover":"assets/storybookVoice-v3-cover.mp3","adult-0":"assets/storybookVoice-v7-adult-0.mp3","adult-1":"assets/storybookVoice-v3-adult-1.mp3","adult-2":"assets/storybookVoice-v7-adult-2.mp3","adult-3":"assets/storybookVoice-v3-adult-3.mp3","adult-4":"assets/storybookVoice-v9-adult-4.mp3","camera-error":"assets/storybookVoice-v3-camera-error.mp3","camera":"assets/storybookVoice-v9-camera.mp3","chart":"assets/storybookVoice-v3-chart.mp3","child-0":"assets/storybookVoice-v9-child-0.mp3","child-1":"assets/storybookVoice-v9-child-1.mp3","child-2":"assets/storybookVoice-v9-child-2.mp3","child-3":"assets/storybookVoice-v9-child-3.mp3","child-4":"assets/storybookVoice-v9-child-4.mp3","first-look":"assets/storybookVoice-v3-first-look.mp3","friend-FHMB":"assets/storybookVoice-v9-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v9-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v3-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v3-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v3-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v7-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v7-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v7-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v3-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v3-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v3-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v3-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v3-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v7-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v3-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v3-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v3-guide-1.mp3","guide-2":"assets/storybookVoice-v3-guide-2.mp3","guide-3":"assets/storybookVoice-v3-guide-3.mp3","guide":"assets/storybookVoice-v3-guide.mp3","intro":"assets/storybookVoice-v9-intro.mp3","print-options":"assets/storybookVoice-v9-print-options.mp3","report":"assets/storybookVoice-v9-report.mp3","result-answers":"assets/storybookVoice-v9-result-answers.mp3","setup":"assets/storybookVoice-v3-setup.mp3","reason-child-0":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v9-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v7-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v7-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v7-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v7-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v7-reason-adult-4.mp3","description-FHMB":"assets/storybookVoice-v9-description-FHMB.mp3","description-FHMD":"assets/storybookVoice-v9-description-FHMD.mp3","description-FHSB":"assets/storybookVoice-v9-description-FHSB.mp3","description-FHSD":"assets/storybookVoice-v9-description-FHSD.mp3","description-FVMB":"assets/storybookVoice-v9-description-FVMB.mp3","description-FVMD":"assets/storybookVoice-v9-description-FVMD.mp3","description-FVSB":"assets/storybookVoice-v9-description-FVSB.mp3","description-FVSD":"assets/storybookVoice-v9-description-FVSD.mp3","description-PHMB":"assets/storybookVoice-v9-description-PHMB.mp3","description-PHMD":"assets/storybookVoice-v9-description-PHMD.mp3","description-PHSB":"assets/storybookVoice-v9-description-PHSB.mp3","description-PHSD":"assets/storybookVoice-v9-description-PHSD.mp3","description-PVMB":"assets/storybookVoice-v9-description-PVMB.mp3","description-PVMD":"assets/storybookVoice-v9-description-PVMD.mp3","description-PVSB":"assets/storybookVoice-v9-description-PVSB.mp3","description-PVSD":"assets/storybookVoice-v9-description-PVSD.mp3","room-play":"assets/storybookVoice-v3-setup.mp3","story-0":"assets/storybookVoice-v9-story-0.mp3","story-1":"assets/storybookVoice-v9-story-1.mp3","story-2":"assets/storybookVoice-v9-story-2.mp3","story-3":"assets/storybookVoice-v9-story-3.mp3","story-4":"assets/storybookVoice-v9-story-4.mp3","waiting-child":"assets/storybookVoice-v9-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v9-waiting-adult.mp3","ending":"assets/storybookVoice-v9-report.mp3","mission-done":"assets/storybookVoice-v7-mission-done.mp3","motion-0-0":"assets/storybookVoice-v9-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v3-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v9-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v3-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v3-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v3-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v3-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v3-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v3-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v3-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v3-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v3-ending-quiet.mp3","option-child-0-A":"assets/storybookVoice-v9-option-child-0-A.mp3","option-child-0-B":"assets/storybookVoice-v9-option-child-0-B.mp3","option-child-1-A":"assets/storybookVoice-v9-option-child-1-A.mp3","option-child-1-B":"assets/storybookVoice-v9-option-child-1-B.mp3","option-child-2-A":"assets/storybookVoice-v9-option-child-2-A.mp3","option-child-2-B":"assets/storybookVoice-v9-option-child-2-B.mp3","option-child-3-B":"assets/storybookVoice-v9-option-child-3-B.mp3","option-child-4-A":"assets/storybookVoice-v9-option-child-4-A.mp3","option-child-4-B":"assets/storybookVoice-v9-option-child-4-B.mp3","choices-intro":"assets/storybookVoice-v9-choices-intro.mp3","choices-ready":"assets/storybookVoice-v9-choices-ready.mp3","egg-loading":"assets/storybookVoice-v9-egg-loading.mp3","egg-ready":"assets/storybookVoice-v9-egg-ready.mp3","egg-more":"assets/storybookVoice-v9-egg-more.mp3","egg-error":"assets/storybookVoice-v9-egg-error.mp3","photo-intro":"assets/storybookVoice-v9-photo-intro.mp3","friend-next":"assets/storybookVoice-v9-friend-next.mp3","option-child-3-A":"assets/storybookVoice-v9-option-child-3-A.mp3"};
 const reviewChoiceArt = [["assets/reviewChoiceArt.webp","assets/reviewChoiceArt-2.webp"],["assets/reviewChoiceArt-3.webp","assets/reviewChoiceArt-4.webp"],["assets/reviewChoiceArt-5.webp","assets/reviewChoiceArt-6.webp"],["assets/reviewChoiceArt-7.webp","assets/reviewChoiceArt-8.webp"],["assets/reviewChoiceArt-9.webp","assets/reviewChoiceArt-10.webp"]];
 const offline_paper_choice = {"B":"assets/paper_choice-B.webp","D":"assets/paper_choice-D.webp","F":"assets/paper_choice-F.webp","H":"assets/paper_choice-H.webp","M":"assets/paper_choice-M.webp","P":"assets/paper_choice-P.webp","S":"assets/paper_choice-S.webp","V":"assets/paper_choice-V.webp"};
 const offline_paper_smile = {"FHMB":"assets/paper_smile-FHMB.webp","FHMD":"assets/paper_smile-FHMD.webp","FHSB":"assets/paper_smile-FHSB.webp","FHSD":"assets/paper_smile-FHSD.webp","FVMB":"assets/local-e32d72c00eeac165.png","FVMD":"assets/paper_smile-FVMD.webp","FVSB":"assets/paper_smile-FVSB.webp","FVSD":"assets/paper_smile-FVSD.webp","PHMB":"assets/paper_smile-PHMB.webp","PHMD":"assets/paper_smile-PHMD.webp","PHSB":"assets/paper_smile-PHSB.webp","PHSD":"assets/paper_smile-PHSD.webp","PVMB":"assets/paper_smile-PVMB.webp","PVMD":"assets/paper_smile-PVMD.webp","PVSB":"assets/paper_smile-PVSB.webp","PVSD":"assets/paper_smile-PVSD.webp"};
@@ -29,7 +29,7 @@ const habitQuestions = [
     ],
     mission: {
       title: "첫 자리만 정하고, 같이 시작!",
-      why: "한 사람은 둘 곳을 먼저 알면 편하고, 한 사람은 물건을 먼저 보면 자리가 떠올라요.",
+      why: "한 사람은 장난감으로 할 놀이를, 다른 한 사람은 물건이 있던 자리를 먼저 떠올렸어요.",
       intro: "자주 노는 장난감 세 개를 골라요.",
       steps: ["세 개 중 하나만 둘 곳을 먼저 정해요.", "그 장난감을 가져다 놓고, 나머지 두 개는 하나씩 들고 자리를 찾아요."],
       agreement: "내일도 이 순서로 한 번 해 봐요. 먼저 자리 하나, 나머지는 치우면서 골라요.",
@@ -47,7 +47,7 @@ const habitQuestions = [
     ],
     mission: {
       title: "한 상자에 보이는 단서 하나",
-      why: "한 사람은 눈에 보여야 찾기 쉽고, 한 사람은 상자에 넣으면 방이 깔끔해 보여요.",
+      why: "한 사람은 넓은 바닥을, 다른 한 사람은 책상이나 작은 자리를 골랐어요. 두 곳 모두에서 쓰기 쉬운 정리 방법을 제안해요.",
       intro: "매일 갖고 노는 장난감 한 종류를 골라요.",
       steps: ["상자 앞에 붙일 장난감 그림이나 사진을 골라요.", "그 장난감을 넣을 상자를 골라요. 함께 상자 앞에 그림을 붙여요."],
       agreement: "앞으로 이 장난감은 그림이 붙은 상자에서 꺼내고, 다 쓰면 그 상자에 돌려놔요.",
@@ -64,7 +64,7 @@ const habitQuestions = [
     ],
     mission: {
       title: "매일 쓰는 자리, 보물 자리",
-      why: "한 사람은 자주 쓰는 걸 손 가까이 두고 싶고, 한 사람은 좋은 기억이 담긴 것도 챙기고 싶어요.",
+      why: "한 사람은 놀이할 자리를, 다른 한 사람은 물건을 놓을 자리를 더 만들고 싶어 해요. 물건 둘 곳을 함께 정해 놀이 공간도 마련해 봐요.",
       intro: "오늘은 자주 쓰는 물건 하나와 소중한 물건 하나만 골라요.",
       steps: ["자주 쓰는 물건을 골라 꺼내기 쉬운 곳을 찾아요.", "소중한 물건의 이야기를 들려주고, 둘이 함께 보물 상자에 넣어요."],
       agreement: "자주 쓰는 건 꺼내기 쉽게, 보물은 정한 상자에. 보물은 서로 묻고 옮겨요.",
@@ -82,7 +82,7 @@ const habitQuestions = [
     ],
     mission: {
       title: "길은 지금, 작품은 나중에",
-      why: "한 사람은 바로 치우면 편하고, 한 사람은 다 놀고 한꺼번에 치우고 싶어요.",
+      why: "만들던 놀이를 그 자리에서 이어 할지, 다른 곳으로 옮길지 서로 다르게 골랐어요.",
       intro: "놀이 중인 작품과 그냥 바닥에 남은 물건을 같이 찾아요.",
       steps: ["지나다니는 길에 남은 물건만 지금 치워요.", "만드는 중인 건 한쪽에 두고, 언제 함께 정리할지 정해요."],
       agreement: "지나갈 길은 비워 두고, 남겨 둔 것은 약속한 때 함께 정리해요.",
@@ -233,11 +233,12 @@ function syncVoiceControls() {
 }
 
 function highlightSpokenChoice() {
+  const spoken=/^option-child-([0-4])-([AB])$/.exec(playingScene||""),spokenIndex=spoken?reviewChoices.indexOf(spoken[2]):-1;
   const times = typeof voiceCues === "undefined" ? [] : voiceCues[playingScene] ?? [];
   const current = voiceAudio.currentTime;
   app.querySelectorAll(".studio-options .option, .practice-options .option").forEach((option, index) => {
     const range = times[index];
-    option.classList.toggle("spoken-choice", Boolean(range && current >= range[0] && current < range[1]));
+    option.classList.toggle("spoken-choice", spoken?state.role==="child" && state.index===Number(spoken[1]) && index===spokenIndex:Boolean(range && current >= range[0] && current < range[1]));
   });
 }
 
@@ -407,6 +408,7 @@ function stopNarration(preserveCoverTail = false) {
   else stopCoverMotion();
   playbackId++;
   narrationQueue = [];
+  app.querySelectorAll(".spoken-choice").forEach(n=>n.classList.remove("spoken-choice"));
   voiceAudio.pause();
   playingScene = null;
   syncVoiceControls();
@@ -419,7 +421,7 @@ function narrate(scene, tryAutomatically = false, resumeAt = 0) {
   stopNarration();
   if (!voiceEnabled) {markNextReady();return;}
   const question=/^(child|adult)-(\d)$/.exec(scene || '');
-  const scenes=question && currentScreen==='quiz' ? ['story-'+question[2],scene] : [scene];
+  const scenes=question && currentScreen==='quiz' ? ['story-'+question[2],scene,...(question[1]==='child'?[...(question[2]==='0'?['choices-intro']:[]),'option-child-'+question[2]+'-A','option-child-'+question[2]+'-B','choices-ready']:[])] : [scene];
   narrationQueue=scenes.filter(s=>offlineVoice[s]);
   playNarrationClip(narrationQueue.shift(),tryAutomatically,resumeAt);
 }
@@ -431,7 +433,7 @@ function playNarrationClip(scene, tryAutomatically=false, resumeAt=0) {
   if(voiceAudio.getAttribute('src')!==source)voiceAudio.src=source;
   else voiceAudio.currentTime=0;
   const id=++playbackId;
-  playingScene=scene;syncVoiceControls();
+  playingScene=scene;syncVoiceControls();highlightSpokenChoice();
   voiceAudio.play().then(()=>{
     if(id!==playbackId)return;
     if(resumeAt>0)voiceAudio.currentTime=resumeAt;
@@ -1010,7 +1012,7 @@ function stopSharedRoomMotion() {
   sharedRoomMotion?.destroy(); sharedRoomMotion = null;
 }
 function syncSharedRoomSound() {
-  if (sharedRoomMotion && !sharedRoomMotion.o.soundButton) sharedRoomMotion.setSound(voiceEnabled !== false, false);
+  if (sharedRoomMotion && !sharedRoomMotion.o.soundButton) sharedRoomMotion.setSound(voiceEnabled !== false && !playingScene && !document.hidden, false);
   else if (voiceEnabled === false) sharedRoomMotion?.sfx.stop();
   const hint = app.querySelector('.room-sound-hint');
   if (hint) hint.hidden = voiceEnabled !== false;
@@ -1029,7 +1031,7 @@ function mountSharedRoomMotion() {
     imageSrc: sampleRoom, hotspots: SISEON_ROOM_HOTSPOTS,
     respondent: role === 'adult' ? 'parent' : 'child', intro: screen === 'roomPreview',
     sound: voiceEnabled !== false, soundButton: screen === 'roomPreview',
-    soundAllowed: () => voiceEnabled !== false,
+    soundAllowed: () => voiceEnabled !== false && !playingScene && !document.hidden,
     onFrame: instance => {
       if (screen !== 'quiz' || index !== 0) return;
       const point = reviewAnswers[role][0].point, pin = frame.querySelector('.room-marker');
@@ -1144,19 +1146,42 @@ function characterCode(role) {
   return Object.hasOwn(characters, code) ? code : null;
 }
 
+const surveyCodeNames = {F:'놀이의 가능성',P:'물건의 자리',V:'넓은 바닥',H:'책상·작은 자리',M:'놀이할 공간',S:'물건 둘 공간',B:'그 자리에서 이어 놀기',D:'다른 자리로 옮겨 두기'};
+function typeProfile(code) {
+  if(!code)return null;
+  const meaning=code[0]==='F'?'장난감으로 할 수 있는 놀이를 먼저 떠올리는 모습이에요.':'장난감이 있던 자리를 먼저 떠올리는 모습이에요.';
+  const place=code[1]==='V'?'넓은 바닥에서 노는 쪽을 골랐어요.':'책상이나 작은 자리에서 노는 쪽을 골랐어요.';
+  const change=code[2]==='M'?'놀이할 공간을 더 만들고 싶어 해요.':'물건을 놓을 공간을 더 만들고 싶어 해요.';
+  const continuation=code[3]==='B'?'만들던 놀이는 그 자리에서 이어 하고 싶어 해요.':'만들던 놀이는 다른 곳에 옮겨 두고 싶어 해요.';
+  const support=(code[0]==='F'?'정리 전에 이어 하고 싶은 놀이를 먼저 물어보세요.':'장난감이 돌아갈 자리를 그림 표시로 함께 정해 보세요.')+' '+(code[3]==='B'?'놀이를 남겨 둘 자리와 다시 놀 시간을 약속해 보세요.':'옮길 자리를 함께 고르고, 작품을 사진으로 남겨도 좋아요.');
+  const brief=(code[0]==='F'?'놀이 가능성을':'물건의 자리를')+' 먼저 떠올리고, '+(code[1]==='V'?'넓은 바닥을':'책상·작은 자리를')+' 골랐어요. '+(code[2]==='M'?'놀이 공간':'물건 둘 공간')+'을 늘리고, 만들던 놀이는 '+(code[3]==='B'?'이어 하고':'옮겨 두고')+' 싶어 해요.';
+  return {summary:meaning+' '+place+' '+change+' '+continuation,support,brief};
+}
+function observationOpinion() {
+  const matches=matchHabits(),known=matches.same.length+matches.different.length;
+  const focus=matches.different[0];
+  const actions=[
+    '장난감을 옮기기 전에 “어떤 놀이를 이어 하고 싶어?”라고 묻고 아이의 말을 먼저 들어 보세요.',
+    '같은 놀이를 바닥과 작은 탁자에서 잠깐씩 해 보고, 편했던 점을 하나씩 나눠 보세요.',
+    '놀이 자리와 물건 둘 자리 중 한 곳만 함께 바꾼 뒤, 다음 날 다시 쓰기 쉬운지 살펴보세요.',
+    '만들던 놀이를 남겨 둘 자리와 다시 놀 시간을 아이와 함께 하나씩 정해 보세요.'
+  ];
+  const observation=known?`두 사람 모두 고른 ${known}가지 항목 중 ${matches.same.length}가지에서 같은 선택을 했어요. ${matches.different.length?'다른 선택은 서로 무엇을 먼저 생각했는지 알아보는 대화의 단서예요.':'비슷한 선택을 했어도 그 이유는 서로 다를 수 있어요.'}`:'고르기 어려웠던 항목은 비워 두었어요. 아이가 말이나 손짓으로 알려 주는 것을 먼저 살펴보세요.';
+  const action=focus===undefined?'장난감 하나의 자리를 아이가 고르게 하고, 다음 날 다시 찾아 쓰는 모습을 함께 살펴보세요.':actions[focus];
+  return {observation,action};
+}
+function observationPanel() {
+  const opinion=observationOpinion();
+  return `<section class="observation-opinion"><p class="record-number">04 · 선택을 바탕으로 한 관찰 의견</p><h2>집에서 이렇게 살펴보세요</h2><p>${opinion.observation}</p><p class="observation-action"><b>다음에 해 볼 한 가지</b>${opinion.action}</p><p class="small">한 장면의 선택을 정리한 체험 기록입니다. 성격·발달 수준·정리 능력을 판정하는 검사가 아니며, 장소와 상황에 따라 답은 달라질 수 있어요.</p><details class="opinion-basis"><summary>대화 안내의 참고 기준</summary><p>아이의 선택을 관찰하고, 관심을 따라 묻고, 답할 시간을 주는 놀이·상호작용 원칙을 참고했습니다. 이 앱의 네 글자 유형이나 그래프가 해당 기관의 검사라는 뜻은 아닙니다.</p><a href="https://www.naeyc.org/resources/position-statements/dap/principles" target="_blank" rel="noopener noreferrer">유아 놀이와 관찰 원칙</a> · <a href="https://developingchild.harvard.edu/resources/guides/how-to-5-steps-for-brain-building-serve-and-return/" target="_blank" rel="noopener noreferrer">아이의 관심을 따라 주고받는 대화</a></details></section>`;
+}
+
 function typeKeys(code) {
-  return [...code].map((key) => key + " " + codeNames[key]).join(" · ");
+  return [...code].map((key) => key + " " + surveyCodeNames[key]).join(" · ");
 }
 
 function characterCard(role) {
-  const code = characterCode(role);
-  return `<figure class="type-character">
-    <figcaption><span class="role-sticker ${role}">${roles[role]}</span>${code ? `<span class="type-code">${code}</span>` : ""}<strong>${code ? characters[code] : "아직 정리 친구가 없어요"}</strong></figcaption>
-    ${code ? `${mascot(code, "card-preview", true)}
-      <p class="type-keys">${typeKeys(code)}</p>
-      <details class="friend-story"><summary>친구 이야기 더 보기</summary><p class="type-description">${typeDescriptions[code]}</p>${voiceButton("description-" + code, "설명 듣기")}</details>`
-      : '<p class="small type-incomplete">정리 질문 네 개를 고르면 친구가 나와요.</p>'}
-  </figure>`;
+  const code=characterCode(role),profile=typeProfile(code);
+  return `<figure class="type-character"><figcaption><span class="role-sticker ${role}">${roles[role]}</span>${code?`<span class="type-code">${code}</span>`:''}<strong>${code?characters[code]:'아직 정리 친구가 없어요'}</strong></figcaption>${code?`${mascot(code,'card-preview',true)}<p class="type-keys">${typeKeys(code)}</p><div class="type-profile"><h3>이번 그림에서 보인 선택</h3><p>${profile.summary}</p><h3>함께 해 볼 정리 방법</h3><p>${profile.support}</p>${voiceButton('description-'+code,'이 친구의 유형 설명 듣기')}</div><details class="friend-story"><summary>이야기 속 친구의 정리 모습</summary><p>${typeDescriptions[code]}</p></details>`:'<p class="small type-incomplete">고르기 어려웠던 답을 함께 살펴봐요. 친구를 임의로 정하지 않아요.</p>'}</figure>`;
 }
 
 function filterGallery(letter) {
@@ -1168,12 +1193,12 @@ function filterGallery(letter) {
   });
   const entries = Object.entries(characters).filter(([code]) => !letter || code.includes(letter));
   gallery.querySelector(".gallery-summary").textContent = option
-    ? `${option[0]} ${option[1]} · ${option[3]}. 이 답을 고른 친구 ${entries.length}명이에요.`
+    ? `${option[0]} ${surveyCodeNames[option[0]]}. 이 선택을 연결한 이야기 속 친구 ${entries.length}명이에요.`
     : "네 가지 정리 답이 모이면 친구 한 명이 나와요. 글자를 누르면 같은 답을 고른 친구들이 모여요.";
   gallery.querySelector(".gallery-grid").innerHTML = entries.map(([code, name]) => `<figure>
     ${mascot(code, "gallery-mascot")}<figcaption><span>${code}</span><strong>${name}</strong></figcaption>
     <p>${typeKeys(code)}</p>
-    <p>${typeDescriptions[code]}</p>
+    <p>${typeProfile(code).summary}</p>
   </figure>`).join("");
 }
 
@@ -1185,7 +1210,7 @@ function typeGallery() {
     <div class="gallery-filters" role="group" aria-label="유형 글자로 정리 친구 찾기">
       <button class="button" type="button" data-action="gallery-filter" data-value="">전체</button>
       ${habitQuestions.map(({ options }) => `<span>${options.map(([code, name]) =>
-        `<button class="button" type="button" data-action="gallery-filter" data-value="${code}">${code} ${name}</button>`).join("")}</span>`).join("")}
+        `<button class="button" type="button" data-action="gallery-filter" data-value="${code}">${code} ${surveyCodeNames[code]}</button>`).join("")}</span>`).join("")}
     </div>
     <p class="gallery-summary" role="status"></p><div class="gallery-grid"></div>
   </dialog>`;
@@ -1244,14 +1269,7 @@ function habitComparison({ same, different }) {
       ${choicePicture()}
       <p class="chart-tip">동그라미와 네모가 겹치면 같은 답이에요.</p>
       <p class="chart-reading">안쪽과 바깥쪽은 서로 다른 보기예요.</p>
-      <div class="chart-axis-key chart-answer-key" aria-label="현재 질문과 각 축의 안쪽·바깥쪽 답">
-        <span>관찰 항목</span><span>안쪽의 답</span><span>바깥쪽의 답</span>
-        ${graphAxes().map(a=>`<strong>${a.title}</strong><b>${a.innerCode} · ${a.innerLabel}</b><b>${a.outerCode} · ${a.outerLabel}</b>`).join('')}
-      </div>
-      ${example === undefined ? "" : `<div class="chart-example screen-only">
-        <strong>${graphAxes()[example].title}에서 고른 답</strong>
-        ${Object.entries(roles).map(([role, name]) => `<p><span class="role-sticker ${role}">${name}</span> <b>${habitOption(role, example)[0]}</b> ${reviewTypeAnswer(role, example)}</p>`).join("")}
-      </div>`}
+      <details class="chart-how"><summary>그래프 읽는 법</summary><p>안쪽·바깥쪽은 서로 다른 보기입니다. 크기와 넓이는 점수나 정리 능력이 아니에요. 실제 선택 내용은 아래 표 한 곳에서 확인해요.</p><ul>${graphAxes().map(a=>`<li>${a.title}: 안쪽 ${a.innerCode} ${surveyCodeNames[a.innerCode]} / 바깥쪽 ${a.outerCode} ${surveyCodeNames[a.outerCode]}</li>`).join('')}</ul></details>
       <div class="chart-controls screen-only" role="group" aria-label="그래프에서 강조할 답">
         ${[["both", "같이 보기"], ["child", "아이"], ["adult", "부모"]].map(([value, label]) => `<button type="button" data-action="chart-view" data-value="${value}" aria-pressed="${value === "both"}">${label}</button>`).join("")}
       </div>`
@@ -1287,7 +1305,7 @@ function familyMission({ different }) {
   return `<section class="panel mini-mission" id="family-mission">
     <p class="step-label">우리 가족이 이어 쓸 다음 이야기 · 5분 놀이 제안</p>
     <h2>${title}</h2>
-    <p class="mission-why">${question ? `이 놀이와 연결한 실제 답 · 아이: “${escapeHtml(reviewTypeAnswer('child',index))}” / 부모: “${escapeHtml(reviewTypeAnswer('adult',index))}”` : '두 책이 모두 완성됐어요. 함께 해 볼 수 있는 놀이 한 가지를 제안해요.'}</p>
+    <p class="mission-why">${why}</p>
     <p class="mission-intro">${intro}</p>
     <ol class="mission-steps">${steps.map(({ role, text }) =>
       `<li><b class="role-sticker ${role}">${roles[role]}</b><span>${text}</span></li>`).join("")}</ol>
@@ -1307,7 +1325,7 @@ function photoSlot() {
       <button type="button" class="button camera-button" data-action="camera" data-value="family">가족 사진 찍기</button>
       ${photo ? '<button class="photo-remove" data-action="remove-photo">사진 지우기</button>' : ""}
     </div>
-    <p class="photo-status" id="family-photo-status" role="status"></p><p class="small">사진 없이도 저장할 수 있어요. 선택한 사진은 이 기기의 결과지에만 들어가요.</p>
+    <p class="photo-status" id="family-photo-status" role="status"></p><p class="small">가족 사진을 함께 찍거나 이미 찍은 사진을 골라 결과지에 넣어 보세요. 원하지 않으면 사진 없이 저장해도 괜찮아요.</p>${voiceButton("photo-intro","가족사진 안내 듣기")}
   </div>`;
 }
 
@@ -1351,7 +1369,7 @@ function sharingPanel({ same, total }) {
       <button class="button" data-action="edit" data-role="adult">부모 답 수정</button>
     </div>
     <p class="small">공유 글에는 사진, 누른 위치와 직접 적은 말이 빠져요.</p>
-    <textarea id="share-summary" readonly aria-label="보낼 결과 요약">${escapeHtml(summary)}</textarea>
+    <textarea id="share-summary" readonly hidden aria-label="보낼 결과 요약">${escapeHtml(summary)}</textarea>
     <div class="actions">
       ${typeof navigator.share === "function" ? '<button class="button primary" data-action="share">공유 메뉴 열기</button>' : ""}
       <button class="button" data-action="copy">결과 요약 복사</button>
@@ -1396,7 +1414,7 @@ function missionTheater(matches) {
   const code=characterCode(endingRole());
   return `<section class="panel mission-theater" id="mission-theater" hidden data-pattern="${pattern}" data-child-index="${childIndex}" data-code="${code??''}"><p class="book-eyebrow">친구와 이어 쓰는 다음 이야기</p><h2 tabindex="-1">${mission.title}</h2><div id="mission-motion"></div><div class="actions"><button class="button primary" data-action="mission-play">정리하는 모습 보기</button><button class="button" data-action="mission-pause">잠깐 멈추기</button><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="ending-home-line">“다음 이야기는 우리 집에서 함께 해요!”</p></section>`;
 }
-const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":4.221},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.615},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":4.187},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":3.602},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":3.35},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":5.527},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":3.306},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":5.006},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.138},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":4.122},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":2.674},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":3.566}};
+const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":4.221},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":4.257},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":4.187},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":3.73},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":3.35},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":5.527},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":3.306},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":5.006},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.138},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":4.122},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":2.674},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":3.566}};
 let missionMotion=null;
 function stopEndingMedia() {
   missionPausedVoice=null;
@@ -1406,7 +1424,7 @@ function stopEndingMedia() {
 }
 function syncEndingSound() {
   missionMotion?.syncSound?.();
-  app.querySelector('#ending-egg-frame')?.contentWindow?.postMessage({type:'siseon-egg-controls',sound:voiceEnabled!==false,paused:document.hidden},location.origin);
+  app.querySelector('#ending-egg-frame')?.contentWindow?.postMessage({type:'siseon-egg-controls',sound:voiceEnabled!==false,paused:document.hidden,narrating:!!playingScene},location.origin);
 }
 function startEndingEgg() {
   const code=characterCode(endingRole());
@@ -1420,16 +1438,32 @@ function startEndingEgg() {
   slot.innerHTML=`<iframe id="ending-egg-frame" title="알을 두드려 우리 친구 만나기" src="${eggAsset(eggGameFiles[code])}?embedded=1&voice=storybook-v3&sound=${voiceEnabled===false?'off':'on'}" allow="autoplay" referrerpolicy="no-referrer"></iframe><div class="actions"><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="small" role="status">알을 톡톡 눌러 주세요.</p>`;
   const frame=slot.querySelector('iframe');frame.addEventListener('load',syncEndingSound,{once:true});frame.focus();
   slot.scrollIntoView({block:'start',behavior:motionAllowed()?'smooth':'auto'});
+  narrate('egg-loading');
+}
+function queueEggGuide(scene) {
+  if(!voiceEnabled || document.hidden || playingScene===scene || narrationQueue.includes(scene))return;
+  if(playingScene && !voiceAudio.paused)narrationQueue.push(scene);
+  else narrate(scene);
 }
 addEventListener('message',event=>{
   const frame=app.querySelector('#ending-egg-frame');
-  if(currentScreen!=='report' || event.origin!==location.origin || !frame || event.source!==frame.contentWindow || event.data?.type!=='siseon-egg-hatched' || event.data.code!==characterCode(endingRole()))return;
+  if(currentScreen!=='report' || event.origin!==location.origin || !frame || event.source!==frame.contentWindow || event.data?.code!==characterCode(endingRole()))return;
+  if(event.data.type==='siseon-egg-guide') {
+    const scene={ready:'egg-ready',more:'egg-more',error:'egg-error'}[event.data.stage];
+    if(scene)queueEggGuide(scene);
+    return;
+  }
+  if(event.data.type!=='siseon-egg-hatched')return;
   const play=app.querySelector('.ending-play');
   frame.remove();play.querySelector('.egg-game-slot').hidden=true;
   const friend=play.querySelector('.hatched-friend');friend.hidden=false;friend.dataset.hatchedCode=event.data.code;
   friend.querySelector('h2').focus({preventScroll:true});
+  stopNarration();
+  narrationQueue=['friend-next'];
+  playNarrationClip('friend-'+event.data.code);
   markNextReady();
 });
+
 function readMotionCaption(text,info) {
   const clip=motionVoiceCaptions[text];
   if(!clip || !voiceEnabled || document.hidden)return;
@@ -1478,10 +1512,11 @@ function report() {
       <section class="family-friends" aria-label="아이와 부모님의 정리 친구"><p class="record-number">두 사람의 정리 친구</p><div class="type-cards">${characterCard('child')}${characterCard('adult')}</div></section>
       <section class="family-graph-panel" id="family-choice-graph" tabindex="-1"><p class="record-number">01 · 선택 비교 그래프</p>${habitComparison(matches)}</section>
       ${resultComparison()}
+      ${observationPanel()}
       <details class="record-details"><summary>가족 미션 · 선택 이유 자세히 보기</summary>
-      <section class="record-mission"><p class="record-number">04 · 가족 실천</p>${familyMission(matches)}</section>
+      <section class="record-mission"><p class="record-number">05 · 가족 실천</p>${familyMission(matches)}</section>
       <p class="report-note">이번 선택으로 만난 이야기 속 친구예요. 성격을 판정하는 심리 진단이 아니에요. 가족 미션은 함께 의논할 놀이 제안이에요.</p>
-      <section id="type-reasons"><h2>정리 친구를 만난 방법</h2><p>1장은 첫 시선 기록이에요. 2~5장은 기존의 네 글자 기준에 그대로 연결해요.</p>${voiceButton('result-answers','유형 근거 듣기')}<button class="button" data-action="type-gallery">정리 친구 16명 보기</button></section>
+      <section id="type-reasons"><h2>정리 친구를 만난 방법</h2><p>첫 장은 눈에 들어온 곳을 기록해요. 2~5장의 선택을 네 글자로 연결해 이야기 속 친구를 만나요. 글자는 이번 그림에서의 선택을 설명하는 표시예요.</p>${voiceButton('result-answers','유형 근거 듣기')}<button class="button" data-action="type-gallery">정리 친구 16명 보기</button></section>
       <details class="record-evidence"><summary>첫 시선 · 답변의 자세한 근거</summary>${firstLook()}${reviewAnswerDetails()}</details>
       <section class="record-sharing">${sharingPanel(matches)}</section>
       </details>
@@ -1592,7 +1627,7 @@ function reviewQuiz() {
   const answer = reviewAnswers[role][index];
   const option = (choice, label, className) => `<button class="${className}" type="button"
     data-action="review-choice" data-value="${choice}" aria-pressed="${answer.choice === choice}">
-    ${reviewChoices.includes(choice) ? `<img class="review-choice-art" src="${reviewChoiceArt[index][reviewChoices.indexOf(choice)]}" alt="" draggable="false"><strong>${label}</strong>` : label}</button>`;
+    ${reviewChoices.includes(choice) ? `<span class="spoken-pointer" aria-hidden="true">👇</span><img class="review-choice-art" src="${reviewChoiceArt[index][reviewChoices.indexOf(choice)]}" alt="" draggable="false"><strong>${label}</strong>` : label}</button>`;
   return `${familyRibbon()}<div class="quiz review-survey storybook ${role}">
     <div class="quiz-meta">
       <span class="role-tag ${role}">${roles[role]}의 책 <b>${index + 1} / ${stepCount} 장</b></span>
@@ -1613,14 +1648,14 @@ function reviewQuiz() {
       ${room({
         mode: index === 0 ? "review-point" : undefined,
         pins: index === 0 ? [[answer.point, role]] : [],
-        caption: index === 0 ? "함께 보는 공통 사진 · 먼저 눈에 띈 장난감을 콕 눌러도 좋아요." : "아이와 부모가 함께 보는 공통 방 사진",
+        caption: "큰 방 그림은 쓱 움직이고, 장난감은 콕 눌러 살펴봐요.",
       })}
-      <p class="choice-guide">작은 그림은 답을 고르는 보기예요 · 하나를 골라 내 책에 담아요</p><div class="options studio-options review-options" role="group" aria-label="답 고르기">
+      <p class="choice-guide">${role==='child'?'목소리가 읽는 작은 그림을 함께 봐요 · 생각과 같은 그림을 콕 눌러요':'작은 그림 두 장 중 생각에 가까운 쪽을 골라요'}</p><div class="options studio-options review-options" role="group" aria-label="답 고르기">
         ${reviewChoices.map((choice, i) => option(choice, question.options[i], "option")).join("")}
       </div>
       <div class="soft-options">
         ${index === 0 ? option("other", "다른 곳이 먼저 보여요", "button") : ""}
-        ${option("unsure", "잘 모르겠어요", "button")}
+        ${option("unsure", '<span class="unsure-symbol" aria-hidden="true">?</span> 잘 모르겠어요', "button")}
       </div>
       <section class="review-followup" ${answer.choice && answer.choice !== "unsure" ? "" : "hidden"}>
         ${voiceButton("reason-" + role + "-" + index, "이유 질문 다시 듣기")}
@@ -1701,7 +1736,7 @@ function seedReviewExample() {
 
 function reviewAnswerDetails() {
   return `<details class="panel observation-details screen-only">
-    <summary>고른 답과 이유 · 코드가 나오는 방법</summary>
+    <summary>적어 둔 이유 · 코드가 나오는 방법</summary>
     <p class="small">2~5번 답을 기존 정리 친구에 연결하는 체험용 기준이에요. 1번은 사진에서 처음 본 곳으로 따로 기록해요.</p>
     <ol class="review-result-list" start="2">
       ${reviewQuestions.slice(1).map((question, index) => `<li>
@@ -1712,7 +1747,6 @@ function reviewAnswerDetails() {
             const { choice, reason } = reviewAnswers[role][index + 1];
             return `<div>
               <strong class="role-tag ${role}">${name}</strong>
-              <p>${reviewAnswerLabel(question, choice)}</p>
               ${reason.trim() ? `<p class="small">${escapeHtml(reason.trim())}</p>` : ""}
             </div>`;
           }).join("")}
@@ -2744,7 +2778,7 @@ function celebrateMascot(button) {
   } else if (button.classList.contains("card-preview") || button.classList.contains("practice-mascot")) {
     const card = button.classList.contains("card-preview");
     if (card) voiceEnabled = true;
-    narrate((card ? "description-" : "friend-") + button.dataset.character);
+    narrate("friend-" + button.dataset.character);
   } else if (button.classList.contains("handoff-guide") && voiceEnabled) {
     narrate(button.closest(".voice-intro") ? "intro" : "handoff");
   }
@@ -2819,28 +2853,26 @@ async function renderPrintImage(report) {
   else write('고르기 어려웠던 답은 점을 채우지 않고 남겨 두었어요.',96,418,392,20);
   write('● 아이',548,319,250,22,true,'#b45040');write('□ 부모님',820,319,300,22,true,'#355b9b');
   write('점이 겹치면 같은 답이에요. 점의 안쪽·바깥쪽은 서로 다른 보기를 뜻해요.',548,359,590,18,false,'#5f7066');
-  write('관찰 항목',548,422,137,17,true);write('안쪽의 답',703,422,201,17,true);write('바깥쪽의 답',931,422,205,17,true);
-  graphAxes().forEach((axis,i)=>{
-    const y=456+i*43;line(548,y-8,590,'#dce4df');
-    write(axis.title,548,y,137,16,true);
-    write(axis.innerCode+'  '+axis.innerLabel,703,y,201,16);
-    write(axis.outerCode+'  '+axis.outerLabel,931,y,205,16);
-  });
-  write('02  정리 친구',72,660,1096,22,true,'#315f52');
+  const opinion=observationOpinion();
+  write('선택을 바탕으로 한 관찰 의견',548,416,590,19,true,'#315f52');
+  const opinionEnd=write(opinion.observation.split('. ')[0]+'.',548,450,590,18,false,'#4e6058');
+  write('다음에 해 볼 한 가지',548,Math.max(529,opinionEnd+12),590,18,true,'#315f52');
+  write(opinion.action,548,Math.max(563,opinionEnd+45),590,17,false,'#4e6058');
+  write('02  두 사람의 정리 친구 · 이번 그림에서 보인 선택',72,660,1096,22,true,'#315f52');
   cards.forEach((card,i)=>{
-    const x=72+i*560,code=characterCode(i===0?'child':'adult');rect(x,697,536,160,i===0?'#f7f0e9':'#edf3f0',12);
-    picture(card.querySelector('.mascot-still'),x+14,707,128,134);
-    write(i===0?'아이의 친구':'부모님의 친구',x+162,711,350,18,true,i===0?'#8c5640':'#315f52');
+    const x=72+i*560,code=characterCode(i===0?'child':'adult'),profile=typeProfile(code);rect(x,697,536,210,i===0?'#f7f0e9':'#edf3f0',12);
+    picture(card.querySelector('.mascot-still'),x+8,735,120,150);
+    write(i===0?'아이의 친구':'부모님의 친구',x+146,711,366,18,true,i===0?'#8c5640':'#315f52');
     const name=card.querySelector('figcaption strong')?.textContent??'';
-    const end=write(name,x+162,744,350,23,true);
-    write(code?code+' · '+typeKeys(code):'고르기 어려웠던 답을 천천히 살펴봐요.',x+162,Math.max(793,end+7),350,16,false,'#4e6058');
+    const end=write(name+(code?' · '+code:''),x+146,742,366,22,true);
+    write(profile?profile.brief:'고르기 어려웠던 답을 천천히 살펴봐요.',x+146,Math.max(779,end+7),366,17,false,'#4e6058');
   });
-  write('03  같은 방, 두 사람의 선택',72,884,1096,22,true,'#315f52');
-  rect(72,924,1096,36,'#315f52',5);
-  write('관찰 항목',88,932,166,18,true,'#ffffff');write('아이의 선택',281,932,410,18,true,'#ffffff');write('부모님의 선택',735,932,410,18,true,'#ffffff');
+  write('03  같은 방, 두 사람의 선택',72,930,1096,22,true,'#315f52');
+  rect(72,967,1096,35,'#315f52',5);
+  write('관찰 항목',88,975,166,18,true,'#ffffff');write('아이의 선택',281,975,410,18,true,'#ffffff');write('부모님의 선택',735,975,410,18,true,'#ffffff');
   reviewQuestions.forEach((q,i)=>{
-    const y=960+i*52;rect(72,y,1096,52,i%2?'#f6f8f7':'#ffffff');line(72,y+51,1096,'#e4e9e6');
-    write(q.title,88,y+13,166,18,true);write(reviewAnswerLabel(q,reviewAnswers.child[i].choice),281,y+11,410,18);write(reviewAnswerLabel(q,reviewAnswers.adult[i].choice),735,y+11,410,18);
+    const y=1002+i*43;rect(72,y,1096,43,i%2?'#f6f8f7':'#ffffff');line(72,y+42,1096,'#e4e9e6');
+    write(q.title,88,y+10,166,17,true);write(reviewAnswerLabel(q,reviewAnswers.child[i].choice),281,y+8,410,17);write(reviewAnswerLabel(q,reviewAnswers.adult[i].choice),735,y+8,410,17);
   });
   write('04  집에서 이어 갈 가족 미션',72,1244,1096,22,true,'#315f52');
   const {mission,childIndex}=missionPlan();write(mission.title,72,1283,1096,29,true);write(mission.intro,74,1327,1092,19,false,'#64736e');
@@ -3059,6 +3091,7 @@ document.addEventListener("click", (event) => {
     case 'station-create': return createStation();
     case 'station-join': return joinStation();
     case 'photo-location':
+      narrate('photo-intro');
       app.querySelector('#print-options')?.close();
       app.querySelector('#family-photo-upload')?.scrollIntoView({block:'start',behavior:'smooth'});
       return app.querySelector('[data-family-photo]')?.focus({preventScroll:true});
@@ -3213,5 +3246,4 @@ if(requestedStationLink.has('pair') || requestedStationLink.has('key')) {
   else if(["child","adult"].includes(stationRole))openStationRole(stationRole);
   else show("home",false);
 }
-
 

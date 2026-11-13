@@ -21,11 +21,12 @@ jobs:
         with:
           node-version: '24'
       - run: node tests/backend.mjs
+      - run: node tests/accessibility.mjs
       - run: python app/build.py
       - run: python build_cloud.py
       - uses: actions/upload-artifact@v4
         with:
-          name: siseonsai-final-v7
+          name: siseonsai-final-v9
           path: |
             final/app/
             final/server.py

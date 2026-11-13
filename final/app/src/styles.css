@@ -1246,3 +1246,25 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 .opening-caption{min-height:3.2em;font-size:.9rem;line-height:1.6;color:#40594e}
 @media(max-width:680px){.family-graph-panel .choice-picture{max-width:360px}.chart-answer-key{font-size:.72rem;grid-template-columns:1fr 1.9fr 1.9fr}.chart-answer-key>*{padding:8px 5px}.parent-back-pages .record-heading h2{font-size:1.45rem}}
 @media print{.result-graph-jump{display:none!important}}
+
+/* Spoken picture choices and evidence-based family feedback, final review v9. */
+.storybook .review-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+.spoken-pointer{display:none;position:absolute;top:10px;left:10px;z-index:3;font-size:2.2rem;line-height:1;background:#fff8d7;border-radius:50%;padding:6px;box-shadow:0 2px 8px #5a492733;pointer-events:none}
+.storybook .option.spoken-choice{border-color:#b07a15;outline:4px solid #ffd951;outline-offset:1px;background:#fff1bf;box-shadow:0 0 0 7px #ffd95130}
+.option.spoken-choice .spoken-pointer{display:block}
+.unsure-symbol{display:inline-grid;place-items:center;min-width:24px;height:24px;border:2px solid currentColor;border-radius:50%;font-weight:800}
+.type-profile{text-align:left;border-top:1px solid #e4dbcc;padding-top:12px}
+.type-profile h3{font-size:.94rem;color:#315f52;margin:12px 0 5px}
+.type-profile p{font-size:.9rem;line-height:1.85;margin:0 0 10px;word-break:keep-all}
+.type-profile .voice-button{margin:4px 0}
+.type-character .type-keys{font-size:.76rem;line-height:1.8}
+.observation-opinion{padding:24px 0;border-top:1px solid #dde5de;margin-top:24px}
+.observation-opinion h2{margin:6px 0 12px}
+.observation-opinion p{line-height:1.85;word-break:keep-all}
+.observation-action{padding:16px;background:#f0f5ee;border-radius:12px}
+.observation-action b{display:block;color:#315f52;margin-bottom:7px}
+.opinion-basis,.chart-how{font-size:.8rem;color:#5c6c62;margin:12px 0}
+.opinion-basis summary,.chart-how summary{cursor:pointer;color:#315f52}
+.chart-how li{margin:7px 0}
+@media(prefers-reduced-motion:no-preference){.spoken-choice .spoken-pointer{animation:spoken-hand 1.2s ease-in-out infinite}@keyframes spoken-hand{50%{transform:translateY(7px)}}}
+@media print{.spoken-pointer,.opinion-basis{display:none!important}.type-profile p{font-size:8pt}}

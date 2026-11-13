@@ -171,6 +171,9 @@ async function loadImages(names) {
 }
 
 // ---------- sound ----------
+const EMBEDDED = new URLSearchParams(location.search).get('embedded')==='1';
+let hostNarrating=false;
+const sendGuide=stage=>{if(EMBEDDED)parent.postMessage({type:'siseon-egg-guide',code:TYPE_CODE,stage},location.origin);};
 const SND = ['egg_call', 'knock', 'knockin', 'crack', 'whoosh', 'riser', 'boom', 'chime'];
 let master = null, actx = null, buffers = {}, raw = {}, soundOn = new URLSearchParams(location.search).get("sound") !== "off", customBuf = null, customRaw = null;
 async function decodeOne(n) {
@@ -191,7 +194,7 @@ async function ensureAudio() {
 function playBuf(b, gain = 1, rate = 1) {
   if (!soundOn || !actx || !b) return;
   const s = actx.createBufferSource(); s.buffer = b; s.playbackRate.value = rate;
-  const g = actx.createGain(); g.gain.value = gain; s.connect(g).connect(master || actx.destination); s.start();
+  const g = actx.createGain(); g.gain.value = gain * (hostNarrating ? 0.15 : 1); s.connect(g).connect(master || actx.destination); s.start();
 }
 const play = (n, gain, rate) => playBuf(buffers[n], gain, rate);
 soundBtn.addEventListener('click', () => {
@@ -284,7 +287,8 @@ function callOut(now, lines) {
   st.callT = now; st.callText = lines;
   ensureAudio().then(() => play('knockin', 1.0));
   // The same narrator as the book, at its original speed.
-  if (lines === INTRO) setTimeout(() => play('egg_call', 1.0), 450);
+  if(EMBEDDED)sendGuide(lines===INTRO?'ready':'more');
+  else if (lines === INTRO) setTimeout(() => play('egg_call', 1.0), 450);
 }
 function drawBubble(now) {
   let lines = null, t0 = 0;
@@ -598,11 +602,13 @@ async function boot() {
     ec = document.createElement('canvas'); ec.width = G.EW; ec.height = G.EH; ex = ec.getContext('2d');
     prepCracks();
     try { await Promise.all([document.fonts.load('96px Jua'), document.fonts.load('900 64px "Noto Sans KR"', TYPE_NAME + TYPE_CODE)]); } catch (e) {}
-    st = newState(); updateHud();
+    st = newState(); if(EMBEDDED){st.called=true;st.callT=nowS();} updateHud();
+    sendGuide('ready');
     document.getElementById('loading').hidden = true;
     fetchSounds();
     requestAnimationFrame(frame);
   } catch (e) {
+    sendGuide('error');
     const loading=document.getElementById('loading');loading.textContent='그림을 다시 불러올까요?';loading.dataset.loadError=String(e.message||e);
     const retry=document.createElement('button');retry.textContent='다시 불러오기';retry.onclick=()=>location.reload();loading.append(retry);
   }
@@ -612,6 +618,7 @@ async function boot() {
 addEventListener('message', e => {
   if(e.origin !== location.origin || e.source !== parent || !e.data || e.data.type !== 'siseon-egg-controls')return;
   soundOn = e.data.sound === true;
+  hostNarrating = e.data.narrating === true;
   if(actx && (!soundOn || e.data.paused)) actx.suspend().catch(()=>{});
 });
 document.addEventListener('visibilitychange',()=>{
