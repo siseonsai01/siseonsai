@@ -2941,7 +2941,7 @@ async function renderPrintImage(report) {
   if(chart)picture(chart,76,370,424,260);
   else write('고르기 어려웠던 답은 점을 채우지 않고 남겨 두었어요.',96,418,392,20);
   write('● 아이',548,382,250,22,true,'#b45040');write('□ 부모님',820,382,300,22,true,'#355b9b');
-  write('점이 겹치면 같은 답이에요. 점의 안쪽·바깥쪽은 서로 다른 보기를 뜻해요.',548,421,590,18,false,'#5f7066');
+  write('점이 겹치면 같은 그림을 고른 거예요.\n안쪽과 바깥쪽은 서로 다른 보기예요.',548,421,590,18,false,'#5f7066');
   const opinion=observationOpinion();
   write('같이 이야기해요',548,479,590,19,true,'#315f52');
   const opinionEnd=write(opinion.observation.split('. ')[0]+'.',548,510,590,18,false,'#4e6058');
