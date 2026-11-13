@@ -1,4 +1,4 @@
-const APP_RELEASE='20261114-18';
+const APP_RELEASE='20261114-19';
 const json=(status,data)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
 async function appAsset(req,env){
   const response=await env.ASSETS.fetch(req),type=response.headers.get('content-type')||'',path=new URL(req.url).pathname;
@@ -172,8 +172,14 @@ async function stationApi(req,db,url,p){
   for(let n=0;n<8;n++){
     const row=await read(db,'stations',sid);if(!row)fail(404,'현장 연결이 만료됐어요. 진행자가 다시 준비해 주세요.');const s=JSON.parse(row.data),role=auth(req,s.tokens);
     if(m==='PATCH'){
-      if(role!=='adult')fail(403,'부모님 쪽 진행자 화면에서 다음 가족을 시작해 주세요.');
-      if(p.next || p.begin){
+      // Preparing the current round is safe for either tablet and idempotent.
+      // Only an explicit parent next/begin operation may create a new family.
+      if(p.prepare){
+        if(!s.connected.child)fail(409,'태블릿 두 대를 먼저 연결해 주세요.');
+        if(p.round!==s.round)fail(409,'다음 가족으로 바뀌었어요. 준비를 다시 눌러 주세요.');
+        if(s.readyRound!==s.round){s.readyRound=s.round;if(!changed(await update(db,'stations',sid,s,row.data).run()))continue;}
+      }else if(role!=='adult')fail(403,'부모님 쪽 진행자 화면에서 다음 가족을 시작해 주세요.');
+      else if(p.next || p.begin){
         await retainFamily(db,sid,s);
         if(!s.connected.child)fail(409,'태블릿 두 대를 먼저 연결해 주세요.');
         if(p.round!==s.round)fail(409,'이미 다음 가족으로 바뀌었어요. 화면을 다시 확인해 주세요.');

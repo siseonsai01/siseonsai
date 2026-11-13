@@ -98,8 +98,16 @@ ok((await call('/api/families','POST',null)).status===400,'invalid JSON body rej
 const trial=(await call('/api/stations','POST',{})).body;
 const trialChild=(await call('/api/stations/join','POST',{code:trial.pairCode})).body;
 ok(!trial.prepared,'a station does not silently start a new questionnaire');
+const beforePrepare=sqlite.prepare('SELECT count(*) AS n FROM families').get().n;
+const preparations=await Promise.all([call('/api/stations/'+trial.id,'PATCH',{prepare:true,round:1},trialChild.token),call('/api/stations/'+trial.id,'PATCH',{prepare:true,round:1},trial.token)]);
+ok(preparations.every(r=>r.status===200&&r.body.prepared&&r.body.round===1&&r.body.family.code===trial.family.code),'either tablet prepares the same round concurrently');
+ok(sqlite.prepare('SELECT count(*) AS n FROM families').get().n===beforePrepare,'preparation never creates a duplicate family');
 await call('/api/families/'+trial.family.code,'PATCH',{answers:adult,complete:true},trial.family.token);
 await call('/api/families/'+trial.family.code,'PATCH',{answers:child,complete:true},trialChild.family.token);
+for(const token of [trial.token,trialChild.token]){
+ const resumed=await call('/api/stations/'+trial.id,'PATCH',{prepare:true,round:1},token);
+ ok(resumed.status===200&&resumed.body.family.bothComplete&&resumed.body.family.ownAnswers.every(a=>a.choice),'repeat preparation preserves completed family answers');
+}
 ok((await call('/api/stations/'+trial.id,'PATCH',{begin:true,round:1},trialChild.token)).status===403,'child cannot clear another participant answers');
 const fresh=await call('/api/stations/'+trial.id,'PATCH',{begin:true,round:1},trial.token);
 ok(fresh.status===200&&fresh.body.prepared&&fresh.body.round===2,'parent explicitly starts a prepared fresh attempt');
@@ -109,6 +117,7 @@ ok(freshChild.prepared&&freshChild.family.code===fresh.body.family.code&&freshCh
 const past=(await call('/api/families/'+trial.family.code,'GET',undefined,trial.family.token)).body;
 ok(past.bothComplete&&past.answers.child[0].choice==='B'&&past.answers.adult[0].choice==='A','starting fresh preserves prior family record');
 ok((await call('/api/stations/'+trial.id,'PATCH',{begin:true,round:1},trial.token)).status===409,'duplicate stale start cannot clear fresh attempt');
+ok((await call('/api/stations/'+trial.id,'PATCH',{prepare:true,round:1},trialChild.token)).status===409,'stale child preparation cannot mark a later family ready');
 const manager='e'.repeat(64),managerPath='/api/stations/'+a.id+'/collection-access';
 ok((await call(managerPath,'POST',{key:manager},c.token)).status===403,'child cannot provision collection access');
 const access=await call(managerPath,'POST',{key:manager},a.token);ok(access.status===200&&access.body.retention==='no_automatic_deletion','operator collection link provisioned');

@@ -7,7 +7,7 @@ const offline_paper_mascot = {"FHMB":"assets/paper_mascot-FHMB.webp","FHMD":"ass
 "use strict";
 
 const roles = { child: "아이", adult: "부모님" };
-document.documentElement.dataset.appRelease='20261114-18';
+document.documentElement.dataset.appRelease='20261114-19';
 document.documentElement.dataset.startView=new URLSearchParams(location.search).get('view')||'';
 const activityIntro = [
   "장난감을 어디에 두면 너도 부모님도 찾기 쉬울까?",
@@ -1951,11 +1951,11 @@ async function beginFreshBook() {
   try {
     const session=stationSession;
     const latest=await stationRequest('/'+session.id,'GET');
-    const data=session.role==='adult' && latest.connected.child ? await stationRequest('/'+session.id,'PATCH',{begin:true,round:latest.round}) : latest;
+    const data=latest.connected.child && !latest.prepared ? await stationRequest('/'+session.id,'PATCH',{prepare:true,round:latest.round}) : latest;
     if(session!==stationSession)return;
     acceptStation(data,true,'intro');startStationPolling();prepared=true;
-    if(!data.prepared)narrate('waiting-start');
-  } catch(error){familyNotice(error.message || '준비 화면을 열지 못했어요. 다시 시도해 주세요.');if(!app.querySelector('[data-action="retry-preparation"]'))app.querySelector('.station-ready .actions')?.insertAdjacentHTML('beforeend','<button class="button primary" data-action="retry-preparation">준비 다시 하기 →</button>');} finally {stationBusy=false;if(button?.isConnected){button.disabled=false;button.innerHTML=label;}const start=app.querySelector('[data-action="station-start"]');if(start&&prepared)start.disabled=!(stationView?.connected.child&&stationView?.prepared&&!familyView?.ownAnswers.some(a=>a.choice));markNextReady();}
+    // The child tablet reads the shared picture on this explicit visit only.
+  } catch(error){familyNotice(error.message || '준비 화면을 열지 못했어요. 다시 시도해 주세요.');if(!app.querySelector('[data-action="retry-preparation"]'))app.querySelector('.station-ready .actions')?.insertAdjacentHTML('beforeend','<button class="button primary" data-action="retry-preparation">준비 다시 하기 →</button>');} finally {stationBusy=false;if(button?.isConnected){button.disabled=false;button.innerHTML=label;}const start=app.querySelector('[data-action="station-start"]');if(start&&prepared){start.disabled=!(stationView?.connected.child&&stationView?.prepared);const status=app.querySelector('.station-ready [data-family-status]');if(status&&!start.disabled)status.textContent=familyView?.ownAnswers.some(a=>a.choice)?'저장된 답을 이어 볼 수 있어요. 새 가족은 진행자 메뉴에서 시작해 주세요.':'각자 준비되면 첫 장을 펼쳐 주세요.';}markNextReady();}
 }
 function bookRoleLabel() {
   const role=stationSession?.role || familySession?.role || stationEntryRole;
@@ -1971,8 +1971,8 @@ function syncBookRoleBadge() {
 }
 function familyIntro() {
   if(!stationSession)return stationSetup();
-  const ready=!stationBusy && stationView?.connected.child && stationView?.prepared===true && !familyView?.ownAnswers.some(a=>a.choice);
-  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">${stationSession.role==='adult'?'큰 방 그림을 살펴보신 뒤 첫 장을 펼쳐 주세요.':'큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.'}</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div>${familyView?.ownAnswers.some(a=>a.choice)?'<button class="text-link" data-action="resume-review">내가 고른 답 다시 보기</button>':''}<p class="small family-status" data-family-status role="status">${ready?'각자의 마음에 가까운 그림을 골라 주세요.':'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.'}</p></section>`;
+  const ready=!stationBusy && stationView?.connected.child && stationView?.prepared===true;
+  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">${stationSession.role==='adult'?'아이 태블릿의 그림 안내를 함께 듣고, 준비되면 첫 장을 펼쳐 주세요.':'큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.'}</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>${familyView?.ownAnswers.some(a=>a.choice)?'내 답 이어 보기':'첫 장 펼치기'} →</button></div><p class="small family-status" data-family-status role="status">${ready?(familyView?.ownAnswers.some(a=>a.choice)?'저장된 답을 이어 볼 수 있어요. 새 가족은 진행자 메뉴에서 시작해 주세요.':'각자 준비되면 첫 장을 펼쳐 주세요.'):'연결을 확인하고 있어요. 준비가 끝나면 첫 장을 펼칠 수 있어요.'}</p></section>`;
 }
 function acceptStation(data,initial=false,initialScreen='home') {
   if(stationView && data.round<stationView.round)return;
@@ -1993,7 +1993,7 @@ function acceptStation(data,initial=false,initialScreen='home') {
     familyView=null;currentScreen='home';receiveFamily(data.family,true);
     history.replaceState(null,'',location.pathname+'?station='+data.role);
     if(initial)show(initialScreen);
-    else if(changed)show(priorScreen==='intro'?'intro':'home');
+    else if(changed)show(priorScreen==='intro'?'intro':'home',true,false);
     else if(data.family.bothComplete)show('report');
     else if(data.family.complete)show('waiting');
     else if(data.family.ownAnswers.some(a=>a.choice))edit(data.role,0);
@@ -2001,9 +2001,10 @@ function acceptStation(data,initial=false,initialScreen='home') {
   } else {
     receiveFamily(data.family);
     app.querySelectorAll('[data-station-status]').forEach(n=>n.textContent=data.connected.child?'두 책이 연결됐어요 ✓':'다른 태블릿을 기다려요');
-    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!(!stationBusy && data.connected.child && data.prepared && !data.family.ownAnswers.some(a=>a.choice));
+    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!(!stationBusy && data.connected.child && data.prepared);
+    if(start)start.textContent=(data.family.ownAnswers.some(a=>a.choice)?'내 답 이어 보기':'첫 장 펼치기')+' →';
     if(data.connected.child)app.querySelector('.station-pair')?.remove();
-    const status=app.querySelector('.station-ready [data-family-status]');if(status)status.textContent=start?.disabled?'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.':'두 화면이 연결됐어요. 첫 장을 펼쳐 주세요.';
+    const status=app.querySelector('.station-ready [data-family-status]');if(status)status.textContent=start?.disabled?'연결을 확인하고 있어요. 준비가 끝나면 첫 장을 펼칠 수 있어요.':data.family.ownAnswers.some(a=>a.choice)?'저장된 답을 이어 볼 수 있어요. 새 가족은 진행자 메뉴에서 시작해 주세요.':'각자 준비되면 첫 장을 펼쳐 주세요.';
     if(start && wasDisabled!==start.disabled)markNextReady();
   }
 }
@@ -2537,7 +2538,7 @@ function show(screen, focus = true, readVoice = true) {
     else narrate('cover',true);
   }
   else if (screen !== "home" && screen !== 'stationLink') {
-    if(screen === "intro") {if(stationSession)narrate(stationView?.prepared ? "room-play" : "waiting-start");else if(new URLSearchParams(location.search).has("connect"))narrate("intro");}
+    if(screen === "intro") {if(stationSession){if(stationSession.role==='child')narrate("room-play");}else if(new URLSearchParams(location.search).has("connect"))narrate("intro");}
     else if(screen === "waiting") narrate("waiting-"+state.role);
     else if(screen === "report") narrate(state.demo && location.hash==='#family-choice-graph' ? 'chart' : characterCode(endingRole())?"ending":"ending-quiet");
     else narrate(screen);
@@ -3261,7 +3262,7 @@ document.addEventListener("click", (event) => {
     case 'station-copy-child': return copyStationChildUrl();
     case 'station-next': return nextStationFamily();
     case 'station-renew': return renewStationPair();
-    case 'station-start': return stationView?.connected.child && stationView.prepared && !familyView?.ownAnswers.some(a=>a.choice) ? startBookFromCover(target) : undefined;
+    case 'station-start': return stationView?.connected.child && stationView.prepared ? startBookFromCover(target) : undefined;
     case "review-start": return familySession ? edit(familySession.role,state.index) : show("intro");
     case "review-next": return reviewNext();
     case "review-choice": return chooseReviewAnswer(value);

@@ -31,15 +31,32 @@ for(const role of ['child','adult']){p.stationSession.role=role;const html=p.fam
 for(const prepared of [false,true])for(const saved of [false,true]){
  p.stationView.prepared=prepared;p.familyView.ownAnswers[0].choice=saved?'A':null;
  const html=p.familyIntro(),tag=html.match(/<button[^>]+data-action="station-start"[^>]*>/)[0];
- assert.equal(tag.includes('disabled'),!prepared||saved);checks++;
+ assert.equal(tag.includes('disabled'),!prepared);assert.equal(html.includes('내 답 이어 보기'),saved);checks++;
 }
 const begin=s.slice(s.indexOf('async function beginFreshBook()'),s.indexOf('function bookRoleLabel()'));
 for(const role of ['adult','child']){
  const requests=[],shown=[],read=[];
- const ctx={app:{querySelector:()=>null},markNextReady(){},stationSession:{role,id:'isolated-test'},stationBusy:false,stationRequest:async(path,method,payload)=>{requests.push({method,payload});return {round:7,connected:{child:true},prepared:role==='adult'};},acceptStation:()=>{},startStationPolling(){},show:x=>shown.push(x),narrate:x=>read.push(x),familyNotice:err=>{throw Error(err);}};
+ const ctx={app:{querySelector:()=>null},markNextReady(){},stationSession:{role,id:'isolated-test'},stationBusy:false,stationRequest:async(path,method,payload)=>{requests.push({method,payload});return {round:7,connected:{child:true},prepared:method==='PATCH'};},acceptStation:()=>{},startStationPolling(){},show:x=>shown.push(x),narrate:x=>read.push(x),familyNotice:err=>{throw Error(err);}};
  vm.runInNewContext(begin,ctx);await ctx.beginFreshBook();
- assert.equal(requests.length,role==='adult'?2:1);if(role==='adult')assert.deepEqual(JSON.parse(JSON.stringify(requests[1].payload)),{begin:true,round:7});
- assert.deepEqual(shown,['intro']);assert.deepEqual(read,role==='child'?['waiting-start']:[]);assert.equal(ctx.stationBusy,false);checks++;
+ assert.equal(requests.length,2);assert.deepEqual(JSON.parse(JSON.stringify(requests[1].payload)),{prepare:true,round:7});
+ assert.deepEqual(shown,['intro']);assert.deepEqual(read,[]);assert.equal(ctx.stationBusy,false);checks++;
+}
+// Refresh/cover start resumes the current round for either role, including saved answers.
+for(const role of ['adult','child'])for(const saved of [false,true]){
+ const requests=[],data={round:9,prepared:true,connected:{child:true},family:{ownAnswers:[{choice:saved?'A':null}]}};
+ const ctx={stationSession:{role,id:'isolated-refresh'},stationBusy:false,app:{querySelector:()=>null},show(){},stationRequest:async(p,m)=>{requests.push(m);return data;},acceptStation:value=>assert.equal(value,data),startStationPolling(){},markNextReady(){},familyNotice:e=>{throw Error(e);}};
+ vm.runInNewContext(begin,ctx);await ctx.beginFreshBook();assert.deepEqual(requests,['GET']);checks++;
+}
+// A polling round change cannot auto-read or reset the tablet's cover/navigation.
+for(const role of ['adult','child']){
+ const calls=[],c={stationView:{round:1},currentScreen:'intro',familySession:{code:'old',role},familyView:null,familyPoll:0,familySaveTimer:0,familyPending:false,state:{},clearTimeout(){},clearAnswers(){},queueFamilySave(){throw Error('unexpected write');},familyStorage:()=>'',localStorage:{setItem(){},getItem:()=>null,removeItem(){}},history:{replaceState(){}},location:{pathname:'/app/'},receiveFamily:d=>{c.familyView=d;},show:(...args)=>calls.push(args)};
+ vm.runInNewContext(accept,c);c.acceptStation({round:2,role,family:{code:'new',token:'test',ownAnswers:[]}});
+ assert.deepEqual(calls,[['intro',true,false]]);checks++;
+}
+const introVoice=s.slice(s.indexOf('if(screen === "intro") {if(stationSession)'),s.indexOf('\n    else if(screen === "waiting")'));
+for(const role of ['adult','child']){
+ const read=[];vm.runInNewContext(introVoice,{screen:'intro',stationSession:{role},narrate:x=>read.push(x)});
+ assert.deepEqual(read,role==='child'?['room-play']:[]);checks++;
 }
 {
  const calls=[],shown=[];const ctx={app:{querySelector:()=>null},markNextReady(){},stationSession:{role:'adult',id:'new-test-pair'},stationBusy:false,stationRequest:async(path,method)=>{calls.push(method);return {round:1,connected:{child:false},prepared:false};},acceptStation(){},startStationPolling(){},show:x=>shown.push(x),narrate(){},familyNotice:e=>{throw Error(e);}};

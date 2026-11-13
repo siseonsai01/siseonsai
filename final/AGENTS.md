@@ -1,3 +1,12 @@
+# 2026-11-14 새로고침·각 기기 준비 v19
+
+- Cover start resumes the current family. Either paired role may prepare an unprepared current round via idempotent prepare:true; it changes no answers, family code or round. New families require the existing explicit parent operator-menu action. Do not bring back parent-cover-as-reset behavior.
+- First-page readiness does not depend on the other role visiting its cover, narration ending, or the current role having no saved answers. Saved rounds explicitly show 내 답 이어 보기; blank new rounds retain no preselected answers. Connection/request failures remain disabled with a retry.
+- Only the child tablet automatically narrates the shared preparation picture. Parent retains a manual listen button. Polling round changes must not automatically restart either tablet's narration.
+- Tests cover both role start orders, repeated preparation and refresh, simultaneous prepare, stale rounds, saved answers, and no duplicate families. Real family data must never be reset for QA. Fixed links, retention and existing voice files remain unchanged. Runtime release is 20261114-19. Physical iPad microphone loudness remains subject to actual speaker verification.
+
+---
+
 # 2026-11-14 전체 음성 전환 통합 v18
 
 - user reports that replay and following questions remain quiet after microphone input. Treat this as persistent output routing, not a single quiet recording. Physical iPad speaker volume is not observable from DOM or successful mocked playback.
