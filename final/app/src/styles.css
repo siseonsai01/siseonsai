@@ -1297,3 +1297,5 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 
 /* Keep the introduction brief; spoken captions appear during playback. */
 .hero-stage .opening-caption:not(.is-caption){display:none}
+
+.voice-recovery{position:sticky;top:8px;z-index:30;display:flex;justify-content:center;margin:8px 0 18px}.voice-recovery .button{min-height:54px;padding:12px 22px;background:#ffdf62;color:#243f33;box-shadow:0 2px 10px #4b54342b}.opening-audio.needs-tap [data-action="listen"]{outline:2px solid #d4ae5c;outline-offset:3px}

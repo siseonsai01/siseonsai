@@ -6,7 +6,7 @@ const voices=JSON.parse(source.match(/const offlineVoice = (\{.*?\});/)[1]);
 let checks=0;
 const nodes=Array.from({length:2},()=>({spoken:false,classList:{toggle(name,value){this.owner.spoken=value;},remove(){this.owner.spoken=false;}}}));nodes.forEach(n=>n.classList.owner=n);
 const context={offlineVoice:voices,reviewChoices:['A','B'],state:{role:'child',index:0},currentScreen:'quiz',voiceEnabled:true,playingScene:null,narrationQueue:[],playbackId:0,coverMotion:null,
-  document:{hidden:false},app:{querySelectorAll:()=>nodes,querySelector:()=>null},syncGuidePointer(){},reasonVoiceSupported:()=>true,bookRoleLabel:()=>context.state.role==='adult'?'부모용':'아이용',stopPageTurnSound(){},stopCoverMotion(){},syncVoiceControls(){},markNextReady(){},clearNextReady(){},startCoverMotion(){},motionAllowed:()=>false};
+  narrationRecovery:null,familySession:null,document:{hidden:false,addEventListener(){}},app:{querySelectorAll:()=>nodes,querySelector:()=>null},syncGuidePointer(){},reasonVoiceSupported:()=>true,bookRoleLabel:()=>context.state.role==='adult'?'부모용':'아이용',stopPageTurnSound(){},stopCoverMotion(){},stopNextCue(){},syncVoiceControls(){},markNextReady(){},clearNextReady(){},startCoverMotion(){},motionAllowed:()=>false};
 const played=[];
 context.voiceAudio={handlers:{},paused:true,ended:false,currentTime:0,src:'',getAttribute(){return this.src;},play(){this.paused=false;this.ended=false;played.push(context.playingScene);return Promise.resolve();},pause(){this.paused=true;},addEventListener(type,handler){this.handlers[type]=handler;}};
 const highlight=source.slice(source.indexOf('function highlightSpokenChoice()'),source.indexOf('// Adapted from',source.indexOf('function highlightSpokenChoice()')));

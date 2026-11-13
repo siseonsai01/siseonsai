@@ -22,6 +22,7 @@ jobs:
           node-version: '24'
       - run: node tests/backend.mjs
       - run: node tests/collection.mjs
+      - run: node tests/playback.mjs
       - run: node tests/accessibility.mjs
       - run: node tests/navigation.mjs
       - run: node tests/speech-input.mjs
@@ -30,7 +31,7 @@ jobs:
       - run: python build_cloud.py
       - uses: actions/upload-artifact@v4
         with:
-          name: siseonsai-final-v14
+          name: siseonsai-final-v15
           path: |
             final/app/
             final/server.py

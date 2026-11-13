@@ -165,11 +165,12 @@ const mobilePrintFile = appleMobile || inAppBrowser || /Android/i.test(navigator
   window.self !== window.top || typeof window.print !== "function";
 let printExport = null;
 let printPreparation = null;
-const voiceAudio = new Audio();
-voiceAudio.preload = "auto";
-voiceAudio.id = 'narration-audio';
-voiceAudio.hidden = true;
-document.body.appendChild(voiceAudio);
+const narrationMedia = new Audio();
+narrationMedia.preload = "auto";
+narrationMedia.id = 'narration-audio';
+narrationMedia.hidden = true;
+document.body.appendChild(narrationMedia);
+const voiceAudio = window.SiseonNarration.create(narrationMedia);
 let voiceEnabled = localStorage.getItem('siseonsai-storybook2-sound') !== 'off';
 let playingScene = null;
 let playbackId = 0;
@@ -312,6 +313,7 @@ const coverCaptions = [[0,"안녕, 우리 친구! 여기는 토끼들의 방이�
 const parentCoverCaptions = [[0,"부모님, 반갑습니다!"],[2.286,"아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요."],[6.646,"다섯 질문에 각자 답하며 서로의 생각을 알아보세요."],[10.766,"정답은 없어요."],[12.566,"재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요."],[16.466,"우리 이야기 시작 버튼을 눌러 주세요."]];
 let coverMotion = null;
 let narrationQueue = [];
+let narrationRecovery = null;
 let missionPausedVoice = null;
 
 function releaseCoverVideo(m) {
@@ -466,6 +468,7 @@ function stopCoverMotion() {
 
 
 function stopNarration(preserveCoverTail = false) {
+  narrationRecovery=null;app.querySelector('.voice-recovery')?.remove();
   if (preserveCoverTail && coverMotion?.video && coverMotion.video.readyState >= 2 && !coverMotion.video.paused && motionAllowed()) coverMotion.tail = true;
   else stopCoverMotion();
   playbackId++;
@@ -495,27 +498,58 @@ function playNarrationClip(scene, tryAutomatically=false, resumeAt=0) {
   if(!scene || !voiceEnabled || document.hidden) {markNextReady();return;}
   const source=offlineVoice[roleVoiceScene(scene)];
   if(!source) {markNextReady();return;}
-  clearNextReady();
+  stopNextCue();
   if(voiceAudio.getAttribute('src')!==source)voiceAudio.src=source;
   else voiceAudio.currentTime=0;
   const id=++playbackId;
-  playingScene=scene;syncVoiceControls();highlightSpokenChoice();
+  voiceAudio.currentTime=resumeAt;
+  playingScene=scene;syncVoiceControls();highlightSpokenChoice();markNextReady();
+  voiceAudio.warm?.(narrationQueue.map(s=>offlineVoice[roleVoiceScene(s)]).filter(Boolean));
   voiceAudio.play().then(()=>{
     if(id!==playbackId)return;
-    if(resumeAt>0)voiceAudio.currentTime=resumeAt;
     syncVoiceControls();
     if(scene==='cover')startCoverMotion(false);
-  }).catch(()=>{
+    if(scene.startsWith('motion-') && app.querySelector('#mission-motion')?.dataset.phase==='paused')missionMotion?.play();
+  }).catch(error=>{
     if(id!==playbackId)return;
-    stopNarration();
-    const status=app.querySelector('.voice-status');
-    if(status)status.textContent='소리를 들으려면 듣기 버튼을 눌러 주세요.';
-    if(scene==='cover') {
-      startCoverMotion(false,true);
-      app.querySelector('.opening-audio')?.classList.add('needs-tap');
-    }
+    holdNarration(scene,[...narrationQueue],voiceAudio.currentTime||resumeAt);
   });
 }
+function narrationScreenKey(){return [currentScreen,state.role,state.index,familySession?.code||''].join(':');}
+function holdNarration(scene,queue,time){
+  if(!scene || scene==='page-turn')return;
+  const saved={scene,queue,time:Math.max(0,time||0),screen:narrationScreenKey()};
+  stopNarration();narrationRecovery=saved;
+  if(scene.startsWith('motion-'))missionMotion?.pause();
+  if(!document.hidden){
+    const status=app.querySelector('.voice-status');if(status)status.textContent='소리를 이어 들으려면 듣기 버튼을 눌러 주세요.';
+    if(scene==='cover')app.querySelector('.opening-audio')?.classList.add('needs-tap');
+    else app.insertAdjacentHTML('afterbegin','<div class="voice-recovery screen-only" role="status"><button class="button primary" type="button" data-action="resume-voice">🔊 눌러서 계속 듣기</button></div>');
+  }
+  markNextReady();
+}
+function resumeNarration(){
+  const saved=narrationRecovery;if(!saved||!voiceEnabled||document.hidden||saved.screen!==narrationScreenKey())return;
+  stopNarration();narrationQueue=saved.queue;playNarrationClip(saved.scene,false,saved.time);
+}
+function unlockNarration(event){
+  if(event?.isTrusted===false || !voiceEnabled || (event?.type==='keydown'&&!['Enter',' '].includes(event.key)))return;
+  voiceAudio.unlock?.().catch(()=>{});
+}
+document.addEventListener('click',unlockNarration,{capture:true});
+document.addEventListener('touchend',unlockNarration,{capture:true,passive:true});
+document.addEventListener('keydown',unlockNarration,{capture:true});
+voiceAudio.addEventListener('interrupted',()=>{if(playingScene)holdNarration(playingScene,[...narrationQueue],voiceAudio.currentTime);});
+voiceAudio.addEventListener('error',()=>{if(playingScene)holdNarration(playingScene,[...narrationQueue],voiceAudio.currentTime);});
+function suspendNarrationForPage(){
+  cancelReasonVoice();
+  const manuallyPaused=missionPausedVoice?.scene===playingScene&&voiceAudio.paused;
+  const saved=playingScene&&playingScene!=='page-turn'&&!manuallyPaused?{scene:playingScene,queue:[...narrationQueue],time:voiceAudio.currentTime,screen:narrationScreenKey()}:narrationRecovery;
+  const pendingPage=playingScene==='page-turn';
+  stopPageTurnSound();stopNarration();
+  narrationRecovery=saved||(pendingPage?{scene:'story-'+state.index,queue:[state.role+'-'+state.index,...(state.role==='child'?[...(state.index===0?['choices-intro']:[]),'option-child-'+state.index+'-A','option-child-'+state.index+'-B']:[]),'choices-ready'],time:0,screen:narrationScreenKey()}:null);
+}
+function restoreNarrationForPage(){if(document.hidden)return;if(narrationRecovery)resumeNarration();else markNextReady();}
 
 voiceAudio.addEventListener("timeupdate", highlightSpokenChoice);
 voiceAudio.addEventListener("playing", syncVoiceControls);
@@ -534,18 +568,9 @@ voiceAudio.addEventListener("ended", () => {
   }[scene];
   if (next) app.querySelector(next)?.scrollIntoView({ block: "nearest", behavior: motionAllowed() ? "smooth" : "instant" });
 });
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    cancelReasonVoice();
-    if(playingScene?.startsWith('motion-') || playingScene==='mission-done')missionPausedVoice={scene:playingScene,time:voiceAudio.currentTime};
-    stopNarration();
-  }
-  else if(app.querySelector('.closed-storybook') && !coverMotion) {
-    if(voiceEnabled === false) startCoverMotion(false,true);
-    else narrate('cover',true);
-  }
-});
-window.addEventListener("pagehide", () => {cancelReasonVoice();stopNarration();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)suspendNarrationForPage();else restoreNarrationForPage();});
+window.addEventListener('pagehide',suspendNarrationForPage);
+window.addEventListener('pageshow',restoreNarrationForPage);
 
 
 function beginVoiceIntro() {
@@ -1848,10 +1873,14 @@ app.addEventListener("input", (event) => {
 let stationSession=null,stationView=null,stationPoll=0,stationBusy=false,stationEntryRole=null;
 let stationLinkCandidate=null,stationLinkBusy=false,stationLinkError=false;
 const stationStorage=role=>'siseonsai-field-station-v1-'+role;
+async function fetchWithDeadline(url,options={},milliseconds=10000){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),milliseconds);
+  try{return await fetch(url,{...options,signal:controller.signal});}finally{clearTimeout(timer);}
+}
 async function stationRequest(path='',method='GET',body,session=stationSession) {
   const headers={'Content-Type':'application/json'};
   if(session?.token)headers.Authorization='Bearer '+session.token;
-  const response=await fetch('/api/stations'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',signal:AbortSignal.timeout(10000)});
+  const response=await fetchWithDeadline('/api/stations'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});
   const data=await response.json();
   if(!response.ok)throw new Error(data.error || '현장 연결을 확인해 주세요.');
   return data;
@@ -2038,9 +2067,9 @@ async function familyRequest(path, method = 'GET', body, session = familySession
   if(location.protocol==='file:') throw new Error('가족 연결은 파일 대신 실행 중인 작업실 주소에서 열어 주세요.');
   const headers = {'Content-Type':'application/json'};
   if (session?.token) headers.Authorization = 'Bearer ' + session.token;
-  const response = await fetch('/api/families' + path, {
+  const response = await fetchWithDeadline('/api/families' + path, {
     method, headers, body: body === undefined ? undefined : JSON.stringify(body),
-    signal: AbortSignal.timeout(10000), cache:'no-store',
+    cache:'no-store',
   });
   const data = await response.json().catch(() => ({error:'가족 연결 서버가 없어요. 작업실 주소로 열어 주세요.'}));
   if (!response.ok) throw new Error(data.error || '가족 연결을 확인해 주세요.');
@@ -2262,9 +2291,9 @@ async function finishBookPage() {
   finally {familyBusy=false;}
 }
 function markNextReady() {
-  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','family-results','start','next','adult','report'];
+  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','family-results','resume-voice','start','next','adult','report'];
   app.querySelectorAll(actions.map(action=>'button[data-action="'+action+'"]').join(',')+',.voice-next').forEach(button=>{
-    button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])') && !playingScene && !coverMotion?.silent);
+    button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])'));
   });
   queueNextCue();
   syncGuidePointer();
@@ -2316,8 +2345,8 @@ function unlockNextCueAudio(event) {
   const AudioEngine=window.AudioContext || window.webkitAudioContext;
   if (!AudioEngine) return;
   try {
-    nextCueAudio ??= new AudioEngine();
-    if (nextCueAudio.state === 'suspended') nextCueAudio.resume().then(queueNextCue).catch(()=>{});
+    if(!nextCueAudio||nextCueAudio.state==='closed')nextCueAudio=new AudioEngine();
+    if (nextCueAudio.state !== 'running') nextCueAudio.resume().then(queueNextCue).catch(()=>{});
     else queueNextCue();
   } catch (_) { /* The bright button remains available if sound is blocked. */ }
 }
@@ -2332,7 +2361,7 @@ window.addEventListener('pagehide',()=>{
 function animateBookTurn(previous) {
   bookTurn?.cancel(); bookTurn=null;
   document.querySelectorAll('.book-turn-sheet').forEach(n=>n.remove());
-  if(!previous || !motionAllowed() || !app.querySelector('.review-survey')) return;
+  if(!previous || !motionAllowed() || !previous.animate || !app.querySelector('.review-survey')) return;
   const bounds=app.querySelector('.review-survey').getBoundingClientRect(), parentBounds=app.getBoundingClientRect();
   previous.className+=' book-turn-sheet';previous.setAttribute('aria-hidden','true');previous.inert=true;
   previous.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
@@ -3182,6 +3211,7 @@ document.addEventListener("click", (event) => {
   const { action, role, index, value } = target.dataset;
   queueMicrotask(markNextReady);
   switch (action) {
+    case 'resume-voice': return resumeNarration();
     case "home": return show('home');
     case "hatch-start": return startEndingEgg();
     case "mission-open": return openMissionTheater();
@@ -3244,6 +3274,7 @@ document.addEventListener("click", (event) => {
         voiceEnabled = true;
         localStorage.setItem('siseonsai-storybook2-sound','on');
       }
+      unlockNarration(event);
       if (value === "cover" && playingScene === "cover") return stopNarration();
       return narrate(value);
     case "type-gallery":
@@ -3254,7 +3285,7 @@ document.addEventListener("click", (event) => {
     case "toggle-voice":
       voiceEnabled = !voiceEnabled;
       localStorage.setItem('siseonsai-storybook2-sound',voiceEnabled?'on':'off');
-      if (voiceEnabled) return narrate(value);
+      if (voiceEnabled) {unlockNarration(event);return narrate(value);}
       stopNextCue();
       stopPageTurnSound();
       return stopNarration();

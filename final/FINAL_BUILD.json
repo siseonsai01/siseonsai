@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "retained-family-collection-v14-20261113",
+  "revision": "safari-gesture-recovery-v15-20261113",
   "cloudBackendChecks": 64,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -25,5 +25,7 @@
     "containsPhotosOrCredentials": false
   },
   "stableEntry": "canonical private role URLs preserved",
-  "collectionValidation": "valid XLSX ZIP/XML, formula-safe text cells, scoped access, 200-record pagination, past-round retention"
+  "collectionValidation": "valid XLSX ZIP/XML, formula-safe text cells, scoped access, 200-record pagination, past-round retention",
+  "playbackChecks": 35,
+  "playback": "gesture-unlocked WebAudio, preserved narration queues, background recovery, independent enabled next-button effects; existing voice assets unchanged"
 }
