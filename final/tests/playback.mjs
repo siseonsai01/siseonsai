@@ -13,15 +13,17 @@ function fixture(fetcher=async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer
     constructor(){this.state='suspended';this.currentTime=0;this.sampleRate=24000;this.destination={};this.events={};this.sources=[];contexts.push(this);}
     addEventListener(type,fn){this.events[type]=fn;}
     resume(){this.state='running';return Promise.resolve();}
+    suspend(){this.state='suspended';return Promise.resolve();}
     close(){this.state='closed';return Promise.resolve();}
     createBuffer(){return {duration:0};}
     createBufferSource(){const node={onended:null,connect(){},disconnect(){},start:(when,offset)=>{node.started=true;node.offset=offset;},stop(){node.stopped=true;}};this.sources.push(node);return node;}
     decodeAudioData(bytes,resolve){const buffer={duration:10};resolve(buffer);return Promise.resolve(buffer);}
   }
-  const scope={window:{AudioContext:Context,fetch:fetcher},document:{baseURI:'https://example.test/app/'},navigator:{},URL,AbortController,setTimeout,clearTimeout,setInterval,clearInterval};
+  const session={type:'auto'};
+  const scope={window:{AudioContext:Context,fetch:fetcher},document:{baseURI:'https://example.test/app/'},navigator:{audioSession:session},URL,AbortController,setTimeout,clearTimeout,setInterval,clearInterval};
   vm.runInNewContext(playerSource,scope);
   const media={};const player=scope.window.SiseonNarration.create(media,{Context,fetch:fetcher,setInterval:fn=>{ticks.set(++tickId,fn);return tickId;},clearInterval:id=>ticks.delete(id)});
-  return {player,contexts,tick(){for(const fn of [...ticks.values()])fn();}};
+  return {player,contexts,session,tick(){for(const fn of [...ticks.values()])fn();}};
 }
 
 {
@@ -61,11 +63,22 @@ function fixture(fetcher=async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer
   const f=fixture(async()=>{throw Error('network offline');}),p=f.player;await p.unlock();p.src='bad.mp3';
   await assert.rejects(p.play(),/offline/);checks++;check(p.paused,'load failure leaves playback stopped for explicit recovery');p.dispose();
 }
+{
+  const f=fixture(),p=f.player;await p.unlock();p.src='question.mp3';
+  for(let i=0;i<3;i++){
+    p.beginCapture();check(f.session.type==='play-and-record'&&f.contexts[0].state==='suspended','capture explicitly suspends narration and selects the recording route');
+    await p.unlock();check(f.session.type==='play-and-record','a microphone tap cannot switch the route back');
+    await assert.rejects(p.play(),{name:'NotAllowedError'});checks++;
+    await p.endCapture();check(f.session.type==='playback'&&f.contexts[0].state==='running','capture end restores the original playback route before speech');
+    await p.play();p.pause();
+  }
+  check(f.contexts.length===1,'repeated dictation reuses one player instead of stacking outputs');p.dispose();
+}
 
 // Real app queue/lifecycle functions with an isolated document and player.
 const voices=JSON.parse(appSource.match(/const offlineVoice = (\{.*?\});/)[1]);
 const handlers={},played=[],inserted=[];
-const c={offlineVoice:voices,state:{role:'child',index:2},currentScreen:'quiz',familySession:{code:'test-family'},voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,
+const c={offlineVoice:voices,state:{role:'child',index:2},currentScreen:'quiz',familySession:{code:'test-family'},voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,reasonVoice:null,
   document:{hidden:false,addEventListener(){}},app:{querySelector:()=>null,querySelectorAll:()=>[],insertAdjacentHTML:(where,html)=>inserted.push(html)},
   voiceAudio:{src:'',currentTime:0,paused:true,ended:false,getAttribute(){return this.src;},play(){this.paused=false;played.push([c.playingScene,this.currentTime]);return Promise.resolve();},pause(){this.paused=true;},addEventListener:(name,fn)=>handlers[name]=fn,unlock(){c.unlocks=(c.unlocks||0)+1;return Promise.resolve();}},
   stopNextCue(){},stopCoverMotion(){},stopPageTurnSound(){},cancelReasonVoice(){},syncVoiceControls(){},highlightSpokenChoice(){},markNextReady(){},startCoverMotion(){},bookRoleLabel:()=>c.state.role==='adult'?'부모용':'아이용',reasonVoiceSupported:()=>true,missionMotion:null};

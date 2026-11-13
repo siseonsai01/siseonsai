@@ -36,13 +36,13 @@ for(const prepared of [false,true])for(const saved of [false,true]){
 const begin=s.slice(s.indexOf('async function beginFreshBook()'),s.indexOf('function bookRoleLabel()'));
 for(const role of ['adult','child']){
  const requests=[],shown=[],read=[];
- const ctx={stationSession:{role,id:'isolated-test'},stationBusy:false,stationRequest:async(path,method,payload)=>{requests.push({method,payload});return {round:7,connected:{child:true},prepared:role==='adult'};},acceptStation:()=>{},startStationPolling(){},show:x=>shown.push(x),narrate:x=>read.push(x),familyNotice:err=>{throw Error(err);}};
+ const ctx={app:{querySelector:()=>null},markNextReady(){},stationSession:{role,id:'isolated-test'},stationBusy:false,stationRequest:async(path,method,payload)=>{requests.push({method,payload});return {round:7,connected:{child:true},prepared:role==='adult'};},acceptStation:()=>{},startStationPolling(){},show:x=>shown.push(x),narrate:x=>read.push(x),familyNotice:err=>{throw Error(err);}};
  vm.runInNewContext(begin,ctx);await ctx.beginFreshBook();
  assert.equal(requests.length,role==='adult'?2:1);if(role==='adult')assert.deepEqual(JSON.parse(JSON.stringify(requests[1].payload)),{begin:true,round:7});
  assert.deepEqual(shown,['intro']);assert.deepEqual(read,role==='child'?['waiting-start']:[]);assert.equal(ctx.stationBusy,false);checks++;
 }
 {
- const calls=[],shown=[];const ctx={stationSession:{role:'adult',id:'new-test-pair'},stationBusy:false,stationRequest:async(path,method)=>{calls.push(method);return {round:1,connected:{child:false},prepared:false};},acceptStation(){},startStationPolling(){},show:x=>shown.push(x),narrate(){},familyNotice:e=>{throw Error(e);}};
+ const calls=[],shown=[];const ctx={app:{querySelector:()=>null},markNextReady(){},stationSession:{role:'adult',id:'new-test-pair'},stationBusy:false,stationRequest:async(path,method)=>{calls.push(method);return {round:1,connected:{child:false},prepared:false};},acceptStation(){},startStationPolling(){},show:x=>shown.push(x),narrate(){},familyNotice:e=>{throw Error(e);}};
  vm.runInNewContext(begin,ctx);await ctx.beginFreshBook();assert.deepEqual(calls,['GET']);assert.deepEqual(shown,['intro']);checks++;
 }
 const coverFunction={bookRoleLabel:()=>'',voiceTools:()=>'',voiceButton:()=>''};vm.runInNewContext(hero,coverFunction);

@@ -4,7 +4,8 @@
     const Context=env.Context||window.AudioContext||window.webkitAudioContext;
     const fetchAudio=env.fetch||window.fetch.bind(window),later=env.setInterval||setInterval,cancel=env.clearInterval||clearInterval;
     const listeners=new Map(),cache=new Map(),loading=new Map();
-    let context=null,node=null,buffer=null,url='',version=0,offset=0,began=0,paused=true,ended=false,unlocked=false,timer=0;
+    let context=null,node=null,buffer=null,url='',version=0,offset=0,began=0,paused=true,ended=false,unlocked=false,timer=0,capturing=false,clockStalled=false;
+    function session(type){try{if(navigator.audioSession&&navigator.audioSession.type!==type)navigator.audioSession.type=type;}catch{}}
     function emit(type){for(const item of [...(listeners.get(type)||[])]){if(item.once)api.removeEventListener(type,item.fn);item.fn.call(api,{type});}}
     function current(){return !paused&&context?Math.min(buffer?.duration||Infinity,offset+Math.max(0,context.currentTime-began)):offset;}
     function stopNode(){if(timer)cancel(timer);timer=0;const old=node;node=null;if(old){old.onended=null;try{old.stop();}catch{}old.disconnect();}}
@@ -15,23 +16,26 @@
       offset=Math.min(Math.max(0,offset),Math.max(0,buffer.duration-.01));
       node=context.createBufferSource();node.buffer=buffer;node.connect(context.destination);began=context.currentTime;paused=false;ended=false;
       node.onended=()=>finish(id);node.start(0,offset);emit('playing');emit('timeupdate');
-      timer=later(()=>{if(id!==version||paused)return;if(context.state!=='running'){pause();emit('interrupted');return;}emit('timeupdate');if(offset+context.currentTime-began>=buffer.duration+.12)finish(id);},120);
+      let lastClock=context.currentTime,lastWall=Date.now();
+      timer=later(()=>{if(id!==version||paused)return;if(context.currentTime>lastClock){lastClock=context.currentTime;lastWall=Date.now();}else if(Date.now()-lastWall>2000){clockStalled=true;pause();emit('interrupted');return;}if(context.state!=='running'){pause();emit('interrupted');return;}emit('timeupdate');if(offset+context.currentTime-began>=buffer.duration+.12)finish(id);},120);
     }
     function makeContext(){
-      context=new Context();
+      context=new Context();clockStalled=false;
       const observed=context;
       context.addEventListener?.('statechange',()=>{if(observed!==context||paused||context.state==='running')return;pause();emit('interrupted');});
     }
     function unlock(){
+      if(capturing)return Promise.resolve();
       if(!Context){unlocked=true;return Promise.resolve();}
       try{
-        if(!context||context.state==='closed'||context.state==='interrupted'){
+        session('playback');
+        if(unlocked&&context?.state==='running'&&!clockStalled)return Promise.resolve();
+        if(!context||context.state==='closed'||context.state==='interrupted'||clockStalled){
           const old=context;pause();makeContext();if(old&&old.state!=='closed')old.close().catch(()=>{});
         }
         // Both calls occur synchronously inside the trusted click/touch handler.
         const resumed=context.resume();unlocked=true;
         const primer=context.createBufferSource();primer.buffer=context.createBuffer(1,1,context.sampleRate);primer.connect(context.destination);primer.onended=()=>primer.disconnect();primer.start(0);
-        try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch{}
         return Promise.resolve(resumed);
       }catch(error){return Promise.reject(error);}
     }
@@ -62,6 +66,7 @@
       addEventListener(type,fn,options={}){if(options.signal?.aborted)return;const list=listeners.get(type)||new Set();list.add({fn,once:options.once});listeners.set(type,list);options.signal?.addEventListener('abort',()=>api.removeEventListener(type,fn),{once:true});},
       removeEventListener(type,fn){for(const item of listeners.get(type)||[])if(item.fn===fn)listeners.get(type).delete(item);},
       async play(){
+        if(capturing)throw Object.assign(new Error('Microphone is active'),{name:'NotAllowedError'});
         if(!Context)return media.play();
         if(!unlocked||!context)throw Object.assign(new Error('Tap once to enable audio'),{name:'NotAllowedError'});
         const id=++version;stopNode();paused=true;ended=false;emit('waiting');
@@ -72,6 +77,8 @@
         buffer=next;start(id);
       },
       pause,unlock,
+      beginCapture(){capturing=true;pause();if(context?.state==='running')context.suspend().catch(()=>{});session('play-and-record');},
+      async endCapture(){if(!capturing)return;capturing=false;session('playback');if(context&&context.state!=='closed')try{await boundedResume();}catch{}},
       warm(sources){if(Context&&unlocked&&context)for(const source of sources.slice(0,2))decoded(source).catch(()=>{});},
       dispose(){pause();cache.clear();if(context&&context.state!=='closed')context.close().catch(()=>{});}
     };

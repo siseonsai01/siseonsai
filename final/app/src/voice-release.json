@@ -94,11 +94,12 @@
       "fresh": true
     },
     "child-4": {
-      "file": "assets/storybookVoice-v13-child-4.mp3",
-      "sha256": "f6ebdc1ad4b3016d9ab3f6293b19785f46556a7ef526b16b376c4e85afe7e80c",
-      "seconds": 5.588,
+      "file": "assets/storybookVoice-v13-child-4-retake-v16.mp3",
+      "sha256": "e606d42d52aa8dac92d354580c8586f64271715f8d89e25577ade3b00cd73a47",
+      "seconds": 4.92,
       "completeTake": true,
-      "fresh": true
+      "fresh": true,
+      "retake": "20261113-v16"
     },
     "first-look": {
       "file": "assets/storybookVoice-v13-first-look.mp3",

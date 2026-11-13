@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "safari-gesture-recovery-v15-20261113",
+  "revision": "stable-cover-egg-microphone-v16-20261113",
   "cloudBackendChecks": 64,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -26,6 +26,8 @@
   },
   "stableEntry": "canonical private role URLs preserved",
   "collectionValidation": "valid XLSX ZIP/XML, formula-safe text cells, scoped access, 200-record pagination, past-round retention",
-  "playbackChecks": 35,
-  "playback": "gesture-unlocked WebAudio, preserved narration queues, background recovery, independent enabled next-button effects; existing voice assets unchanged"
+  "playbackChecks": 48,
+  "playback": "gesture-unlocked WebAudio, preserved narration queues, background recovery, independent enabled next-button effects; existing voice assets unchanged",
+  "eggRecoveryChecks": 50,
+  "voiceRetake": "child-4 only: new complete take using previously selected storyteller; independent MP3 transcription exact; no voice processing"
 }

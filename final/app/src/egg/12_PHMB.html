@@ -601,7 +601,7 @@ async function boot() {
     names.forEach((n, i) => IMG[n] = imgs[i]);
     ec = document.createElement('canvas'); ec.width = G.EW; ec.height = G.EH; ex = ec.getContext('2d');
     prepCracks();
-    try { await Promise.all([document.fonts.load('96px Jua'), document.fonts.load('900 64px "Noto Sans KR"', TYPE_NAME + TYPE_CODE)]); } catch (e) {}
+    try { await Promise.race([Promise.all([document.fonts.load('96px Jua'), document.fonts.load('900 64px "Noto Sans KR"', TYPE_NAME + TYPE_CODE)]),new Promise(resolve=>setTimeout(resolve,1200))]); } catch (e) {}
     st = newState(); if(EMBEDDED){st.called=true;st.callT=nowS();} updateHud();
     sendGuide('ready');
     document.getElementById('loading').hidden = true;

@@ -1,5 +1,5 @@
 
-const offlineVoice = {"cover":"assets/storybookVoice-v13-cover.mp3","adult-0":"assets/storybookVoice-v13-adult-0.mp3","adult-1":"assets/storybookVoice-v13-adult-1.mp3","adult-2":"assets/storybookVoice-v13-adult-2.mp3","adult-3":"assets/storybookVoice-v13-adult-3.mp3","adult-4":"assets/storybookVoice-v13-adult-4.mp3","camera-error":"assets/storybookVoice-v13-camera-error.mp3","camera":"assets/storybookVoice-v13-camera.mp3","chart":"assets/storybookVoice-v13-chart.mp3","child-0":"assets/storybookVoice-v13-child-0.mp3","child-1":"assets/storybookVoice-v13-child-1.mp3","child-2":"assets/storybookVoice-v13-child-2.mp3","child-3":"assets/storybookVoice-v13-child-3.mp3","child-4":"assets/storybookVoice-v13-child-4.mp3","first-look":"assets/storybookVoice-v13-first-look.mp3","friend-FHMB":"assets/storybookVoice-v13-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v13-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v13-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v13-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v13-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v13-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v13-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v13-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v13-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v13-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v13-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v13-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v13-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v13-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v13-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v13-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v13-guide-1.mp3","guide-2":"assets/storybookVoice-v13-guide-2.mp3","guide-3":"assets/storybookVoice-v13-guide-3.mp3","guide":"assets/storybookVoice-v13-guide.mp3","intro":"assets/storybookVoice-v13-intro.mp3","print-options":"assets/storybookVoice-v13-print-options.mp3","report":"assets/storybookVoice-v13-report.mp3","result-answers":"assets/storybookVoice-v13-result-answers.mp3","setup":"assets/storybookVoice-v13-setup.mp3","reason-child-0":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v13-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v13-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v13-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v13-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v13-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v13-reason-adult-4.mp3","room-play":"assets/storybookVoice-v13-setup.mp3","story-0":"assets/storybookVoice-v13-story-0.mp3","story-1":"assets/storybookVoice-v13-story-1.mp3","story-2":"assets/storybookVoice-v13-story-2.mp3","story-3":"assets/storybookVoice-v13-story-3.mp3","story-4":"assets/storybookVoice-v13-story-4.mp3","waiting-child":"assets/storybookVoice-v13-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v13-waiting-adult.mp3","ending":"assets/storybookVoice-v13-report.mp3","mission-done":"assets/storybookVoice-v13-mission-done.mp3","motion-0-0":"assets/storybookVoice-v13-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v13-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v13-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v13-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v13-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v13-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v13-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v13-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v13-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v13-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v13-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v13-ending-quiet.mp3","option-child-0-A":"assets/storybookVoice-v13-option-child-0-A.mp3","option-child-0-B":"assets/storybookVoice-v13-option-child-0-B.mp3","option-child-1-A":"assets/storybookVoice-v13-option-child-1-A.mp3","option-child-1-B":"assets/storybookVoice-v13-option-child-1-B.mp3","option-child-2-A":"assets/storybookVoice-v13-option-child-2-A.mp3","option-child-2-B":"assets/storybookVoice-v13-option-child-2-B.mp3","option-child-3-B":"assets/storybookVoice-v13-option-child-3-B.mp3","option-child-4-A":"assets/storybookVoice-v13-option-child-4-A.mp3","option-child-4-B":"assets/storybookVoice-v13-option-child-4-B.mp3","choices-intro":"assets/storybookVoice-v13-choices-intro.mp3","choices-ready":"assets/storybookVoice-v13-choices-ready.mp3","egg-loading":"assets/storybookVoice-v13-egg-loading.mp3","egg-ready":"assets/storybookVoice-v13-egg-ready.mp3","egg-more":"assets/storybookVoice-v13-egg-more.mp3","egg-error":"assets/storybookVoice-v13-egg-error.mp3","photo-intro":"assets/storybookVoice-v13-photo-intro.mp3","friend-next":"assets/storybookVoice-v13-friend-next.mp3","option-child-3-A":"assets/storybookVoice-v13-option-child-3-A.mp3","purpose":"assets/storybookVoice-v13-cover.mp3","speech-invite":"assets/storybookVoice-v13-speech-invite.mp3","speech-typing":"assets/storybookVoice-v13-speech-typing.mp3","speech-done":"assets/storybookVoice-v13-speech-done.mp3","next-step":"assets/storybookVoice-v13-next-step.mp3","waiting-start":"assets/storybookVoice-v13-waiting-start.mp3","description-PVSD":"assets/storybookVoice-v13-description-PVSD.mp3","description-PVSB":"assets/storybookVoice-v13-description-PVSB.mp3","description-PVMD":"assets/storybookVoice-v13-description-PVMD.mp3","description-PVMB":"assets/storybookVoice-v13-description-PVMB.mp3","description-PHSD":"assets/storybookVoice-v13-description-PHSD.mp3","description-PHSB":"assets/storybookVoice-v13-description-PHSB.mp3","description-PHMD":"assets/storybookVoice-v13-description-PHMD.mp3","description-PHMB":"assets/storybookVoice-v13-description-PHMB.mp3","description-FVSD":"assets/storybookVoice-v13-description-FVSD.mp3","description-FVSB":"assets/storybookVoice-v13-description-FVSB.mp3","description-FVMD":"assets/storybookVoice-v13-description-FVMD.mp3","description-FVMB":"assets/storybookVoice-v13-description-FVMB.mp3","description-FHSD":"assets/storybookVoice-v13-description-FHSD.mp3","description-FHSB":"assets/storybookVoice-v13-description-FHSB.mp3","description-FHMD":"assets/storybookVoice-v13-description-FHMD.mp3","description-FHMB":"assets/storybookVoice-v13-description-FHMB.mp3","parent-cover":"assets/storybookVoice-v13-parent-cover.mp3","parent-speech-typing":"assets/storybookVoice-v13-parent-speech-typing.mp3","result-next":"assets/storybookVoice-v13-result-next.mp3","parent-first-look":"assets/storybookVoice-v13-parent-first-look.mp3"};
+const offlineVoice = {"cover":"assets/storybookVoice-v13-cover.mp3","adult-0":"assets/storybookVoice-v13-adult-0.mp3","adult-1":"assets/storybookVoice-v13-adult-1.mp3","adult-2":"assets/storybookVoice-v13-adult-2.mp3","adult-3":"assets/storybookVoice-v13-adult-3.mp3","adult-4":"assets/storybookVoice-v13-adult-4.mp3","camera-error":"assets/storybookVoice-v13-camera-error.mp3","camera":"assets/storybookVoice-v13-camera.mp3","chart":"assets/storybookVoice-v13-chart.mp3","child-0":"assets/storybookVoice-v13-child-0.mp3","child-1":"assets/storybookVoice-v13-child-1.mp3","child-2":"assets/storybookVoice-v13-child-2.mp3","child-3":"assets/storybookVoice-v13-child-3.mp3","child-4":"assets/storybookVoice-v13-child-4-retake-v16.mp3","first-look":"assets/storybookVoice-v13-first-look.mp3","friend-FHMB":"assets/storybookVoice-v13-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v13-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v13-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v13-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v13-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v13-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v13-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v13-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v13-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v13-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v13-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v13-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v13-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v13-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v13-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v13-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v13-guide-1.mp3","guide-2":"assets/storybookVoice-v13-guide-2.mp3","guide-3":"assets/storybookVoice-v13-guide-3.mp3","guide":"assets/storybookVoice-v13-guide.mp3","intro":"assets/storybookVoice-v13-intro.mp3","print-options":"assets/storybookVoice-v13-print-options.mp3","report":"assets/storybookVoice-v13-report.mp3","result-answers":"assets/storybookVoice-v13-result-answers.mp3","setup":"assets/storybookVoice-v13-setup.mp3","reason-child-0":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v13-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v13-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v13-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v13-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v13-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v13-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v13-reason-adult-4.mp3","room-play":"assets/storybookVoice-v13-setup.mp3","story-0":"assets/storybookVoice-v13-story-0.mp3","story-1":"assets/storybookVoice-v13-story-1.mp3","story-2":"assets/storybookVoice-v13-story-2.mp3","story-3":"assets/storybookVoice-v13-story-3.mp3","story-4":"assets/storybookVoice-v13-story-4.mp3","waiting-child":"assets/storybookVoice-v13-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v13-waiting-adult.mp3","ending":"assets/storybookVoice-v13-report.mp3","mission-done":"assets/storybookVoice-v13-mission-done.mp3","motion-0-0":"assets/storybookVoice-v13-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v13-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v13-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v13-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v13-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v13-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v13-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v13-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v13-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v13-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v13-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v13-ending-quiet.mp3","option-child-0-A":"assets/storybookVoice-v13-option-child-0-A.mp3","option-child-0-B":"assets/storybookVoice-v13-option-child-0-B.mp3","option-child-1-A":"assets/storybookVoice-v13-option-child-1-A.mp3","option-child-1-B":"assets/storybookVoice-v13-option-child-1-B.mp3","option-child-2-A":"assets/storybookVoice-v13-option-child-2-A.mp3","option-child-2-B":"assets/storybookVoice-v13-option-child-2-B.mp3","option-child-3-B":"assets/storybookVoice-v13-option-child-3-B.mp3","option-child-4-A":"assets/storybookVoice-v13-option-child-4-A.mp3","option-child-4-B":"assets/storybookVoice-v13-option-child-4-B.mp3","choices-intro":"assets/storybookVoice-v13-choices-intro.mp3","choices-ready":"assets/storybookVoice-v13-choices-ready.mp3","egg-loading":"assets/storybookVoice-v13-egg-loading.mp3","egg-ready":"assets/storybookVoice-v13-egg-ready.mp3","egg-more":"assets/storybookVoice-v13-egg-more.mp3","egg-error":"assets/storybookVoice-v13-egg-error.mp3","photo-intro":"assets/storybookVoice-v13-photo-intro.mp3","friend-next":"assets/storybookVoice-v13-friend-next.mp3","option-child-3-A":"assets/storybookVoice-v13-option-child-3-A.mp3","purpose":"assets/storybookVoice-v13-cover.mp3","speech-invite":"assets/storybookVoice-v13-speech-invite.mp3","speech-typing":"assets/storybookVoice-v13-speech-typing.mp3","speech-done":"assets/storybookVoice-v13-speech-done.mp3","next-step":"assets/storybookVoice-v13-next-step.mp3","waiting-start":"assets/storybookVoice-v13-waiting-start.mp3","description-PVSD":"assets/storybookVoice-v13-description-PVSD.mp3","description-PVSB":"assets/storybookVoice-v13-description-PVSB.mp3","description-PVMD":"assets/storybookVoice-v13-description-PVMD.mp3","description-PVMB":"assets/storybookVoice-v13-description-PVMB.mp3","description-PHSD":"assets/storybookVoice-v13-description-PHSD.mp3","description-PHSB":"assets/storybookVoice-v13-description-PHSB.mp3","description-PHMD":"assets/storybookVoice-v13-description-PHMD.mp3","description-PHMB":"assets/storybookVoice-v13-description-PHMB.mp3","description-FVSD":"assets/storybookVoice-v13-description-FVSD.mp3","description-FVSB":"assets/storybookVoice-v13-description-FVSB.mp3","description-FVMD":"assets/storybookVoice-v13-description-FVMD.mp3","description-FVMB":"assets/storybookVoice-v13-description-FVMB.mp3","description-FHSD":"assets/storybookVoice-v13-description-FHSD.mp3","description-FHSB":"assets/storybookVoice-v13-description-FHSB.mp3","description-FHMD":"assets/storybookVoice-v13-description-FHMD.mp3","description-FHMB":"assets/storybookVoice-v13-description-FHMB.mp3","parent-cover":"assets/storybookVoice-v13-parent-cover.mp3","parent-speech-typing":"assets/storybookVoice-v13-parent-speech-typing.mp3","result-next":"assets/storybookVoice-v13-result-next.mp3","parent-first-look":"assets/storybookVoice-v13-parent-first-look.mp3"};
 const reviewChoiceArt = [["assets/reviewChoiceArt.webp","assets/reviewChoiceArt-2.webp"],["assets/reviewChoiceArt-3.webp","assets/reviewChoiceArt-4.webp"],["assets/reviewChoiceArt-5.webp","assets/reviewChoiceArt-6.webp"],["assets/reviewChoiceArt-7.webp","assets/reviewChoiceArt-8.webp"],["assets/reviewChoiceArt-9.webp","assets/reviewChoiceArt-10.webp"]];
 const offline_paper_choice = {"B":"assets/paper_choice-B.webp","D":"assets/paper_choice-D.webp","F":"assets/paper_choice-F.webp","H":"assets/paper_choice-H.webp","M":"assets/paper_choice-M.webp","P":"assets/paper_choice-P.webp","S":"assets/paper_choice-S.webp","V":"assets/paper_choice-V.webp"};
 const offline_paper_smile = {"FHMB":"assets/paper_smile-FHMB.webp","FHMD":"assets/paper_smile-FHMD.webp","FHSB":"assets/paper_smile-FHSB.webp","FHSD":"assets/paper_smile-FHSD.webp","FVMB":"assets/local-e32d72c00eeac165.png","FVMD":"assets/paper_smile-FVMD.webp","FVSB":"assets/paper_smile-FVSB.webp","FVSD":"assets/paper_smile-FVSD.webp","PHMB":"assets/paper_smile-PHMB.webp","PHMD":"assets/paper_smile-PHMD.webp","PHSB":"assets/paper_smile-PHSB.webp","PHSD":"assets/paper_smile-PHSD.webp","PVMB":"assets/paper_smile-PVMB.webp","PVMD":"assets/paper_smile-PVMD.webp","PVSB":"assets/paper_smile-PVSB.webp","PVSD":"assets/paper_smile-PVSD.webp"};
@@ -235,7 +235,7 @@ function syncVoiceControls() {
 
 let reasonVoice=null,reasonVoiceKey=null,guideLastTarget=null;
 function reasonVoiceSupported(){return Boolean(window.SiseonVoiceInput?.supported());}
-function cancelReasonVoice(){reasonVoice?.cancel();reasonVoice=null;reasonVoiceKey=null;updateReasonMic();}
+function cancelReasonVoice(){reasonVoice?.cancel();reasonVoice=null;reasonVoiceKey=null;voiceAudio.endCapture?.();updateReasonMic();}
 function reasonVoiceStatus(text){const node=app.querySelector('.reason-mic-status');if(node)node.textContent=text;}
 function updateReasonMic(){
   const button=app.querySelector('[data-action="reason-mic"]');if(!button)return;
@@ -255,16 +255,18 @@ function toggleReasonVoice(){
   if(reasonVoice?.active){reasonVoice.stop();return;}
   if(!reasonVoiceSupported())return setupReasonVoice();
   stopNarration();
+  stopNextCue();stopPageTurnSound();voiceAudio.beginCapture?.();
   const key=[familySession?.code || 'local',state.role,state.index].join(':');reasonVoiceKey=key;
-  const valid=()=>currentScreen==='quiz' && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
+  let request;
+  const valid=()=>reasonVoice===request && currentScreen==='quiz' && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
   const base=app.querySelector('[name="review-reason"]')?.value || '';
   let received=false;
-  reasonVoice=window.SiseonVoiceInput.create({
+  reasonVoice=request=window.SiseonVoiceInput.create({
     status:text=>{if(valid())reasonVoiceStatus(text);},
     text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
-    end:()=>{if(!valid())return;updateReasonMic();if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
+    end:async()=>{await voiceAudio.endCapture?.();if(!valid())return;updateReasonMic();if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
   });
-  reasonVoice.start(base);updateReasonMic();
+  if(!reasonVoice.start(base))voiceAudio.endCapture?.();updateReasonMic();
 }
 function syncGuidePointer(){
   app.querySelectorAll('.guided-step').forEach(node=>node.classList.remove('guided-step'));
@@ -342,14 +344,8 @@ function updateCoverMotion(m) {
         m.text.classList.add("caption-in");
       }
     }
-    const video = m.video;
-    if (!m.silent && video && video.readyState >= 2) {
-      const end = Number.isFinite(video.duration) ? Math.max(0, video.duration - 0.015) : time + COVER_MOTION_LEAD;
-      const audioLength=Number.isFinite(voiceAudio.duration)?voiceAudio.duration:Math.max(1,end-COVER_MOTION_LEAD);
-      const wanted = Math.min(COVER_MOTION_LEAD+time/audioLength*Math.max(0,end-COVER_MOTION_LEAD),end);
-      video.playbackRate=Math.max(.5,Math.min(2,(end-COVER_MOTION_LEAD)/audioLength));
-      if (Math.abs(video.currentTime - wanted) > 0.25) video.currentTime = wanted;
-    }
+    // Let the muted illustration play once. Seeking it on every frame made a
+    // stalled Safari audio clock repeatedly drag the first picture backwards.
   }
 }
 
@@ -361,6 +357,7 @@ function mountCoverVideo(m) {
   video.className = "cover-art cover-motion-video screen-only";
   video.muted = true;
   video.playsInline = true;
+  video.loop = false;
   video.preload = "auto";
   video.disablePictureInPicture = true;
   video.setAttribute("aria-hidden", "true");
@@ -533,7 +530,7 @@ function resumeNarration(){
   stopNarration();narrationQueue=saved.queue;playNarrationClip(saved.scene,false,saved.time);
 }
 function unlockNarration(event){
-  if(event?.isTrusted===false || !voiceEnabled || (event?.type==='keydown'&&!['Enter',' '].includes(event.key)))return;
+  if(event?.isTrusted===false || !voiceEnabled || reasonVoice?.active || event?.target?.closest?.('[data-action="reason-mic"]') || (event?.type==='keydown'&&!['Enter',' '].includes(event.key)))return;
   voiceAudio.unlock?.().catch(()=>{});
 }
 document.addEventListener('click',unlockNarration,{capture:true});
@@ -1467,7 +1464,7 @@ function sharingPanel({ same, total }) {
 
 const eggGameFiles = {"FHSD": "01_FHSD.html", "FHSB": "02_FHSB.html", "FHMD": "03_FHMD.html", "FHMB": "04_FHMB.html", "PVSD": "05_PVSD.html", "PVSB": "06_PVSB.html", "PVMD": "07_PVMD.html", "PVMB": "08_PVMB.html", "PHSD": "09_PHSD.html", "PHSB": "10_PHSB.html", "PHMD": "11_PHMD.html", "PHMB": "12_PHMB.html", "FVSD": "13_FVSD.html", "FVSB": "14_FVSB.html", "FVMD": "15_FVMD.html", "FVMB": "16_FVMB.html"};
 function eggAsset(path) {
-  return new URL((location.pathname.includes('/src/') ? 'egg/' : 'src/egg/') + path, location.href).href;
+  return new URL((new URL(document.baseURI).pathname.includes('/src/') ? 'egg/' : 'src/egg/') + path, document.baseURI).href;
 }
 function missionPlan(matches = matchHabits()) {
   const index=matches.different[0];
@@ -1502,7 +1499,9 @@ function missionTheater(matches) {
 }
 const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":3.344},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.312},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.099},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":2.968},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":2.725},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":3.458},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":4.973},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.843},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.419},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":5.346},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":3.527},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.822}};
 let missionMotion=null;
+let eggLoadTimer=0;
 function stopEndingMedia() {
+  clearTimeout(eggLoadTimer);eggLoadTimer=0;
   missionPausedVoice=null;
   missionMotion?.destroy(); missionMotion=null;
   const frame=app.querySelector('#ending-egg-frame');
@@ -1521,10 +1520,22 @@ function startEndingEgg() {
   play.querySelector('.egg-invitation').hidden=true;play.querySelector('.hatched-friend').hidden=true;
   app.querySelector('#mission-theater').hidden=true;
   slot.hidden=false;
-  slot.innerHTML=`<iframe id="ending-egg-frame" title="알을 두드려 우리 친구 만나기" src="${eggAsset(eggGameFiles[code])}?embedded=1&voice=storybook-v3&sound=${voiceEnabled===false?'off':'on'}" allow="autoplay" referrerpolicy="no-referrer"></iframe><div class="actions"><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="small" role="status">알을 톡톡 눌러 주세요.</p>`;
+  clearTimeout(eggLoadTimer);
+  slot.innerHTML=`<iframe id="ending-egg-frame" title="알을 두드려 우리 친구 만나기" src="${eggAsset(eggGameFiles[code])}?embedded=1&voice=storybook-v3&sound=${voiceEnabled===false?'off':'on'}" allow="autoplay" referrerpolicy="no-referrer"></iframe><div class="actions"><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button><button class="text-link" data-action="hatch-retry">그림 다시 불러오기</button><button class="button" data-action="hatch-skip">친구 바로 만나기 →</button></div><p class="small egg-load-status" role="status">알 그림을 준비하고 있어요…</p>`;
   const frame=slot.querySelector('iframe');frame.addEventListener('load',syncEndingSound,{once:true});frame.focus();
+  eggLoadTimer=setTimeout(()=>{if(app.querySelector('#ending-egg-frame')===frame){const status=slot.querySelector('.egg-load-status');if(status)status.textContent='그림이 늦게 열리고 있어요. 다시 불러오거나 친구를 바로 만나 주세요.';queueEggGuide('egg-error');}},20000);
   slot.scrollIntoView({block:'start',behavior:motionAllowed()?'smooth':'auto'});
   narrate('egg-loading');
+}
+function revealEndingFriend(code=characterCode(endingRole())){
+  if(currentScreen!=='report'||code!==characterCode(endingRole()))return;
+  const play=app.querySelector('.ending-play');if(!play)return;
+  clearTimeout(eggLoadTimer);eggLoadTimer=0;
+  play.querySelector('#ending-egg-frame')?.remove();play.querySelector('.egg-game-slot').hidden=true;
+  play.querySelector('.egg-invitation').hidden=true;
+  const friend=play.querySelector('.hatched-friend');friend.hidden=false;friend.dataset.hatchedCode=code;
+  friend.querySelector('h2').focus({preventScroll:true});
+  stopNarration();narrationQueue=['friend-next'];playNarrationClip('friend-'+code);markNextReady();
 }
 function queueEggGuide(scene) {
   if(!voiceEnabled || document.hidden || playingScene===scene || narrationQueue.includes(scene))return;
@@ -1535,19 +1546,13 @@ addEventListener('message',event=>{
   const frame=app.querySelector('#ending-egg-frame');
   if(currentScreen!=='report' || event.origin!==location.origin || !frame || event.source!==frame.contentWindow || event.data?.code!==characterCode(endingRole()))return;
   if(event.data.type==='siseon-egg-guide') {
+    if(['ready','error'].includes(event.data.stage)){clearTimeout(eggLoadTimer);eggLoadTimer=0;const status=app.querySelector('.egg-load-status');if(status)status.textContent=event.data.stage==='ready'?'알을 톡톡 눌러 주세요.':'그림을 불러오지 못했어요. 다시 불러오거나 친구를 바로 만나 주세요.';}
     const scene={ready:'egg-ready',more:'egg-more',error:'egg-error'}[event.data.stage];
     if(scene)queueEggGuide(scene);
     return;
   }
   if(event.data.type!=='siseon-egg-hatched')return;
-  const play=app.querySelector('.ending-play');
-  frame.remove();play.querySelector('.egg-game-slot').hidden=true;
-  const friend=play.querySelector('.hatched-friend');friend.hidden=false;friend.dataset.hatchedCode=event.data.code;
-  friend.querySelector('h2').focus({preventScroll:true});
-  stopNarration();
-  narrationQueue=['friend-next'];
-  playNarrationClip('friend-'+event.data.code);
-  markNextReady();
+  revealEndingFriend(event.data.code);
 });
 
 function readMotionCaption(text,info) {
@@ -1929,6 +1934,8 @@ async function beginFreshBook() {
   if(!stationSession)return show('intro');
   if(stationBusy)return;
   stationBusy=true;
+  const button=app.querySelector('[data-action="begin-voice"]'),label=button?.innerHTML;
+  if(button){button.disabled=true;button.textContent='준비 화면을 열고 있어요…';}
   try {
     const session=stationSession;
     const latest=await stationRequest('/'+session.id,'GET');
@@ -1936,7 +1943,7 @@ async function beginFreshBook() {
     if(session!==stationSession)return;
     acceptStation(data,true);startStationPolling();show('intro');
     if(!data.prepared)narrate('waiting-start');
-  } catch(error){familyNotice(error.message);} finally {stationBusy=false;}
+  } catch(error){familyNotice(error.message || '준비 화면을 열지 못했어요. 시작 버튼을 다시 눌러 주세요.');} finally {stationBusy=false;if(button?.isConnected){button.disabled=false;button.innerHTML=label;}markNextReady();}
 }
 function bookRoleLabel() {
   const role=stationSession?.role || familySession?.role || stationEntryRole;
@@ -2076,7 +2083,8 @@ async function familyRequest(path, method = 'GET', body, session = familySession
   return data;
 }
 function familyNotice(message) {
-  const node = app.querySelector('[data-family-status]');
+  let node = app.querySelector('[data-family-status]');
+  if(!node&&currentScreen==='home'){app.querySelector('.cover-flow')?.insertAdjacentHTML('afterend','<p class="small family-status" data-family-status role="status"></p>');node=app.querySelector('[data-family-status]');}
   if (node) node.textContent = message;
 }
 function setFamilyAnswers(role, answers) {
@@ -2291,7 +2299,7 @@ async function finishBookPage() {
   finally {familyBusy=false;}
 }
 function markNextReady() {
-  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','mission-open','mission-play','family-results','resume-voice','start','next','adult','report'];
+  const actions=['review-next','book-start','book-cover','book-prepare','book-create','book-join','book-resume','book-setup','begin-voice','practice','guided-setup','review-start','station-create','station-join','station-start','station-next','hatch-start','hatch-skip','mission-open','mission-play','family-results','resume-voice','start','next','adult','report'];
   app.querySelectorAll(actions.map(action=>'button[data-action="'+action+'"]').join(',')+',.voice-next').forEach(button=>{
     button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])'));
   });
@@ -3214,6 +3222,8 @@ document.addEventListener("click", (event) => {
     case 'resume-voice': return resumeNarration();
     case "home": return show('home');
     case "hatch-start": return startEndingEgg();
+    case "hatch-retry": return startEndingEgg();
+    case "hatch-skip": return revealEndingFriend();
     case "mission-open": return openMissionTheater();
     case "mission-play": return playMission();
     case "family-results": return openFamilyResults();
