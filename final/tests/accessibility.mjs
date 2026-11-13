@@ -39,3 +39,9 @@ for(const name of fs.readdirSync(new URL('../app/src/egg/',import.meta.url)).fil
   new vm.Script(html.match(/<script>([\s\S]*?)<\/script>/)[1]);checks++;
 }
 console.log(checks+' narration, picture-choice, type-profile and egg lifecycle checks passed');
+
+context.state={role:'adult',index:0};context.currentScreen='report';played.length=0;context.narrate('mission-done');assert.equal(context.playingScene,'mission-done');context.voiceAudio.ended=true;context.voiceAudio.handlers.ended();assert.equal(context.playingScene,'result-next');context.stopNarration();
+for(const role of ['adult','child']){context.state.role=role;context.narrate('cover');assert.equal(context.voiceAudio.src,voices[role==='adult'?'parent-cover':'cover']);context.stopNarration();}
+console.log('Final-result voice continuation and parent/child cover playback passed');
+
+context.state={role:'adult',index:2};context.currentScreen='quiz';played.length=0;context.narrate('adult-2');while(context.playingScene){context.voiceAudio.ended=true;context.voiceAudio.handlers.ended();}assert.deepEqual(played,['story-2','adult-2','choices-ready']);console.log('Parent questions use polite adult guidance without child-only option prompts');

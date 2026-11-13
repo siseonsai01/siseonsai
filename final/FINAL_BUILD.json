@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "compact-parent-cover-v12b-20261113",
+  "revision": "whole-fresh-storybook-v13-20261113",
   "cloudBackendChecks": 43,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -13,5 +13,9 @@
   ],
   "navigationChecks": 31,
   "dictationMockChecks": 14,
-  "voiceRenewal": "Current published audio unchanged; whole fresh voice v13 scheduled for 17:05 KST with role-specific parent introduction."
+  "voiceRenewal": "complete fresh set:116 routes,109 complete takes; no older audio reused; no pitch/tempo/timbre/loudness processing",
+  "freshVoiceRoutes": 116,
+  "uniqueCompleteTakes": 109,
+  "independentDecodedClipChecks": 109,
+  "eggGames": 16
 }

@@ -180,7 +180,7 @@ async function decodeOne(n) {
   if (!actx || buffers[n] || !raw[n]) return;
   try { buffers[n] = await actx.decodeAudioData(raw[n].slice(0)); } catch (e) {}
 }
-async function fetchSounds() { await Promise.all(SND.map(async n => { try { raw[n] = await (await fetch(n === 'egg_call' ? 'a/egg_call-storybook-v7.wav' : `a/${n}.wav`)).arrayBuffer(); decodeOne(n); } catch (e) {} })); }
+async function fetchSounds() { await Promise.all(SND.map(async n => { try { raw[n] = await (await fetch(n === 'egg_call' ? 'a/egg_call-storybook-v13.wav' : `a/${n}.wav`)).arrayBuffer(); decodeOne(n); } catch (e) {} })); }
 async function ensureAudio() {
   if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
   try {

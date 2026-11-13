@@ -1,0 +1,846 @@
+{
+  "revision": "whole-fresh-storybook-v13-20261113",
+  "complete": true,
+  "routes": {
+    "cover": {
+      "file": "assets/storybookVoice-v13-cover.mp3",
+      "sha256": "21f23b84a59410af5305a8b3b29a1d5c3fc7a15f37fc3e0db502db3b5821338b",
+      "seconds": 19.37,
+      "completeTake": true,
+      "fresh": true
+    },
+    "adult-0": {
+      "file": "assets/storybookVoice-v13-adult-0.mp3",
+      "sha256": "9d0c8fde3904a79f081dbb93913768ba0e1a418f3c6240248768f19f2f55c17a",
+      "seconds": 5.949,
+      "completeTake": true,
+      "fresh": true
+    },
+    "adult-1": {
+      "file": "assets/storybookVoice-v13-adult-1.mp3",
+      "sha256": "12cb8cbf007cbd3bb237766a0146a5c9543379e63d5d49d8e9772b910206e80e",
+      "seconds": 5.714,
+      "completeTake": true,
+      "fresh": true
+    },
+    "adult-2": {
+      "file": "assets/storybookVoice-v13-adult-2.mp3",
+      "sha256": "a23f9d6bfee437f4876a8fdccfd677c2d381bf5f705affe1a0914fdfd82ebaa4",
+      "seconds": 5.8,
+      "completeTake": true,
+      "fresh": true
+    },
+    "adult-3": {
+      "file": "assets/storybookVoice-v13-adult-3.mp3",
+      "sha256": "e338f8e800fbc84687d76eb55a5caee269fcdee9e8377c2c17728482e02d498b",
+      "seconds": 5.706,
+      "completeTake": true,
+      "fresh": true
+    },
+    "adult-4": {
+      "file": "assets/storybookVoice-v13-adult-4.mp3",
+      "sha256": "9ff3053e4e15f22b3f2aab87b2c021e6fb3c7412c06012468a8da3a214522abe",
+      "seconds": 5.932,
+      "completeTake": true,
+      "fresh": true
+    },
+    "camera-error": {
+      "file": "assets/storybookVoice-v13-camera-error.mp3",
+      "sha256": "5649b970710987a5cd7af94a01ac263d02800d27f5944cbe8a1af5188eccceca",
+      "seconds": 7.586,
+      "completeTake": true,
+      "fresh": true
+    },
+    "camera": {
+      "file": "assets/storybookVoice-v13-camera.mp3",
+      "sha256": "8a19eb24946ec510a2a8a19b3a3cf18da9a37279dfa778c9ee7b13584788add5",
+      "seconds": 7.641,
+      "completeTake": true,
+      "fresh": true
+    },
+    "chart": {
+      "file": "assets/storybookVoice-v13-chart.mp3",
+      "sha256": "dd1988232bcb1d3f8e12cd0a584797135d65650eda1d51ac6b6ca9fad73d4776",
+      "seconds": 14.486,
+      "completeTake": true,
+      "fresh": true
+    },
+    "child-0": {
+      "file": "assets/storybookVoice-v13-child-0.mp3",
+      "sha256": "6da3e110a7beefc5af3d815a08b350cccaf621ad960d56698dea9ab8d080ef22",
+      "seconds": 3.694,
+      "completeTake": true,
+      "fresh": true
+    },
+    "child-1": {
+      "file": "assets/storybookVoice-v13-child-1.mp3",
+      "sha256": "3d4f5996d9e05a1c1fd62f52ad92d103840e821cdb9207bafdee6092d56e98bc",
+      "seconds": 4.353,
+      "completeTake": true,
+      "fresh": true
+    },
+    "child-2": {
+      "file": "assets/storybookVoice-v13-child-2.mp3",
+      "sha256": "1fffa6057909760dabb36aa2c5ff96e98e6c9bf621e3c2324b8eda526beaa02c",
+      "seconds": 4.817,
+      "completeTake": true,
+      "fresh": true
+    },
+    "child-3": {
+      "file": "assets/storybookVoice-v13-child-3.mp3",
+      "sha256": "ef927ffd4b252fb5f5d7b3bb63945d494d0e0c68ce09879e24a9bec200706e0f",
+      "seconds": 4.162,
+      "completeTake": true,
+      "fresh": true
+    },
+    "child-4": {
+      "file": "assets/storybookVoice-v13-child-4.mp3",
+      "sha256": "f6ebdc1ad4b3016d9ab3f6293b19785f46556a7ef526b16b376c4e85afe7e80c",
+      "seconds": 5.588,
+      "completeTake": true,
+      "fresh": true
+    },
+    "first-look": {
+      "file": "assets/storybookVoice-v13-first-look.mp3",
+      "sha256": "3961f9c93a42b2e13c740a3512774aabdc9288255a7e82845fe222f81ec1859f",
+      "seconds": 7.575,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FHMB": {
+      "file": "assets/storybookVoice-v13-friend-FHMB.mp3",
+      "sha256": "3bc56799b15e7a9b00875ecba966cb377d22e5766e2f1e535db959b4aac8cf7a",
+      "seconds": 5.426,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FHMD": {
+      "file": "assets/storybookVoice-v13-friend-FHMD.mp3",
+      "sha256": "90d2b0748cb040a91efc2c51ffab7a7d58a66313001a3b25eb1dc1435f51ee26",
+      "seconds": 5.112,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FHSB": {
+      "file": "assets/storybookVoice-v13-friend-FHSB.mp3",
+      "sha256": "d0f9ec124c3457a9efec2cf2403433e660d3764bde2f14f6e54b5bdf3c313132",
+      "seconds": 5.606,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FHSD": {
+      "file": "assets/storybookVoice-v13-friend-FHSD.mp3",
+      "sha256": "a8b37193554d0b7d0039640d0fdda732d1aa27a57dcfc4957ddd4294714a493c",
+      "seconds": 6.664,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FVMB": {
+      "file": "assets/storybookVoice-v13-friend-FVMB.mp3",
+      "sha256": "6e0125ef79f0b7b7e0698ba3872f6f2e836b58da83d87491db4a3e74825cebf2",
+      "seconds": 6.119,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FVMD": {
+      "file": "assets/storybookVoice-v13-friend-FVMD.mp3",
+      "sha256": "efd444bb1d3eb6e063ec510821cec46b823fb572c9a50140a407366d6a2613f0",
+      "seconds": 4.861,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FVSB": {
+      "file": "assets/storybookVoice-v13-friend-FVSB.mp3",
+      "sha256": "d8f598cb63507c5e3fd966e64b9303dd622aee1a5479c33fd8c793ce7ef17da9",
+      "seconds": 4.872,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-FVSD": {
+      "file": "assets/storybookVoice-v13-friend-FVSD.mp3",
+      "sha256": "fe79ab1c40ebb3c0b43a714af323a487e28d2da0ad29ccd2aad554072a019b7d",
+      "seconds": 5.265,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PHMB": {
+      "file": "assets/storybookVoice-v13-friend-PHMB.mp3",
+      "sha256": "5d3ff2ee7a8d54ecc29746d9900cca94f70b4d561c3a6a3934f660609ac8ed05",
+      "seconds": 5.073,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PHMD": {
+      "file": "assets/storybookVoice-v13-friend-PHMD.mp3",
+      "sha256": "4d70b43e749f787d7ff6195e54a4d40a6854abd46d2f865136814843506b1bab",
+      "seconds": 4.737,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PHSB": {
+      "file": "assets/storybookVoice-v13-friend-PHSB.mp3",
+      "sha256": "91dce120be2724713738e428a6c68763916fe04ac81fa997d194ed65a1282d15",
+      "seconds": 4.744,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PHSD": {
+      "file": "assets/storybookVoice-v13-friend-PHSD.mp3",
+      "sha256": "52bc587a52127311209410248cdbc95d2c7c8ab78721ed93e78148f2602935b4",
+      "seconds": 4.865,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PVMB": {
+      "file": "assets/storybookVoice-v13-friend-PVMB.mp3",
+      "sha256": "61daccddc70c7eb54be062d2944f636f21c655ea7487a7a93833346672cbec73",
+      "seconds": 4.499,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PVMD": {
+      "file": "assets/storybookVoice-v13-friend-PVMD.mp3",
+      "sha256": "b00db279c7ac1d5dd48ea32ca69d8abdd968d05ff37a3f713e00b9c733c3b459",
+      "seconds": 4.452,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PVSB": {
+      "file": "assets/storybookVoice-v13-friend-PVSB.mp3",
+      "sha256": "91ea8435f195b69d148107ec02a70ebdd504ea9cf95afda3e7b232fc2296e8cc",
+      "seconds": 4.311,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-PVSD": {
+      "file": "assets/storybookVoice-v13-friend-PVSD.mp3",
+      "sha256": "402efb7f43a8412371df20ac3f7e864d082f418b88fe420abba9646958b45ce3",
+      "seconds": 4.543,
+      "completeTake": true,
+      "fresh": true
+    },
+    "guide-1": {
+      "file": "assets/storybookVoice-v13-guide-1.mp3",
+      "sha256": "04ba36d618c40582cb3b5f9843ed49d65a2f918382ca68d9f80042367974e179",
+      "seconds": 6.652,
+      "completeTake": true,
+      "fresh": true
+    },
+    "guide-2": {
+      "file": "assets/storybookVoice-v13-guide-2.mp3",
+      "sha256": "0713c419d21606378ca7d237839b233f6cc57d17b4d19fbe61d5f8a516ba8350",
+      "seconds": 7.646,
+      "completeTake": true,
+      "fresh": true
+    },
+    "guide-3": {
+      "file": "assets/storybookVoice-v13-guide-3.mp3",
+      "sha256": "ecc428d3d0f89704aa87ac3a108bcfbc87a1d1cb89c812c6ea30c073d6e1a2e1",
+      "seconds": 6.77,
+      "completeTake": true,
+      "fresh": true
+    },
+    "guide": {
+      "file": "assets/storybookVoice-v13-guide.mp3",
+      "sha256": "d85fa9dbe945b0fc157e82244d98aa3d00fd9031f3d3b4f048733aadcc16a80b",
+      "seconds": 8.467,
+      "completeTake": true,
+      "fresh": true
+    },
+    "intro": {
+      "file": "assets/storybookVoice-v13-intro.mp3",
+      "sha256": "6866192c8642c3c11adb750c610a798b33fc6135df04bd9181a8164b50b65758",
+      "seconds": 10.298,
+      "completeTake": true,
+      "fresh": true
+    },
+    "print-options": {
+      "file": "assets/storybookVoice-v13-print-options.mp3",
+      "sha256": "327b243a9d7f602a0231a079ae13777bc7e03949afa30b8d0804c78e721408b1",
+      "seconds": 13.928,
+      "completeTake": true,
+      "fresh": true
+    },
+    "report": {
+      "file": "assets/storybookVoice-v13-report.mp3",
+      "sha256": "ee56f87b5326eaad238a7f9b3ea575fdc6746bbb3e66aac9078833269e28e7ca",
+      "seconds": 10.572,
+      "completeTake": true,
+      "fresh": true
+    },
+    "result-answers": {
+      "file": "assets/storybookVoice-v13-result-answers.mp3",
+      "sha256": "5cb07316e94222ab1c9129ec51fee13c6f9de7a1aee06c0f4cf80974d159df62",
+      "seconds": 7.629,
+      "completeTake": true,
+      "fresh": true
+    },
+    "setup": {
+      "file": "assets/storybookVoice-v13-setup.mp3",
+      "sha256": "05cd1638b8a4e2272b4700843bc9ae93a66284544041905a26796ef2968fdcad",
+      "seconds": 13.15,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-child-0": {
+      "file": "assets/storybookVoice-v13-reason-child-0.mp3",
+      "sha256": "96a726c6bfbf9dbbb0b0614d478eaa026e83645cf97a85386831cef59fa21dd2",
+      "seconds": 3.922,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-child-1": {
+      "file": "assets/storybookVoice-v13-reason-child-0.mp3",
+      "sha256": "96a726c6bfbf9dbbb0b0614d478eaa026e83645cf97a85386831cef59fa21dd2",
+      "seconds": 3.922,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-child-2": {
+      "file": "assets/storybookVoice-v13-reason-child-0.mp3",
+      "sha256": "96a726c6bfbf9dbbb0b0614d478eaa026e83645cf97a85386831cef59fa21dd2",
+      "seconds": 3.922,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-child-3": {
+      "file": "assets/storybookVoice-v13-reason-child-0.mp3",
+      "sha256": "96a726c6bfbf9dbbb0b0614d478eaa026e83645cf97a85386831cef59fa21dd2",
+      "seconds": 3.922,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-child-4": {
+      "file": "assets/storybookVoice-v13-reason-child-0.mp3",
+      "sha256": "96a726c6bfbf9dbbb0b0614d478eaa026e83645cf97a85386831cef59fa21dd2",
+      "seconds": 3.922,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-adult-0": {
+      "file": "assets/storybookVoice-v13-reason-adult-0.mp3",
+      "sha256": "46bd0376fba3b536a087575a9b8ace03c326369e8c4037ed1df32cfb9fd1c778",
+      "seconds": 2.177,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-adult-1": {
+      "file": "assets/storybookVoice-v13-reason-adult-1.mp3",
+      "sha256": "198cf50f83abeb8986a1b4d7b0e54e1958bfbca7634bfc761ec68d8c0ae3219f",
+      "seconds": 2.26,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-adult-2": {
+      "file": "assets/storybookVoice-v13-reason-adult-2.mp3",
+      "sha256": "4baad52412302f7358dbf498f4c6c11f1f4db25867ac26aed6f366b63323f644",
+      "seconds": 1.94,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-adult-3": {
+      "file": "assets/storybookVoice-v13-reason-adult-3.mp3",
+      "sha256": "e83ce8cd0d071b73cb3cfb3935d9f2336418ef171f515a3b327ec9fefc0401fc",
+      "seconds": 3.22,
+      "completeTake": true,
+      "fresh": true
+    },
+    "reason-adult-4": {
+      "file": "assets/storybookVoice-v13-reason-adult-4.mp3",
+      "sha256": "343d88fe6e87d5f4b120bfe82649c3af75a314c34d21995be9802e9881bcb07a",
+      "seconds": 2.666,
+      "completeTake": true,
+      "fresh": true
+    },
+    "room-play": {
+      "file": "assets/storybookVoice-v13-setup.mp3",
+      "sha256": "05cd1638b8a4e2272b4700843bc9ae93a66284544041905a26796ef2968fdcad",
+      "seconds": 13.15,
+      "completeTake": true,
+      "fresh": true
+    },
+    "story-0": {
+      "file": "assets/storybookVoice-v13-story-0.mp3",
+      "sha256": "1868ac0d7ff423a1c4f28230ae019094a3c2431d68547cc97be3ef61f4c7d833",
+      "seconds": 7.418,
+      "completeTake": true,
+      "fresh": true
+    },
+    "story-1": {
+      "file": "assets/storybookVoice-v13-story-1.mp3",
+      "sha256": "284cf747afbc215502ebb09b50c3090f6c4ddc0e744a1f22801d2a5238010a01",
+      "seconds": 6.883,
+      "completeTake": true,
+      "fresh": true
+    },
+    "story-2": {
+      "file": "assets/storybookVoice-v13-story-2.mp3",
+      "sha256": "619c3120c5b0eaad07ac694138768e05c7215c053b660c596f27484a3aaaf1b8",
+      "seconds": 5.678,
+      "completeTake": true,
+      "fresh": true
+    },
+    "story-3": {
+      "file": "assets/storybookVoice-v13-story-3.mp3",
+      "sha256": "223894125cb3327e65a75a399fda77c29fb920654919054087fee16c88541717",
+      "seconds": 6.566,
+      "completeTake": true,
+      "fresh": true
+    },
+    "story-4": {
+      "file": "assets/storybookVoice-v13-story-4.mp3",
+      "sha256": "06591458a8bf2893fef8abcf0d34582e0458aadcc17b43fda5e398c7c73f2640",
+      "seconds": 6.694,
+      "completeTake": true,
+      "fresh": true
+    },
+    "waiting-child": {
+      "file": "assets/storybookVoice-v13-waiting-child.mp3",
+      "sha256": "a134a566ca22ae9a5c79d0ebeed0d7e8ccc98246d26e85b2f1fb25aeb951deef",
+      "seconds": 7.521,
+      "completeTake": true,
+      "fresh": true
+    },
+    "waiting-adult": {
+      "file": "assets/storybookVoice-v13-waiting-adult.mp3",
+      "sha256": "1fbe127523248ba6a8dce79f7bb0a0a458d63b0cf622585e598c4371fca595f9",
+      "seconds": 7.732,
+      "completeTake": true,
+      "fresh": true
+    },
+    "ending": {
+      "file": "assets/storybookVoice-v13-report.mp3",
+      "sha256": "ee56f87b5326eaad238a7f9b3ea575fdc6746bbb3e66aac9078833269e28e7ca",
+      "seconds": 10.572,
+      "completeTake": true,
+      "fresh": true
+    },
+    "mission-done": {
+      "file": "assets/storybookVoice-v13-mission-done.mp3",
+      "sha256": "d5133074a9e89c069841d7951d48207874cfd6d7ead6ab80b5ba26b0e87120c0",
+      "seconds": 3.344,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-0-0": {
+      "file": "assets/storybookVoice-v13-motion-0-0.mp3",
+      "sha256": "a8e426c94521059811056aedb0d4559c0b9414c8e75a87132b77cbd6c4eee399",
+      "seconds": 3.312,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-0-1": {
+      "file": "assets/storybookVoice-v13-motion-0-1.mp3",
+      "sha256": "52f74d0513bcdd78665e94a4054be7fdfb1a26d5da955b8d4b2a6bbc506dc706",
+      "seconds": 3.099,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-1-0": {
+      "file": "assets/storybookVoice-v13-motion-1-0.mp3",
+      "sha256": "38b9242e795bccefe1d3fcc224087ea8e106f2be360f39c6c66ec452258fe1c0",
+      "seconds": 2.968,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-1-1": {
+      "file": "assets/storybookVoice-v13-motion-1-1.mp3",
+      "sha256": "4a9eff0e8bcbbf323e2bcaffd14275a0cb1530263aff08d7773d23759efc4062",
+      "seconds": 2.725,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-2-0": {
+      "file": "assets/storybookVoice-v13-motion-2-0.mp3",
+      "sha256": "3fff8da06d9fc48e628930e824477cf7c2383a16efd616ecc7c3f04544b85348",
+      "seconds": 3.458,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-2-1": {
+      "file": "assets/storybookVoice-v13-motion-2-1.mp3",
+      "sha256": "f6cf2ee4057fa564ba4cd1c9abc1a9bb9e5d6a1c4c04fefd5f8abdaaba53cb67",
+      "seconds": 4.973,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-3-0": {
+      "file": "assets/storybookVoice-v13-motion-3-0.mp3",
+      "sha256": "0d9d4d226030e315afc5e286982343a178c29abeade0226bb614fc53396f4876",
+      "seconds": 4.843,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-3-1": {
+      "file": "assets/storybookVoice-v13-motion-3-1.mp3",
+      "sha256": "267fe4ef6dd49bcd8b0c8519c40f437255dd8cced51b3df64ecb1d4a1735b4c5",
+      "seconds": 4.419,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-3-2": {
+      "file": "assets/storybookVoice-v13-motion-3-2.mp3",
+      "sha256": "0fda7386db7c136507ec8f859892568570ddc47f75479b5e013e458ea0472e9c",
+      "seconds": 5.346,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-4-0": {
+      "file": "assets/storybookVoice-v13-motion-4-0.mp3",
+      "sha256": "11156411dc2e310c72234ba1783b192f0cfd12a92036bd4eaf24f35ee8399bc4",
+      "seconds": 3.527,
+      "completeTake": true,
+      "fresh": true
+    },
+    "motion-4-1": {
+      "file": "assets/storybookVoice-v13-motion-4-1.mp3",
+      "sha256": "3a114b238c3dac646217f77024e38e1560806ce09dbb28e623befd37fe840e09",
+      "seconds": 4.822,
+      "completeTake": true,
+      "fresh": true
+    },
+    "ending-quiet": {
+      "file": "assets/storybookVoice-v13-ending-quiet.mp3",
+      "sha256": "8ed24f3a5938f033f39d072c5836fbf917d1c790a27401f32f56e0f0b8933a09",
+      "seconds": 8.896,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-0-A": {
+      "file": "assets/storybookVoice-v13-option-child-0-A.mp3",
+      "sha256": "e226e3a46725f3cf979cb2d0295fdb389670baab6c7f965870a4d35ffa4d99a2",
+      "seconds": 4.562,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-0-B": {
+      "file": "assets/storybookVoice-v13-option-child-0-B.mp3",
+      "sha256": "b7a3000a323a282f883846165d02f10b75ed06c48751f3da49c8d4e7e43f8303",
+      "seconds": 4.602,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-1-A": {
+      "file": "assets/storybookVoice-v13-option-child-1-A.mp3",
+      "sha256": "e58853def2eeb738f656ac8a0f952a390d2788b723ce400a27e7a4f45995c579",
+      "seconds": 5.604,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-1-B": {
+      "file": "assets/storybookVoice-v13-option-child-1-B.mp3",
+      "sha256": "3cfc366d35ba767136d61ba426bb3ac6b7a75d8df75aa5d7a7e383e1e8855de2",
+      "seconds": 5.951,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-2-A": {
+      "file": "assets/storybookVoice-v13-option-child-2-A.mp3",
+      "sha256": "3f4c151e0197150ca8c44a5ba72ef832e3b01bc4c1211c6a68390f06bd1a4620",
+      "seconds": 5.179,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-2-B": {
+      "file": "assets/storybookVoice-v13-option-child-2-B.mp3",
+      "sha256": "d70fbf61f7e239502186b0b38f31fac5ff042df98322982359780c58cfb7fb3a",
+      "seconds": 4.533,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-3-B": {
+      "file": "assets/storybookVoice-v13-option-child-3-B.mp3",
+      "sha256": "4474ae07f37b12f03525d4d901b3676b00a6af270394b3f2517be0889e1485a2",
+      "seconds": 4.377,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-4-A": {
+      "file": "assets/storybookVoice-v13-option-child-4-A.mp3",
+      "sha256": "a267a6d574f6ae3c776abfa92bb129a87237d173c4b836f0e7471a308a6ab188",
+      "seconds": 4.449,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-4-B": {
+      "file": "assets/storybookVoice-v13-option-child-4-B.mp3",
+      "sha256": "5dbf519bc26d462f7833323bf2dbfa5437fe507ff9130428a1b9f02082b5e0b3",
+      "seconds": 5.145,
+      "completeTake": true,
+      "fresh": true
+    },
+    "choices-intro": {
+      "file": "assets/storybookVoice-v13-choices-intro.mp3",
+      "sha256": "05ced19db21513851fac3a8dc350247441de39965ef4c8dff50c793ccc8182c6",
+      "seconds": 5.934,
+      "completeTake": true,
+      "fresh": true
+    },
+    "choices-ready": {
+      "file": "assets/storybookVoice-v13-choices-ready.mp3",
+      "sha256": "1ae471c18c7fa151deaf1d05ad0ccaf5fe157aafa4ee40fb805cd8b7a06ef5b6",
+      "seconds": 5.432,
+      "completeTake": true,
+      "fresh": true
+    },
+    "egg-loading": {
+      "file": "assets/storybookVoice-v13-egg-loading.mp3",
+      "sha256": "d6381d711950abeb5fc163ed7322e5360e911922a52ef6b0d2da6760d513f10a",
+      "seconds": 4.696,
+      "completeTake": true,
+      "fresh": true
+    },
+    "egg-ready": {
+      "file": "assets/storybookVoice-v13-egg-ready.mp3",
+      "sha256": "1eb476530281d4c1dd8db244bd89d94019495d44e93e7c06b45dd81079e126c1",
+      "seconds": 6.519,
+      "completeTake": true,
+      "fresh": true
+    },
+    "egg-more": {
+      "file": "assets/storybookVoice-v13-egg-more.mp3",
+      "sha256": "12c577018ca6b3d5af2a8aa8bf4abfeda2139b04032569dd9d284a990d3423f0",
+      "seconds": 5.874,
+      "completeTake": true,
+      "fresh": true
+    },
+    "egg-error": {
+      "file": "assets/storybookVoice-v13-egg-error.mp3",
+      "sha256": "dc203e07947808f5d86ca86fc7b6447457e7e3b747790f4af5ca1be2d46e4cb2",
+      "seconds": 5.243,
+      "completeTake": true,
+      "fresh": true
+    },
+    "photo-intro": {
+      "file": "assets/storybookVoice-v13-photo-intro.mp3",
+      "sha256": "a67775424195bb967ed290657ac78f65ba0b796ff3814eaff08128bd4991d322",
+      "seconds": 13.019,
+      "completeTake": true,
+      "fresh": true
+    },
+    "friend-next": {
+      "file": "assets/storybookVoice-v13-friend-next.mp3",
+      "sha256": "a2552b54e5dbdd1e69d8512391dfc69e70dee222ced6b875880757888da9332a",
+      "seconds": 7.802,
+      "completeTake": true,
+      "fresh": true
+    },
+    "option-child-3-A": {
+      "file": "assets/storybookVoice-v13-option-child-3-A.mp3",
+      "sha256": "0863cea0807fe498d75a3bdf63b28ff6681ed042d69107b0ed56626fe9c1d663",
+      "seconds": 4.847,
+      "completeTake": true,
+      "fresh": true
+    },
+    "purpose": {
+      "file": "assets/storybookVoice-v13-cover.mp3",
+      "sha256": "21f23b84a59410af5305a8b3b29a1d5c3fc7a15f37fc3e0db502db3b5821338b",
+      "seconds": 19.37,
+      "completeTake": true,
+      "fresh": true
+    },
+    "speech-invite": {
+      "file": "assets/storybookVoice-v13-speech-invite.mp3",
+      "sha256": "ad8eeaaad87a0f12d3e7fbbba19c46a0aa1194cb9c7f59a97336ed30a222c5c7",
+      "seconds": 6.866,
+      "completeTake": true,
+      "fresh": true
+    },
+    "speech-typing": {
+      "file": "assets/storybookVoice-v13-speech-typing.mp3",
+      "sha256": "79aa04987e1bea70c3638e9161965301ffcd2e8c96005fda31268b3c2fea1048",
+      "seconds": 4.621,
+      "completeTake": true,
+      "fresh": true
+    },
+    "speech-done": {
+      "file": "assets/storybookVoice-v13-speech-done.mp3",
+      "sha256": "69a636189588951211a98b915e3e572d078f37f4f029123ba0e2302dc99e6617",
+      "seconds": 5.026,
+      "completeTake": true,
+      "fresh": true
+    },
+    "next-step": {
+      "file": "assets/storybookVoice-v13-next-step.mp3",
+      "sha256": "e19640c59c5689c6b95b5b532c50837f8c8a9489555f76db850b3fc0152a4e74",
+      "seconds": 4.982,
+      "completeTake": true,
+      "fresh": true
+    },
+    "waiting-start": {
+      "file": "assets/storybookVoice-v13-waiting-start.mp3",
+      "sha256": "c7280db69306c611e57ce09da68867e0dbeaab74c887d94d45dc56552bbe64cc",
+      "seconds": 7.583,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PVSD": {
+      "file": "assets/storybookVoice-v13-description-PVSD.mp3",
+      "sha256": "7efee872feba175d7a361541337c8f250c7dc5fd79c26640afb14eef9fd7ff1e",
+      "seconds": 24.831,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PVSB": {
+      "file": "assets/storybookVoice-v13-description-PVSB.mp3",
+      "sha256": "da727c68307b777a60ca30eaa3957fa7612213324e1178b8673dd202e526a1ae",
+      "seconds": 22.9,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PVMD": {
+      "file": "assets/storybookVoice-v13-description-PVMD.mp3",
+      "sha256": "7828a18227ee3f2a0b8739c0b2d0c9d6f18709e57954f9e4e23da94da0053a8a",
+      "seconds": 22.939,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PVMB": {
+      "file": "assets/storybookVoice-v13-description-PVMB.mp3",
+      "sha256": "bb000db37a38e4983e674509216b695cce353fb82133bd004081f261e16c7f59",
+      "seconds": 25.929,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PHSD": {
+      "file": "assets/storybookVoice-v13-description-PHSD.mp3",
+      "sha256": "52b1560e0cbfc118ea73c04ec3d4c2b2e1a1e13bd2c2e552b4799a665a2ae4ae",
+      "seconds": 27.5,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PHSB": {
+      "file": "assets/storybookVoice-v13-description-PHSB.mp3",
+      "sha256": "7f2d621cd208684f135e3a85c467eabb21295a0fc677231eeda787980fbd8b4e",
+      "seconds": 27.2,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PHMD": {
+      "file": "assets/storybookVoice-v13-description-PHMD.mp3",
+      "sha256": "80ce38ce24874ff822bdeb35d9b213bf2e69c4f7aa60e0851322c62b3fc99b31",
+      "seconds": 25.231,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-PHMB": {
+      "file": "assets/storybookVoice-v13-description-PHMB.mp3",
+      "sha256": "4677d7522d1d30c3181d70410d964c58a3db355410ce8a9b1c362d511ac7f636",
+      "seconds": 25.647,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FVSD": {
+      "file": "assets/storybookVoice-v13-description-FVSD.mp3",
+      "sha256": "632cfd6859a7e3e2fcf314b0f2f63292079aa0567e69aaf9d6bf3facef9862e1",
+      "seconds": 25.57,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FVSB": {
+      "file": "assets/storybookVoice-v13-description-FVSB.mp3",
+      "sha256": "4c0129b8d0ae2b1d11075b5ed54919987a3d77619896ed82b23a800edf5f2256",
+      "seconds": 24.421,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FVMD": {
+      "file": "assets/storybookVoice-v13-description-FVMD.mp3",
+      "sha256": "852f0001f7e737d1ef561ab1a2bed2b12f01d1d768d35bdb6c52c05217d70582",
+      "seconds": 25.237,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FVMB": {
+      "file": "assets/storybookVoice-v13-description-FVMB.mp3",
+      "sha256": "d261beea04b7e573128227e522dbb82e548249bbe72c5853a378c8e2257538f0",
+      "seconds": 23.852,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FHSD": {
+      "file": "assets/storybookVoice-v13-description-FHSD.mp3",
+      "sha256": "90e4b3914767e4e91ce415e33db10c6139404638b279e0100d31cf64645b6a07",
+      "seconds": 25.199,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FHSB": {
+      "file": "assets/storybookVoice-v13-description-FHSB.mp3",
+      "sha256": "696db107f654da761e7131b23f2285b828584d34f93709c5bc23ea4141ddbc78",
+      "seconds": 25.795,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FHMD": {
+      "file": "assets/storybookVoice-v13-description-FHMD.mp3",
+      "sha256": "7b50c2864d7d436474b6c94ede7643610d57ebc6a7e598961fe3f34e8b34ddbb",
+      "seconds": 24.238,
+      "completeTake": true,
+      "fresh": true
+    },
+    "description-FHMB": {
+      "file": "assets/storybookVoice-v13-description-FHMB.mp3",
+      "sha256": "6f5c646240f8412fe96fb17f99596c7a9db414ba6e62c84c75c96b54ad92d15b",
+      "seconds": 24.182,
+      "completeTake": true,
+      "fresh": true
+    },
+    "parent-cover": {
+      "file": "assets/storybookVoice-v13-parent-cover.mp3",
+      "sha256": "5a5e4709dbc7a64dd8f5c57188f2ebbb17e5935f5a7b583a5afc75272b28ebf3",
+      "seconds": 18.707,
+      "completeTake": true,
+      "fresh": true
+    },
+    "parent-speech-typing": {
+      "file": "assets/storybookVoice-v13-parent-speech-typing.mp3",
+      "sha256": "ae9d72930fc8ea3f0a66f8af6e9cf6661962f8b7c0c13a51cc2deaad5409ebb3",
+      "seconds": 6.129,
+      "completeTake": true,
+      "fresh": true
+    },
+    "result-next": {
+      "file": "assets/storybookVoice-v13-result-next.mp3",
+      "sha256": "92d12cf55b6b7b5364965cda6fde0c438490a03f606ece25c5a8fe0a175e250d",
+      "seconds": 6.418,
+      "completeTake": true,
+      "fresh": true
+    },
+    "parent-first-look": {
+      "file": "assets/storybookVoice-v13-parent-first-look.mp3",
+      "sha256": "2e074e837d7449d5d5554992b9b124bb1972c87797dc0651fa4fa47d1080f804",
+      "seconds": 10.039,
+      "completeTake": true,
+      "fresh": true
+    }
+  },
+  "uniqueTakes": 109,
+  "standaloneEgg": {
+    "file": "egg/a/egg_call-storybook-v13.wav",
+    "sha256": "75d7391033071896b78fc7042fc81e27efd29095d4773b982f6a87e2f15b9784"
+  },
+  "games": [
+    "01_FHSD.html",
+    "02_FHSB.html",
+    "03_FHMD.html",
+    "04_FHMB.html",
+    "05_PVSD.html",
+    "06_PVSB.html",
+    "07_PVMD.html",
+    "08_PVMB.html",
+    "09_PHSD.html",
+    "10_PHSB.html",
+    "11_PHMD.html",
+    "12_PHMB.html",
+    "13_FVSD.html",
+    "14_FVSB.html",
+    "15_FVMD.html",
+    "16_FVMB.html"
+  ],
+  "verification": {
+    "independentDecodedClips": 109,
+    "completeEndingCheck": true,
+    "method": "automatic transcription and measured quiet boundaries; not human listening"
+  }
+}

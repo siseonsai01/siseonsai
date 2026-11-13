@@ -24,11 +24,12 @@ jobs:
       - run: node tests/accessibility.mjs
       - run: node tests/navigation.mjs
       - run: node tests/speech-input.mjs
+      - run: node tests/voice-release.mjs
       - run: python app/build.py
       - run: python build_cloud.py
       - uses: actions/upload-artifact@v4
         with:
-          name: siseonsai-final-v12
+          name: siseonsai-final-v13
           path: |
             final/app/
             final/server.py
