@@ -1,5 +1,5 @@
 
-const offlineVoice = {"cover":"assets/storybookVoice-v3-cover.mp3","adult-0":"assets/storybookVoice-v7-adult-0.mp3","adult-1":"assets/storybookVoice-v3-adult-1.mp3","adult-2":"assets/storybookVoice-v7-adult-2.mp3","adult-3":"assets/storybookVoice-v3-adult-3.mp3","adult-4":"assets/storybookVoice-v9-adult-4.mp3","camera-error":"assets/storybookVoice-v3-camera-error.mp3","camera":"assets/storybookVoice-v9-camera.mp3","chart":"assets/storybookVoice-v3-chart.mp3","child-0":"assets/storybookVoice-v9-child-0.mp3","child-1":"assets/storybookVoice-v9-child-1.mp3","child-2":"assets/storybookVoice-v9-child-2.mp3","child-3":"assets/storybookVoice-v9-child-3.mp3","child-4":"assets/storybookVoice-v9-child-4.mp3","first-look":"assets/storybookVoice-v3-first-look.mp3","friend-FHMB":"assets/storybookVoice-v9-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v9-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v3-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v3-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v3-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v7-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v7-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v7-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v3-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v3-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v3-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v3-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v3-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v7-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v3-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v3-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v3-guide-1.mp3","guide-2":"assets/storybookVoice-v3-guide-2.mp3","guide-3":"assets/storybookVoice-v3-guide-3.mp3","guide":"assets/storybookVoice-v3-guide.mp3","intro":"assets/storybookVoice-v9-intro.mp3","print-options":"assets/storybookVoice-v9-print-options.mp3","report":"assets/storybookVoice-v9-report.mp3","result-answers":"assets/storybookVoice-v9-result-answers.mp3","setup":"assets/storybookVoice-v3-setup.mp3","reason-child-0":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v9-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v9-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v7-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v7-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v7-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v7-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v7-reason-adult-4.mp3","description-FHMB":"assets/storybookVoice-v9-description-FHMB.mp3","description-FHMD":"assets/storybookVoice-v9-description-FHMD.mp3","description-FHSB":"assets/storybookVoice-v9-description-FHSB.mp3","description-FHSD":"assets/storybookVoice-v9-description-FHSD.mp3","description-FVMB":"assets/storybookVoice-v9-description-FVMB.mp3","description-FVMD":"assets/storybookVoice-v9-description-FVMD.mp3","description-FVSB":"assets/storybookVoice-v9-description-FVSB.mp3","description-FVSD":"assets/storybookVoice-v9-description-FVSD.mp3","description-PHMB":"assets/storybookVoice-v9-description-PHMB.mp3","description-PHMD":"assets/storybookVoice-v9-description-PHMD.mp3","description-PHSB":"assets/storybookVoice-v9-description-PHSB.mp3","description-PHSD":"assets/storybookVoice-v9-description-PHSD.mp3","description-PVMB":"assets/storybookVoice-v9-description-PVMB.mp3","description-PVMD":"assets/storybookVoice-v9-description-PVMD.mp3","description-PVSB":"assets/storybookVoice-v9-description-PVSB.mp3","description-PVSD":"assets/storybookVoice-v9-description-PVSD.mp3","room-play":"assets/storybookVoice-v3-setup.mp3","story-0":"assets/storybookVoice-v9-story-0.mp3","story-1":"assets/storybookVoice-v9-story-1.mp3","story-2":"assets/storybookVoice-v9-story-2.mp3","story-3":"assets/storybookVoice-v9-story-3.mp3","story-4":"assets/storybookVoice-v9-story-4.mp3","waiting-child":"assets/storybookVoice-v9-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v9-waiting-adult.mp3","ending":"assets/storybookVoice-v9-report.mp3","mission-done":"assets/storybookVoice-v7-mission-done.mp3","motion-0-0":"assets/storybookVoice-v9-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v3-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v9-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v3-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v3-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v3-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v3-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v3-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v3-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v3-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v3-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v3-ending-quiet.mp3","option-child-0-A":"assets/storybookVoice-v9-option-child-0-A.mp3","option-child-0-B":"assets/storybookVoice-v9-option-child-0-B.mp3","option-child-1-A":"assets/storybookVoice-v9-option-child-1-A.mp3","option-child-1-B":"assets/storybookVoice-v9-option-child-1-B.mp3","option-child-2-A":"assets/storybookVoice-v9-option-child-2-A.mp3","option-child-2-B":"assets/storybookVoice-v9-option-child-2-B.mp3","option-child-3-B":"assets/storybookVoice-v9-option-child-3-B.mp3","option-child-4-A":"assets/storybookVoice-v9-option-child-4-A.mp3","option-child-4-B":"assets/storybookVoice-v9-option-child-4-B.mp3","choices-intro":"assets/storybookVoice-v9-choices-intro.mp3","choices-ready":"assets/storybookVoice-v9-choices-ready.mp3","egg-loading":"assets/storybookVoice-v9-egg-loading.mp3","egg-ready":"assets/storybookVoice-v9-egg-ready.mp3","egg-more":"assets/storybookVoice-v9-egg-more.mp3","egg-error":"assets/storybookVoice-v9-egg-error.mp3","photo-intro":"assets/storybookVoice-v9-photo-intro.mp3","friend-next":"assets/storybookVoice-v9-friend-next.mp3","option-child-3-A":"assets/storybookVoice-v9-option-child-3-A.mp3","purpose":"assets/storybookVoice-v10-purpose.mp3"};
+const offlineVoice = {"cover":"assets/storybookVoice-v12-cover.mp3","adult-0":"assets/storybookVoice-v12-adult-0.mp3","adult-1":"assets/storybookVoice-v12-adult-1.mp3","adult-2":"assets/storybookVoice-v12-adult-2.mp3","adult-3":"assets/storybookVoice-v12-adult-3.mp3","adult-4":"assets/storybookVoice-v12-adult-4.mp3","camera-error":"assets/storybookVoice-v12-camera-error.mp3","camera":"assets/storybookVoice-v12-camera.mp3","chart":"assets/storybookVoice-v12-chart.mp3","child-0":"assets/storybookVoice-v12-child-0.mp3","child-1":"assets/storybookVoice-v12-child-1.mp3","child-2":"assets/storybookVoice-v12-child-2.mp3","child-3":"assets/storybookVoice-v12-child-3.mp3","child-4":"assets/storybookVoice-v12-child-4.mp3","first-look":"assets/storybookVoice-v12-first-look.mp3","friend-FHMB":"assets/storybookVoice-v9-friend-FHMB.mp3","friend-FHMD":"assets/storybookVoice-v9-friend-FHMD.mp3","friend-FHSB":"assets/storybookVoice-v3-friend-FHSB.mp3","friend-FHSD":"assets/storybookVoice-v3-friend-FHSD.mp3","friend-FVMB":"assets/storybookVoice-v3-friend-FVMB.mp3","friend-FVMD":"assets/storybookVoice-v7-friend-FVMD.mp3","friend-FVSB":"assets/storybookVoice-v7-friend-FVSB.mp3","friend-FVSD":"assets/storybookVoice-v7-friend-FVSD.mp3","friend-PHMB":"assets/storybookVoice-v3-friend-PHMB.mp3","friend-PHMD":"assets/storybookVoice-v3-friend-PHMD.mp3","friend-PHSB":"assets/storybookVoice-v3-friend-PHSB.mp3","friend-PHSD":"assets/storybookVoice-v3-friend-PHSD.mp3","friend-PVMB":"assets/storybookVoice-v3-friend-PVMB.mp3","friend-PVMD":"assets/storybookVoice-v7-friend-PVMD.mp3","friend-PVSB":"assets/storybookVoice-v3-friend-PVSB.mp3","friend-PVSD":"assets/storybookVoice-v3-friend-PVSD.mp3","guide-1":"assets/storybookVoice-v3-guide-1.mp3","guide-2":"assets/storybookVoice-v3-guide-2.mp3","guide-3":"assets/storybookVoice-v3-guide-3.mp3","guide":"assets/storybookVoice-v3-guide.mp3","intro":"assets/storybookVoice-v9-intro.mp3","print-options":"assets/storybookVoice-v9-print-options.mp3","report":"assets/storybookVoice-v9-report.mp3","result-answers":"assets/storybookVoice-v9-result-answers.mp3","setup":"assets/storybookVoice-v12-setup.mp3","reason-child-0":"assets/storybookVoice-v12-reason-child-0.mp3","reason-child-1":"assets/storybookVoice-v12-reason-child-0.mp3","reason-child-2":"assets/storybookVoice-v12-reason-child-0.mp3","reason-child-3":"assets/storybookVoice-v12-reason-child-0.mp3","reason-child-4":"assets/storybookVoice-v12-reason-child-0.mp3","reason-adult-0":"assets/storybookVoice-v12-reason-adult-0.mp3","reason-adult-1":"assets/storybookVoice-v12-reason-adult-1.mp3","reason-adult-2":"assets/storybookVoice-v12-reason-adult-2.mp3","reason-adult-3":"assets/storybookVoice-v12-reason-adult-3.mp3","reason-adult-4":"assets/storybookVoice-v12-reason-adult-4.mp3","description-FHMB":"assets/storybookVoice-v9-description-FHMB.mp3","description-FHMD":"assets/storybookVoice-v9-description-FHMD.mp3","description-FHSB":"assets/storybookVoice-v9-description-FHSB.mp3","description-FHSD":"assets/storybookVoice-v9-description-FHSD.mp3","description-FVMB":"assets/storybookVoice-v9-description-FVMB.mp3","description-FVMD":"assets/storybookVoice-v9-description-FVMD.mp3","description-FVSB":"assets/storybookVoice-v9-description-FVSB.mp3","description-FVSD":"assets/storybookVoice-v9-description-FVSD.mp3","description-PHMB":"assets/storybookVoice-v9-description-PHMB.mp3","description-PHMD":"assets/storybookVoice-v9-description-PHMD.mp3","description-PHSB":"assets/storybookVoice-v9-description-PHSB.mp3","description-PHSD":"assets/storybookVoice-v9-description-PHSD.mp3","description-PVMB":"assets/storybookVoice-v9-description-PVMB.mp3","description-PVMD":"assets/storybookVoice-v9-description-PVMD.mp3","description-PVSB":"assets/storybookVoice-v9-description-PVSB.mp3","description-PVSD":"assets/storybookVoice-v9-description-PVSD.mp3","room-play":"assets/storybookVoice-v12-setup.mp3","story-0":"assets/storybookVoice-v9-story-0.mp3","story-1":"assets/storybookVoice-v9-story-1.mp3","story-2":"assets/storybookVoice-v9-story-2.mp3","story-3":"assets/storybookVoice-v9-story-3.mp3","story-4":"assets/storybookVoice-v9-story-4.mp3","waiting-child":"assets/storybookVoice-v9-waiting-child.mp3","waiting-adult":"assets/storybookVoice-v12-waiting-adult.mp3","ending":"assets/storybookVoice-v9-report.mp3","mission-done":"assets/storybookVoice-v12-mission-done.mp3","motion-0-0":"assets/storybookVoice-v12-motion-0-0.mp3","motion-0-1":"assets/storybookVoice-v12-motion-0-1.mp3","motion-1-0":"assets/storybookVoice-v12-motion-1-0.mp3","motion-1-1":"assets/storybookVoice-v12-motion-1-1.mp3","motion-2-0":"assets/storybookVoice-v12-motion-2-0.mp3","motion-2-1":"assets/storybookVoice-v12-motion-2-1.mp3","motion-3-0":"assets/storybookVoice-v12-motion-3-0.mp3","motion-3-1":"assets/storybookVoice-v12-motion-3-1.mp3","motion-3-2":"assets/storybookVoice-v12-motion-3-2.mp3","motion-4-0":"assets/storybookVoice-v12-motion-4-0.mp3","motion-4-1":"assets/storybookVoice-v12-motion-4-1.mp3","ending-quiet":"assets/storybookVoice-v12-ending-quiet.mp3","option-child-0-A":"assets/storybookVoice-v12-option-child-0-A.mp3","option-child-0-B":"assets/storybookVoice-v12-option-child-0-B.mp3","option-child-1-A":"assets/storybookVoice-v12-option-child-1-A.mp3","option-child-1-B":"assets/storybookVoice-v12-option-child-1-B.mp3","option-child-2-A":"assets/storybookVoice-v9-option-child-2-A.mp3","option-child-2-B":"assets/storybookVoice-v9-option-child-2-B.mp3","option-child-3-B":"assets/storybookVoice-v9-option-child-3-B.mp3","option-child-4-A":"assets/storybookVoice-v9-option-child-4-A.mp3","option-child-4-B":"assets/storybookVoice-v9-option-child-4-B.mp3","choices-intro":"assets/storybookVoice-v9-choices-intro.mp3","choices-ready":"assets/storybookVoice-v12-choices-ready.mp3","egg-loading":"assets/storybookVoice-v9-egg-loading.mp3","egg-ready":"assets/storybookVoice-v9-egg-ready.mp3","egg-more":"assets/storybookVoice-v9-egg-more.mp3","egg-error":"assets/storybookVoice-v9-egg-error.mp3","photo-intro":"assets/storybookVoice-v9-photo-intro.mp3","friend-next":"assets/storybookVoice-v9-friend-next.mp3","option-child-3-A":"assets/storybookVoice-v9-option-child-3-A.mp3","purpose":"assets/storybookVoice-v12-cover.mp3"};
 const reviewChoiceArt = [["assets/reviewChoiceArt.webp","assets/reviewChoiceArt-2.webp"],["assets/reviewChoiceArt-3.webp","assets/reviewChoiceArt-4.webp"],["assets/reviewChoiceArt-5.webp","assets/reviewChoiceArt-6.webp"],["assets/reviewChoiceArt-7.webp","assets/reviewChoiceArt-8.webp"],["assets/reviewChoiceArt-9.webp","assets/reviewChoiceArt-10.webp"]];
 const offline_paper_choice = {"B":"assets/paper_choice-B.webp","D":"assets/paper_choice-D.webp","F":"assets/paper_choice-F.webp","H":"assets/paper_choice-H.webp","M":"assets/paper_choice-M.webp","P":"assets/paper_choice-P.webp","S":"assets/paper_choice-S.webp","V":"assets/paper_choice-V.webp"};
 const offline_paper_smile = {"FHMB":"assets/paper_smile-FHMB.webp","FHMD":"assets/paper_smile-FHMD.webp","FHSB":"assets/paper_smile-FHSB.webp","FHSD":"assets/paper_smile-FHSD.webp","FVMB":"assets/local-e32d72c00eeac165.png","FVMD":"assets/paper_smile-FVMD.webp","FVSB":"assets/paper_smile-FVSB.webp","FVSD":"assets/paper_smile-FVSD.webp","PHMB":"assets/paper_smile-PHMB.webp","PHMD":"assets/paper_smile-PHMD.webp","PHSB":"assets/paper_smile-PHSB.webp","PHSD":"assets/paper_smile-PHSD.webp","PVMB":"assets/paper_smile-PVMB.webp","PVMD":"assets/paper_smile-PVMD.webp","PVSB":"assets/paper_smile-PVSB.webp","PVSD":"assets/paper_smile-PVSD.webp"};
@@ -28,12 +28,12 @@ const habitQuestions = [
       ["F", "즉흥", "놓을 블록부터 골라", "놓을 블록부터 골라요"],
     ],
     mission: {
-      title: "첫 자리만 정하고, 같이 시작!",
+      title: "장난감 하나의 집을 찾아요",
       why: "한 사람은 장난감으로 할 놀이를, 다른 한 사람은 물건이 있던 자리를 먼저 떠올렸어요.",
-      intro: "자주 노는 장난감 세 개를 골라요.",
-      steps: ["세 개 중 하나만 둘 곳을 먼저 정해요.", "그 장난감을 가져다 놓고, 나머지 두 개는 하나씩 들고 자리를 찾아요."],
-      agreement: "내일도 이 순서로 한 번 해 봐요. 먼저 자리 하나, 나머지는 치우면서 골라요.",
-      talk: "자리 하나를 먼저 정해 두니 시작하기 쉬웠어?",
+      intro: "자주 노는 장난감 세 개를 함께 골라요.",
+      steps: ["“이 장난감은 어디에 둘까?” 하나를 골라요.", "“여기에 놓아 볼까?” 함께 가져다 놓아요."],
+      agreement: "“다 놀면 여기로 돌아오자!” 장난감의 집을 기억해요.",
+      talk: "이 장난감은 다음에 어디에서 찾으면 될까?",
     },
   },
   {
@@ -46,12 +46,12 @@ const habitQuestions = [
       ["H", "수납", "뚜껑 있는 상자 안", "뚜껑 있는 상자 안"],
     ],
     mission: {
-      title: "한 상자에 보이는 단서 하나",
+      title: "그림을 보고 장난감 집을 찾아요",
       why: "한 사람은 넓은 바닥을, 다른 한 사람은 책상이나 작은 자리를 골랐어요. 두 곳 모두에서 쓰기 쉬운 정리 방법을 제안해요.",
       intro: "매일 갖고 노는 장난감 한 종류를 골라요.",
       steps: ["상자 앞에 붙일 장난감 그림이나 사진을 골라요.", "그 장난감을 넣을 상자를 골라요. 함께 상자 앞에 그림을 붙여요."],
-      agreement: "앞으로 이 장난감은 그림이 붙은 상자에서 꺼내고, 다 쓰면 그 상자에 돌려놔요.",
-      talk: "상자를 열기 전에 그림만 보고 찾을 수 있었어?",
+      agreement: "“이 그림은 장난감의 집 표시야. 다 놀면 여기로 쏙!”",
+      talk: "이 그림을 보니 무슨 장난감이 생각나?",
     },
   },
   {
@@ -63,12 +63,12 @@ const habitQuestions = [
       ["M", "감성", "좋았던 날이 생각나는 물건", "좋았던 날이 생각나는 물건"],
     ],
     mission: {
-      title: "매일 쓰는 자리, 보물 자리",
+      title: "자주 쓰는 것과 소중한 것",
       why: "한 사람은 놀이할 자리를, 다른 한 사람은 물건을 놓을 자리를 더 만들고 싶어 해요. 물건 둘 곳을 함께 정해 놀이 공간도 마련해 봐요.",
       intro: "오늘은 자주 쓰는 물건 하나와 소중한 물건 하나만 골라요.",
       steps: ["자주 쓰는 물건을 골라 꺼내기 쉬운 곳을 찾아요.", "소중한 물건의 이야기를 들려주고, 둘이 함께 보물 상자에 넣어요."],
-      agreement: "자주 쓰는 건 꺼내기 쉽게, 보물은 정한 상자에. 보물은 서로 묻고 옮겨요.",
-      talk: "이 물건을 보물이라고 고른 이유가 뭐야?",
+      agreement: "“자주 쓰는 건 손 가까이, 소중한 건 보물상자에 두자.”",
+      talk: "이 물건은 왜 소중할까?",
     },
   },
   {
@@ -81,22 +81,22 @@ const habitQuestions = [
       ["B", "모아서", "다 놀고 모아서 치울래", "다 놀고 모아서 치워요"],
     ],
     mission: {
-      title: "길은 지금, 작품은 나중에",
+      title: "걸어갈 길과 놀이 자리를 찾아요",
       why: "만들던 놀이를 그 자리에서 이어 할지, 다른 곳으로 옮길지 서로 다르게 골랐어요.",
       intro: "놀이 중인 작품과 그냥 바닥에 남은 물건을 같이 찾아요.",
       steps: ["지나다니는 길에 남은 물건만 지금 치워요.", "만드는 중인 건 한쪽에 두고, 언제 함께 정리할지 정해요."],
-      agreement: "지나갈 길은 비워 두고, 남겨 둔 것은 약속한 때 함께 정리해요.",
-      talk: "길도 편하게 지나가고 놀이도 이어 갈 수 있었어?",
+      agreement: "“걸어갈 길은 비워 두고, 만들던 놀이는 약속한 곳에 두자.”",
+      talk: "어디에 두면 다음에 또 놀기 좋을까?",
     },
   },
 ];
 const sharedMission = {
-  title: "내일도 찾을 수 있는 자리",
+  title: "내 장난감의 집을 찾아요",
   why: "둘이 자주 쓰는 물건 하나로 우리 집에 맞는 자리를 찾아봐요.",
   intro: "내일도 갖고 놀 장난감 하나로 해 봐요.",
   steps: ["장난감 하나를 골라 둘 곳을 알려 줘요.", "아이가 쉽게 꺼낼 수 있는지 보고, 둘이 함께 그 자리에 둬요."],
-  agreement: "내일 둘 다 쉽게 찾았다면 그곳을 이 장난감 자리로 써요.",
-  talk: "어디에 두니까 둘 다 찾기 쉬웠어?",
+  agreement: "“다 놀면 이 자리에 놓자!” 내일 함께 찾아봐요.",
+  talk: "내일 이 장난감을 어디에서 찾을까?",
 };
 const answerOptions = (question) => question.reverseAnswers ? [...question.options].reverse() : question.options;
 const missionSteps = (mission, childIndex) => mission.steps.map((text, index) => ({
@@ -232,13 +232,72 @@ function syncVoiceControls() {
   }
 }
 
+let reasonVoice=null,reasonVoiceKey=null,guideLastTarget=null;
+function reasonVoiceSupported(){return Boolean(window.SiseonVoiceInput?.supported());}
+function cancelReasonVoice(){reasonVoice?.cancel();reasonVoice=null;reasonVoiceKey=null;updateReasonMic();}
+function reasonVoiceStatus(text){const node=app.querySelector('.reason-mic-status');if(node)node.textContent=text;}
+function updateReasonMic(){
+  const button=app.querySelector('[data-action="reason-mic"]');if(!button)return;
+  button.innerHTML=reasonVoice?.active?'<span aria-hidden="true">⏹</span> 말하기 마치기':'<span aria-hidden="true">🎤</span> 말로 답하기';
+  button.setAttribute('aria-label',reasonVoice?.active?'말하기 마치기':'말로 답하기');
+  button.setAttribute('aria-pressed',String(Boolean(reasonVoice?.active)));syncGuidePointer();
+}
+function setupReasonVoice(){
+  const button=app.querySelector('[data-action="reason-mic"]');if(!button)return;
+  button.disabled=!reasonVoiceSupported();
+  if(!reasonVoiceSupported()){
+    reasonVoiceStatus('이 브라우저에서는 보호자가 직접 적어 주세요.');
+    const hint=app.querySelector('.review-reason > .small');if(hint)hint.textContent='말로 하면 보호자나 진행자가 여기에 적어 주세요.';
+  }
+}
+function toggleReasonVoice(){
+  if(reasonVoice?.active){reasonVoice.stop();return;}
+  if(!reasonVoiceSupported())return setupReasonVoice();
+  stopNarration();
+  const key=[familySession?.code || 'local',state.role,state.index].join(':');reasonVoiceKey=key;
+  const valid=()=>currentScreen==='quiz' && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
+  const base=app.querySelector('[name="review-reason"]')?.value || '';
+  let received=false;
+  reasonVoice=window.SiseonVoiceInput.create({
+    status:text=>{if(valid())reasonVoiceStatus(text);},
+    text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
+    end:()=>{if(!valid())return;updateReasonMic();if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
+  });
+  reasonVoice.start(base);updateReasonMic();
+}
+function syncGuidePointer(){
+  app.querySelectorAll('.guided-step').forEach(node=>node.classList.remove('guided-step'));
+  let selector=null;
+  if(reasonVoice?.active)selector='[data-action="reason-mic"]';
+  else if(playingScene?.startsWith('story-'))selector='.room';
+  else if(/^reason-(child|adult)-/.test(playingScene||''))selector='.review-reason strong';
+  else if(playingScene==='speech-invite')selector='[data-action="reason-mic"]';
+  else if(playingScene==='speech-typing' || playingScene==='speech-done')selector='[name="review-reason"]';
+  else if(playingScene==='next-step')selector='[data-action="review-next"]';
+  else if(playingScene==='room-play')selector=voiceAudio.currentTime>Math.max(0,voiceAudio.duration-5)?'[data-action="station-start"]':'.room';
+  else if(playingScene==='cover')selector=voiceAudio.currentTime>Math.max(0,voiceAudio.duration-5)?'.hero-cta':null;
+  else if(playingScene==='egg-ready' || playingScene==='egg-more')selector='.egg-game-slot';
+  else if(!playingScene){
+    if(currentScreen==='quiz' && reviewAnswers[state.role]?.[state.index]?.choice)selector='[data-action="review-next"]';
+    else if(currentScreen==='home')selector='.hero-cta';
+    else if(currentScreen==='intro')selector='[data-action="station-start"]';
+    else if(currentScreen==='report')selector=app.querySelector('.hatched-friend:not([hidden])')?'[data-action="mission-open"]':'[data-action="hatch-start"]';
+  }
+  if(!selector)return;
+  const target=app.querySelector(selector);if(!target || target.disabled || target.closest('[hidden]'))return;
+  target.classList.add('guided-step');
+  if(target.tagName==='TEXTAREA')target.closest('.review-reason')?.classList.add('guided-step');
+  if(target!==guideLastTarget && /^(reason-|speech-|next-step)/.test(playingScene||''))target.scrollIntoView?.({block:'nearest',behavior:motionAllowed()?'smooth':'auto'});
+  guideLastTarget=target;
+}
 function highlightSpokenChoice() {
+  syncGuidePointer();
   const spoken=/^option-child-([0-4])-([AB])$/.exec(playingScene||""),spokenIndex=spoken?reviewChoices.indexOf(spoken[2]):-1;
   const times = typeof voiceCues === "undefined" ? [] : voiceCues[playingScene] ?? [];
   const current = voiceAudio.currentTime;
   app.querySelectorAll(".studio-options .option, .practice-options .option").forEach((option, index) => {
     const range = times[index];
-    option.classList.toggle("spoken-choice", spoken?state.role==="child" && state.index===Number(spoken[1]) && index===spokenIndex:Boolean(range && current >= range[0] && current < range[1]));
+    option.classList.toggle("spoken-choice", spoken?state.index===Number(spoken[1]) && index===spokenIndex:Boolean(range && current >= range[0] && current < range[1]));
   });
 }
 
@@ -247,7 +306,7 @@ function highlightSpokenChoice() {
 const coverMotionSrc = "assets/cover-motion.mp4";
 const bookCoverMotionSrc = "assets/book-cover-full-motion.mp4";
 const COVER_MOTION_LEAD = 0.4;
-const coverCaptions = [[0, "안녕, 우리 친구! 여기는 토끼들의 방이야."], [4.266, "그림을 보고, 하고 싶은 쪽을 골라 줘."], [8.145, "부모님도 골라 볼 거야."], [10.003, "다 고르면, 우리 집에서 함께할 정리 놀이가 나와!"], [14.405, "우리 이야기 시작을 눌러 줘!"]];
+const coverCaptions = [[0, "안녕, 우리 친구! 여기는 토끼들의 방이야."], [4.719, "우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!"], [9.319, "맞고 틀린 답은 없어."], [11.299, "재미로 우리 집 정리 친구를 만나 보자!"], [14.479, "반짝이는 우리 이야기 시작 버튼을 눌러 줘!"]];
 
 let coverMotion = null;
 let narrationQueue = [];
@@ -421,7 +480,8 @@ function narrate(scene, tryAutomatically = false, resumeAt = 0) {
   stopNarration();
   if (!voiceEnabled) {markNextReady();return;}
   const question=/^(child|adult)-(\d)$/.exec(scene || '');
-  const scenes=question && currentScreen==='quiz' ? ['story-'+question[2],scene,...(question[1]==='child'?[...(question[2]==='0'?['choices-intro']:[]),'option-child-'+question[2]+'-A','option-child-'+question[2]+'-B','choices-ready']:[])] : [scene];
+  const reason=/^reason-(child|adult)-[0-4]$/.test(scene||'');
+  const scenes=scene==='speech-done' ? [scene,'next-step'] : question && currentScreen==='quiz' ? ['story-'+question[2],scene,...(question[2]==='0'?['choices-intro']:[]),'option-child-'+question[2]+'-A','option-child-'+question[2]+'-B','choices-ready'] : reason ? [scene,reasonVoiceSupported()?'speech-invite':'speech-typing','next-step'] : [scene];
   narrationQueue=scenes.filter(s=>offlineVoice[s]);
   playNarrationClip(narrationQueue.shift(),tryAutomatically,resumeAt);
 }
@@ -470,6 +530,7 @@ voiceAudio.addEventListener("ended", () => {
 });
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
+    cancelReasonVoice();
     if(playingScene?.startsWith('motion-') || playingScene==='mission-done')missionPausedVoice={scene:playingScene,time:voiceAudio.currentTime};
     stopNarration();
   }
@@ -478,7 +539,7 @@ document.addEventListener("visibilitychange", () => {
     else narrate('cover',true);
   }
 });
-window.addEventListener("pagehide", () => stopNarration());
+window.addEventListener("pagehide", () => {cancelReasonVoice();stopNarration();});
 
 
 function beginVoiceIntro() {
@@ -507,7 +568,7 @@ function hero() {
       <div class="hero-copy">
         <p class="cover-step">${bookRoleLabel()?bookRoleLabel()+' · ':''}소개 표지</p>
         <h1 tabindex="-1">두 토끼의 방,<br><em>두 권의 이야기</em></h1>
-        <p class="story-purpose">같은 방도 서로 다르게 볼 수 있어요.<br>서로의 생각을 알고, 우리 집 정리 방법을 함께 찾아요.</p>
+        <div class="cover-purpose"><h2>이 설문은 왜 할까요?</h2><p>우리 친구와 부모님이 좋아하는 것을 알아보고,<br>함께할 정리 놀이를 찾아요.</p><p class="play-note">맞고 틀린 답은 없어요. 재미로 만나는 시선 친구예요!</p><p class="parent-play-note">보호자님께 · 5개 질문으로 생각을 나누며 16가지 친구를 만나는 놀이입니다. 검증된 심리검사가 아니며, 성격·발달·정리 능력을 판정하지 않습니다.</p></div>
         <div class="hero-actions">
           <button type="button" class="hero-cta" data-action="begin-voice">우리 이야기 시작 <span aria-hidden="true">›</span></button>
         </div>
@@ -1151,30 +1212,21 @@ function characterCode(role) {
 const surveyCodeNames = {F:'놀이의 가능성',P:'물건의 자리',V:'넓은 바닥',H:'책상·작은 자리',M:'놀이할 공간',S:'물건 둘 공간',B:'그 자리에서 이어 놀기',D:'다른 자리로 옮겨 두기'};
 function typeProfile(code) {
   if(!code)return null;
-  const meaning=code[0]==='F'?'장난감으로 할 수 있는 놀이를 먼저 떠올리는 모습이에요.':'장난감이 있던 자리를 먼저 떠올리는 모습이에요.';
-  const place=code[1]==='V'?'넓은 바닥에서 노는 쪽을 골랐어요.':'책상이나 작은 자리에서 노는 쪽을 골랐어요.';
-  const change=code[2]==='M'?'놀이할 공간을 더 만들고 싶어 해요.':'물건을 놓을 공간을 더 만들고 싶어 해요.';
-  const continuation=code[3]==='B'?'만들던 놀이는 그 자리에서 이어 하고 싶어 해요.':'만들던 놀이는 다른 곳에 옮겨 두고 싶어 해요.';
-  const support=(code[0]==='F'?'정리 전에 이어 하고 싶은 놀이를 먼저 물어보세요.':'장난감이 돌아갈 자리를 그림 표시로 함께 정해 보세요.')+' '+(code[3]==='B'?'놀이를 남겨 둘 자리와 다시 놀 시간을 약속해 보세요.':'옮길 자리를 함께 고르고, 작품을 사진으로 남겨도 좋아요.');
-  const brief=(code[0]==='F'?'놀이 가능성을':'물건의 자리를')+' 먼저 떠올리고, '+(code[1]==='V'?'넓은 바닥을':'책상·작은 자리를')+' 골랐어요. '+(code[2]==='M'?'놀이 공간':'물건 둘 공간')+'을 늘리고, 만들던 놀이는 '+(code[3]==='B'?'이어 하고':'옮겨 두고')+' 싶어 해요.';
-  return {summary:meaning+' '+place+' '+change+' '+continuation,support,brief};
+  const meaning=code[0]==='F'?'장난감으로 무슨 놀이를 할지 먼저 생각했어요.':'장난감이 어디에 있었는지 먼저 생각했어요.';
+  const place=code[1]==='V'?'바닥에서 넓게 놀고 싶어요.':'책상이나 작은 자리에서 놀고 싶어요.';
+  const change=code[2]==='M'?'놀 자리를 더 만들고 싶어요.':'장난감 둘 자리를 더 만들고 싶어요.';
+  const continuation=code[3]==='B'?'만들던 놀이는 그대로 두고 또 놀고 싶어요.':'만들던 놀이는 다른 자리로 옮겨 두고 싶어요.';
+  const support=(code[0]==='F'?'“어떤 놀이를 더 하고 싶어?” 하고 물어봐요.':'“이 장난감의 집은 어디로 할까?” 하고 물어봐요.')+' '+(code[3]==='B'?'“언제 다시 놀까?” 하고 함께 정해요.':'“어디로 옮겨 주면 좋을까?” 하고 함께 골라요.');
+  return {summary:meaning+' '+place+' '+change+' '+continuation,support,brief:place+' '+continuation};
 }
 function observationOpinion() {
-  const matches=matchHabits(),known=matches.same.length+matches.different.length;
-  const focus=matches.different[0];
-  const actions=[
-    '장난감을 옮기기 전에 “어떤 놀이를 이어 하고 싶어?”라고 묻고 아이의 말을 먼저 들어 보세요.',
-    '같은 놀이를 바닥과 작은 탁자에서 잠깐씩 해 보고, 편했던 점을 하나씩 나눠 보세요.',
-    '놀이 자리와 물건 둘 자리 중 한 곳만 함께 바꾼 뒤, 다음 날 다시 쓰기 쉬운지 살펴보세요.',
-    '만들던 놀이를 남겨 둘 자리와 다시 놀 시간을 아이와 함께 하나씩 정해 보세요.'
-  ];
-  const observation=known?`두 사람 모두 고른 ${known}가지 항목 중 ${matches.same.length}가지에서 같은 선택을 했어요. ${matches.different.length?'다른 선택은 서로 무엇을 먼저 생각했는지 알아보는 대화의 단서예요.':'비슷한 선택을 했어도 그 이유는 서로 다를 수 있어요.'}`:'고르기 어려웠던 항목은 비워 두었어요. 아이가 말이나 손짓으로 알려 주는 것을 먼저 살펴보세요.';
-  const action=focus===undefined?'장난감 하나의 자리를 아이가 고르게 하고, 다음 날 다시 찾아 쓰는 모습을 함께 살펴보세요.':actions[focus];
-  return {observation,action};
+  const matches=matchHabits(),focus=matches.different[0];
+  const prompts=['“이 장난감으로 무슨 놀이를 해 보고 싶어?”','“바닥이 좋아, 작은 탁자가 좋아? 왜 그럴까?”','“이 방에 어떤 자리가 더 있으면 좋을까?”','“만들던 놀이를 어디에 두면 또 놀기 좋을까?”'];
+  return {observation:'같은 생각도, 다른 생각도 있어요. 한 사람씩 마음을 들려줘요.',action:prompts[focus??0]+' 아이의 말을 듣고 부모님 생각도 들려주세요.'};
 }
 function observationPanel() {
   const opinion=observationOpinion();
-  return `<section class="observation-opinion"><p class="record-number">04 · 선택을 바탕으로 한 관찰 의견</p><h2>집에서 이렇게 살펴보세요</h2><p>${opinion.observation}</p><p class="observation-action"><b>다음에 해 볼 한 가지</b>${opinion.action}</p><p class="small">한 장면의 선택을 정리한 체험 기록입니다. 성격·발달 수준·정리 능력을 판정하는 검사가 아니며, 장소와 상황에 따라 답은 달라질 수 있어요.</p><details class="opinion-basis"><summary>대화 안내의 참고 기준</summary><p>아이의 선택을 관찰하고, 관심을 따라 묻고, 답할 시간을 주는 놀이·상호작용 원칙을 참고했습니다. 이 앱의 네 글자 유형이나 그래프가 해당 기관의 검사라는 뜻은 아닙니다.</p><a href="https://www.naeyc.org/resources/position-statements/dap/principles" target="_blank" rel="noopener noreferrer">유아 놀이와 관찰 원칙</a> · <a href="https://developingchild.harvard.edu/resources/guides/how-to-5-steps-for-brain-building-serve-and-return/" target="_blank" rel="noopener noreferrer">아이의 관심을 따라 주고받는 대화</a></details></section>`;
+  return `<section class="observation-opinion"><p class="record-number">같이 이야기해요</p><h2>우리 생각을 들어 볼까요?</h2><p>${opinion.observation}</p><p class="observation-action">${opinion.action}</p><p class="small">재미로 알아보는 시선 유형이에요. 검증된 심리검사나 성격·발달·정리 능력의 점수가 아닙니다.</p></section>`;
 }
 
 function typeKeys(code) {
@@ -1183,7 +1235,7 @@ function typeKeys(code) {
 
 function characterCard(role) {
   const code=characterCode(role),profile=typeProfile(code);
-  return `<figure class="type-character"><figcaption><span class="role-sticker ${role}">${roles[role]}</span>${code?`<span class="type-code">${code}</span>`:''}<strong>${code?characters[code]:'아직 정리 친구가 없어요'}</strong></figcaption>${code?`${mascot(code,'card-preview',true)}<p class="type-keys">${typeKeys(code)}</p><div class="type-profile"><h3>이번 그림에서 보인 선택</h3><p>${profile.summary}</p><h3>함께 해 볼 정리 방법</h3><p>${profile.support}</p>${voiceButton('description-'+code,'이 친구의 유형 설명 듣기')}</div><details class="friend-story"><summary>이야기 속 친구의 정리 모습</summary><p>${typeDescriptions[code]}</p></details>`:'<p class="small type-incomplete">고르기 어려웠던 답을 함께 살펴봐요. 친구를 임의로 정하지 않아요.</p>'}</figure>`;
+  return `<figure class="type-character"><figcaption><span class="role-sticker ${role}">${roles[role]}</span>${code?`<span class="type-code">${code}</span>`:''}<strong>${code?characters[code]:'아직 정리 친구가 없어요'}</strong></figcaption>${code?`${mascot(code,'card-preview',true)}<p class="type-keys">${typeKeys(code)}</p><div class="type-profile"><h3>우리 가족이 고른 이야기</h3><p>${profile.summary}</p><h3>이렇게 말해 볼까요?</h3><p>${profile.support}</p>${voiceButton('description-'+code,'이 친구의 유형 설명 듣기')}</div><details class="friend-story"><summary>이야기 속 친구의 정리 모습</summary><p>${typeDescriptions[code]}</p></details>`:'<p class="small type-incomplete">고르기 어려웠던 답을 함께 살펴봐요. 친구를 임의로 정하지 않아요.</p>'}</figure>`;
 }
 
 function filterGallery(letter) {
@@ -1416,7 +1468,7 @@ function missionTheater(matches) {
   const code=characterCode(endingRole());
   return `<section class="panel mission-theater" id="mission-theater" hidden data-pattern="${pattern}" data-child-index="${childIndex}" data-code="${code??''}"><p class="book-eyebrow">친구와 이어 쓰는 다음 이야기</p><h2 tabindex="-1">${mission.title}</h2><div id="mission-motion"></div><div class="actions"><button class="button primary" data-action="mission-play">정리하는 모습 보기</button><button class="button" data-action="mission-pause">잠깐 멈추기</button><button class="voice-toggle" data-action="toggle-voice">${voiceEnabled?'소리 끄기':'소리 켜기'}</button></div><p class="ending-home-line">“다음 이야기는 우리 집에서 함께 해요!”</p></section>`;
 }
-const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":4.221},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":4.257},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":4.187},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":3.73},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":3.35},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":5.527},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":3.306},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":5.006},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.138},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":4.122},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":2.674},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":3.566}};
+const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":4.066},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.825},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.962},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":4.28},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":3.635},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":4.26},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":3.523},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.586},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.519},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":4.477},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":2.941},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.308}};
 let missionMotion=null;
 function stopEndingMedia() {
   missionPausedVoice=null;
@@ -1500,7 +1552,7 @@ function exampleControls() {
   </div><p class="small">책과 친구를 바꾸면 알깨기·가족 미션·결과지를 연결 없이 확인할 수 있어요.</p></section>`;
 }
 function resultComparison() {
-  return `<section class="result-comparison"><p class="record-number">03 · 선택 기록</p><h2>같은 방, 두 사람의 시선</h2><div class="result-table-scroll"><table class="result-table"><thead><tr><th scope="col">관찰 항목</th><th scope="col">아이의 선택</th><th scope="col">부모님의 선택</th></tr></thead><tbody>${reviewQuestions.map((q,i)=>`<tr><th scope="row">${q.title}</th>${['child','adult'].map(role=>`<td>${escapeHtml(reviewAnswerLabel(q,reviewAnswers[role][i].choice))}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
+  return `<section class="result-comparison"><p class="record-number">03 · 선택 기록</p><h2>같은 방, 두 사람의 시선</h2><div class="result-table-scroll"><table class="result-table"><thead><tr><th scope="col">함께 본 것</th><th scope="col">아이의 선택</th><th scope="col">부모님의 선택</th></tr></thead><tbody>${reviewQuestions.map((q,i)=>`<tr><th scope="row">${q.title}</th>${['child','adult'].map(role=>`<td>${escapeHtml(reviewAnswerLabel(q,reviewAnswers[role][i].choice))}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
 }
 function report() {
   const matches = matchHabits();
@@ -1519,7 +1571,7 @@ function report() {
       <section class="record-mission"><p class="record-number">05 · 가족 실천</p>${familyMission(matches)}</section>
       <p class="report-note">이번 선택으로 만난 이야기 속 친구예요. 성격을 판정하는 심리 진단이 아니에요. 가족 미션은 함께 의논할 놀이 제안이에요.</p>
       <section id="type-reasons"><h2>정리 친구를 만난 방법</h2><p>첫 장은 눈에 들어온 곳을 기록해요. 2~5장의 선택을 네 글자로 연결해 이야기 속 친구를 만나요. 글자는 이번 그림에서의 선택을 설명하는 표시예요.</p>${voiceButton('result-answers','유형 근거 듣기')}<button class="button" data-action="type-gallery">정리 친구 16명 보기</button></section>
-      <details class="record-evidence"><summary>첫 시선 · 답변의 자세한 근거</summary>${firstLook()}${reviewAnswerDetails()}</details>
+      <details class="record-evidence"><summary>먼저 보인 것 · 답변의 자세한 근거</summary>${firstLook()}${reviewAnswerDetails()}</details>
       <section class="record-sharing">${sharingPanel(matches)}</section>
       </details>
     </section>
@@ -1530,14 +1582,14 @@ function report() {
 
 const reviewQuestions = [
   {
-    title: "첫 시선",
+    title: "먼저 보인 것",
     child: "이 방을 보니까 뭐가 제일 먼저 보여?",
     adult: "이 방을 보았을 때 가장 먼저 눈에 들어오는 것은 무엇인가요?",
     options: ["바닥에 놓인 물건들", "책상이나 선반 위의 물건들"],
     reason: "왜 그게 먼저 보였나요?",
   },
   {
-    title: "사물의 의미",
+    title: "장난감 생각",
     typeSlot: 0,
     codes: ["F", "P"],
     child: "바닥에 있는 장난감을 보니까 어떤 생각이 먼저 나?",
@@ -1546,7 +1598,7 @@ const reviewQuestions = [
     reason: "왜 그런 생각이 들었나요?",
   },
   {
-    title: "놀이의 지속",
+    title: "만들던 놀이",
     typeSlot: 3,
     codes: ["B", "D"],
     child: "누가 만들던 게 바닥에 남아 있으면 어떻게 하고 싶어?",
@@ -1556,7 +1608,7 @@ const reviewQuestions = [
     hint: "만들던 놀이가 남아 있어요.",
   },
   {
-    title: "공간 활용",
+    title: "놀고 싶은 곳",
     typeSlot: 1,
     codes: ["V", "H"],
     child: "이 방에서 새로 놀 거면 어디서 놀고 싶어?",
@@ -1565,7 +1617,7 @@ const reviewQuestions = [
     reason: "그 장소를 선택한 이유는 무엇인가요?",
   },
   {
-    title: "변화의 우선순위",
+    title: "바꾸고 싶은 것",
     typeSlot: 2,
     codes: ["M", "S"],
     child: "이 방에서 딱 하나 바꿀 수 있으면 뭘 바꾸고 싶어?",
@@ -1657,15 +1709,15 @@ function reviewQuiz() {
       </div>
       <div class="soft-options">
         ${index === 0 ? option("other", "다른 곳이 먼저 보여요", "button") : ""}
-        ${option("unsure", '<span class="unsure-symbol" aria-hidden="true">?</span> 잘 모르겠어요', "button")}
       </div>
-      <section class="review-followup" ${answer.choice && answer.choice !== "unsure" ? "" : "hidden"}>
+      <section class="review-followup" ${answer.choice ? "" : "hidden"}>
         ${voiceButton("reason-" + role + "-" + index, "이유 질문 다시 듣기")}
       <label class="review-reason">
         <strong>${role === "child" ? "왜 그렇게 생각했어?" : question.reason}</strong>
-        <span class="small">${role === "child" ? "아이가 말하면 보호자나 진행자가 아래에 적어 주세요. 자동으로 녹음되지는 않아요." : "원하면 짧게 적어 주세요."}</span>
+        <span class="small">${role === "child" ? "마이크를 누르고 말하면 아래에 글로 적혀요. 보호자와 함께 확인해 주세요." : "원하면 짧게 적어 주세요."}</span>
+        <div class="reason-voice-tools"><button class="button reason-mic" type="button" data-action="reason-mic" aria-label="말로 답하기"><span aria-hidden="true">🎤</span> 말로 답하기</button><span class="reason-mic-status" role="status"></span></div>
         <textarea name="review-reason" maxlength="180" rows="2">${escapeHtml(answer.reason)}</textarea>
-      </label>
+      </label><details class="speech-parent-note"><summary>보호자 음성입력 안내</summary><p>마이크 버튼을 누를 때만 듣습니다. 브라우저의 음성인식 서비스가 사용될 수 있으며, 이 설문은 목소리 파일을 저장하지 않고 확인한 글만 답으로 저장합니다. 지원하지 않는 기기에서는 보호자가 직접 적어 주세요.</p></details>
       </section>
     </section>
     <div class="quiz-nav">
@@ -1677,6 +1729,7 @@ function reviewQuiz() {
 }
 
 function chooseReviewAnswer(choice, point = null) {
+  cancelReasonVoice();
   const { role, index } = state;
   const answer = reviewAnswers[role][index];
   const changed = answer.choice !== choice;
@@ -1692,7 +1745,8 @@ function chooseReviewAnswer(choice, point = null) {
     button.setAttribute("aria-pressed", String(button.dataset.value === choice));
   }
   const followup = app.querySelector(".review-followup");
-  followup.hidden = choice === "unsure";
+  followup.hidden = false;
+  followup.scrollIntoView?.({block:'nearest',behavior:motionAllowed()?'smooth':'auto'});
   const reasonScene="reason-" + role + "-" + index;
   if (!followup.hidden) {
     if(changed || playingScene!==reasonScene || voiceAudio.paused)narrate(reasonScene);
@@ -1700,6 +1754,7 @@ function chooseReviewAnswer(choice, point = null) {
   const nextButton=app.querySelector('[data-action="review-next"]');
   if(nextButton) nextButton.disabled=false;
   markNextReady();
+  syncGuidePointer();
   queueFamilySave().catch(()=>{});
   const pin = app.querySelector(".room-marker");
   if (!pin) return;
@@ -1761,6 +1816,7 @@ function reviewAnswerDetails() {
 app.addEventListener("input", (event) => {
   if(event.target.name==='family-code')event.target.value=event.target.value.replace(/\D/g,'').slice(0,8);
   if (event.target.name === "review-reason") {
+    if(event.isTrusted && reasonVoice?.active){cancelReasonVoice();updateReasonMic();}
     const { role, index } = state;
     reviewAnswers[role][index].reason = event.target.value;
     if (index === 0) state.looks[role].note = event.target.value;
@@ -1824,6 +1880,19 @@ function stationSetup() {
   const childPanel=`<article><h2>아이 화면</h2><p>부모님 화면에 나온 번호를 넣어 주세요.</p><label for="station-code">연결 번호</label><input id="station-code" name="station-code" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="숫자 8자리" aria-describedby="station-code-help"><p class="small" id="station-code-help">번호는 부모님 화면에만 나와요. 여기에 입력하면 두 화면이 연결돼요.</p><button class="button primary" data-action="station-join" disabled>아이의 책으로 연결 →</button></article>`;
   return `<section class="book-foyer station-setup"><p class="book-eyebrow">처음 한 번만 준비해요</p><h1 tabindex="-1">${child?'연결 번호를 입력해요':adult?'부모님 화면에서 시작해요':'두 화면을 연결해요'}</h1><div class="station-setup-grid${child||adult?' single-role':''}">${child?'':parentPanel}${adult?'':childPanel}</div><p class="small">노트북·태블릿·휴대폰을 함께 써도 돼요.<br>한 번 연결하면 다음 가족도 번호 입력 없이 시작해요.</p><p class="family-status" data-family-status role="status"></p><div class="station-role-links">${!adult?'<button class="text-link" data-action="station-role" data-role="adult">부모님 화면 열기</button>':''}${!child?'<button class="text-link" data-action="station-role" data-role="child">아이 화면 열기</button>':''}</div><details class="lobby-details"><summary>기존 가족 코드로 연결하기</summary>${legacyFamilyIntro()}</details><button class="text-link" data-action="demo">연결 없이 결과 미리보기</button></section>`;
 }
+async function beginFreshBook() {
+  if(!stationSession)return show('intro');
+  if(stationBusy)return;
+  stationBusy=true;
+  try {
+    const session=stationSession;
+    const latest=await stationRequest('/'+session.id,'GET');
+    const data=session.role==='adult' ? await stationRequest('/'+session.id,'PATCH',{begin:true,round:latest.round}) : latest;
+    if(session!==stationSession)return;
+    acceptStation(data,true);startStationPolling();show('intro');
+    if(!data.prepared)narrate('waiting-start');
+  } catch(error){familyNotice(error.message);} finally {stationBusy=false;}
+}
 function bookRoleLabel() {
   const role=stationSession?.role || familySession?.role || stationEntryRole;
   return role==='child'?'아이용':role==='adult'?'부모용':'';
@@ -1838,11 +1907,12 @@ function syncBookRoleBadge() {
 }
 function familyIntro() {
   if(!stationSession)return stationSetup();
-  const ready=stationView?.connected.child;
-  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><div class="survey-purpose"><h2>이 설문은 왜 할까요?</h2><p>같은 방을 봐도 아이와 부모님이 떠올리는 생각은 다를 수 있어요.<br>서로의 생각을 알아보고, 우리 집에서 함께할 정리 놀이를 찾아요.</p><p class="small">정답은 없어요. 각자의 마음에 가까운 그림을 골라 주세요.</p></div>${!ready&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('purpose','놀이 소개와 그림 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div><p class="small family-status" data-family-status role="status">${ready?'각자의 답을 골라 주세요.':'아이 화면에 번호를 입력하면 첫 장을 펼칠 수 있어요.'}</p></section>`;
+  const ready=stationView?.connected.child && stationView?.prepared===true && !familyView?.ownAnswers.some(a=>a.choice);
+  return `<section class="book-foyer station-ready">${stationRibbon()}<p class="book-eyebrow">책장을 펼치기 전 · 준비 화면</p><h1 tabindex="-1">같은 방을 함께 봐요</h1><p class="preparation-hint">큰 방 그림을 먼저 만져 보고, 준비되면 첫 장을 펼쳐요.</p>${!stationView?.connected.child&&stationSession.role==='adult'?`<div class="station-pair"><p>아이 화면의 ‘연결 번호’에 넣어 주세요.</p><strong>${codeLabel(stationView.pairCode || '')}</strong><p class="small">${stationView.pairExpires*1000<Date.now()?'번호의 유효 시간이 지났어요. 새 연결 번호를 받아 주세요.':'번호는 부모님 화면에만 나와요 · 10분 동안 유효해요.'}</p><button class="text-link" data-action="station-renew">새 연결 번호 받기</button><div class="station-child-address"><label for="station-child-url">아이 기기에서 열 주소</label><input id="station-child-url" value="${escapeHtml(stationRoleUrl('child',true))}" readonly><button class="button" data-action="station-copy-child">아이 화면 주소 복사</button><p class="small">다른 기기에서 이 주소를 열면 번호 입력칸이 바로 나와요.</p></div></div>`:''}${room({caption:'손가락으로 쓱 밀고, 장난감을 콕 눌러 봐요.'})}${voiceTools('room-play','그림 놀이 안내 듣기')}<div class="actions"><button class="button primary" data-action="station-start" ${ready?'':'disabled'}>첫 장 펼치기 →</button></div>${familyView?.ownAnswers.some(a=>a.choice)?'<button class="text-link" data-action="resume-review">내가 고른 답 다시 보기</button>':''}<p class="small family-status" data-family-status role="status">${ready?'각자의 마음에 가까운 그림을 골라 주세요.':'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.'}</p></section>`;
 }
 function acceptStation(data,initial=false) {
   if(stationView && data.round<stationView.round)return;
+  const priorScreen=currentScreen;
   const changed=stationView && data.round!==stationView.round;
   stationView=data;
   if(!familySession || familySession.code!==data.family.code || initial) {
@@ -1858,7 +1928,8 @@ function acceptStation(data,initial=false) {
     localStorage.setItem(familyStorage(data.role),JSON.stringify(familySession));
     familyView=null;currentScreen='home';receiveFamily(data.family,true);
     history.replaceState(null,'',location.pathname+'?station='+data.role);
-    if(changed || initial)show('home');
+    if(initial)show('home');
+    else if(changed)show(priorScreen==='intro'?'intro':'home');
     else if(data.family.bothComplete)show('report');
     else if(data.family.complete)show('waiting');
     else if(data.family.ownAnswers.some(a=>a.choice))edit(data.role,0);
@@ -1866,9 +1937,9 @@ function acceptStation(data,initial=false) {
   } else {
     receiveFamily(data.family);
     app.querySelectorAll('[data-station-status]').forEach(n=>n.textContent=data.connected.child?'두 책이 연결됐어요 ✓':'다른 태블릿을 기다려요');
-    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!data.connected.child;
+    const start=app.querySelector('[data-action="station-start"]'),wasDisabled=start?.disabled;if(start)start.disabled=!(data.connected.child && data.prepared && !data.family.ownAnswers.some(a=>a.choice));
     if(data.connected.child)app.querySelector('.station-pair')?.remove();
-    const status=app.querySelector('.station-ready [data-family-status]');if(status)status.textContent=data.connected.child?'두 화면이 연결됐어요. 첫 장을 펼쳐 주세요.':'아이 화면에 번호를 입력하면 첫 장을 펼칠 수 있어요.';
+    const status=app.querySelector('.station-ready [data-family-status]');if(status)status.textContent=start?.disabled?'새 놀이는 부모용 표지의 시작 버튼을 눌러 준비해 주세요.':'두 화면이 연결됐어요. 첫 장을 펼쳐 주세요.';
     if(start && wasDisabled!==start.disabled)markNextReady();
   }
 }
@@ -2180,6 +2251,7 @@ function markNextReady() {
     button.classList.toggle('next-ready', !button.disabled && !button.hidden && !button.closest?.('[hidden],details:not([open])') && !playingScene && !coverMotion?.silent);
   });
   queueNextCue();
+  syncGuidePointer();
 }
 function clearNextReady() {
   stopNextCue();
@@ -2335,6 +2407,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&familySes
 const screens = { home, roomPreview, stationLink: stationLinkPage, intro: familyIntro, bookCover: familyBookCover, ready: familyReady, waiting: familyWaiting, quiz: reviewQuiz, handoff, report };
 
 function show(screen, focus = true) {
+  cancelReasonVoice();
   if(screen==='home' && location.search) history.replaceState(null,'',location.pathname+(stationSession?'?station='+stationSession.role:''));
   const nextBookPage=screen==='quiz'?state.role+':'+state.index:null;
   const turnPage=(screen==='quiz' && nextBookPage!==renderedBookPage) ||
@@ -2367,6 +2440,7 @@ function show(screen, focus = true) {
   document.body.classList.toggle('storybook-view', ['stationLink','intro','bookCover','ready','quiz','waiting'].includes(screen));
   syncBookRoleBadge();
   app.innerHTML = screens[screen]();
+  setupReasonVoice();
   if(familySession && screen === 'report' && !state.demo) {
     app.insertAdjacentHTML('afterbegin', familyRibbon());
     app.querySelectorAll('[data-action="edit"]').forEach(b => {if(b.dataset.role !== familySession.role)b.remove();});
@@ -2397,7 +2471,7 @@ function show(screen, focus = true) {
     else narrate('cover',true);
   }
   else if (screen !== "home" && screen !== 'stationLink') {
-    if(screen === "intro") narrate(stationSession ? "purpose" : "intro");
+    if(screen === "intro") narrate(stationSession ? stationView?.prepared ? "room-play" : "waiting-start" : "intro");
     else if(screen === "waiting") narrate("waiting-"+state.role);
     else if(screen === "report") narrate(state.demo && location.hash==='#family-choice-graph' ? 'chart' : characterCode(endingRole())?"ending":"ending-quiet");
     else narrate(screen);
@@ -2854,26 +2928,26 @@ async function renderPrintImage(report) {
     }if(row)ctx.fillText(row,x,yy);return yy+size*1.48;
   };
   const picture=(image,x,y,w,h)=>{if(!image)return;const scale=Math.min(w/image.naturalWidth,h/image.naturalHeight);const iw=image.naturalWidth*scale,ih=image.naturalHeight*scale;ctx.drawImage(image,x+(w-iw)/2,y+(h-ih)/2,iw,ih);};
-  rect(0,0,1240,1754,'#ffffff');rect(72,72,184,152,'#f3f6f3',10);
-  if(photo)picture(photo,80,80,168,136);
-  else {write('가족 사진',105,117,140,23,true,'#64736e');write('선택 항목',114,155,130,17,false,'#74817a');}
-  write('시선사이  |  가족 활동 기록',288,76,500,22,true,'#315f52');
+  rect(0,0,1240,1754,'#ffffff');rect(72,72,300,220,'#f3f6f3',12);
+  if(photo)picture(photo,82,82,280,200);
+  else {write('우리 가족 사진',98,137,250,25,true,'#64736e');write('함께 찍은 한 장',115,179,230,18,false,'#74817a');}
+  write('시선사이  |  가족 활동 기록',412,83,750,22,true,'#315f52');
   const date=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  write((state.demo?'예시 결과 · ':'')+date,835,80,330,18,false,'#64736e');
-  write('우리 가족의 시선 기록',288,133,880,42,true);
-  write('아이와 부모님의 정리 친구와 선택을 함께 담았어요.',288,196,880,21,false,'#64736e');line(72,242,1096);
-  write('01  두 사람의 선택 비교 그래프',72,261,1096,22,true,'#315f52');
-  rect(72,299,1096,337,'#f6f8f6',12);
-  if(chart)picture(chart,76,302,424,330);
+  write((state.demo?'예시 결과 · ':'')+date,835,271,330,18,false,'#64736e');
+  write('우리 가족의 시선 기록',412,132,750,39,true);
+  write('아이와 부모님의 정리 친구와 선택을 함께 담았어요.',412,201,750,21,false,'#64736e');line(72,312,1096);
+  write('01  두 사람의 선택 비교 그래프',72,329,1096,22,true,'#315f52');
+  rect(72,366,1096,270,'#f6f8f6',12);
+  if(chart)picture(chart,76,370,424,260);
   else write('고르기 어려웠던 답은 점을 채우지 않고 남겨 두었어요.',96,418,392,20);
-  write('● 아이',548,319,250,22,true,'#b45040');write('□ 부모님',820,319,300,22,true,'#355b9b');
-  write('점이 겹치면 같은 답이에요. 점의 안쪽·바깥쪽은 서로 다른 보기를 뜻해요.',548,359,590,18,false,'#5f7066');
+  write('● 아이',548,382,250,22,true,'#b45040');write('□ 부모님',820,382,300,22,true,'#355b9b');
+  write('점이 겹치면 같은 답이에요. 점의 안쪽·바깥쪽은 서로 다른 보기를 뜻해요.',548,421,590,18,false,'#5f7066');
   const opinion=observationOpinion();
-  write('선택을 바탕으로 한 관찰 의견',548,416,590,19,true,'#315f52');
-  const opinionEnd=write(opinion.observation.split('. ')[0]+'.',548,450,590,18,false,'#4e6058');
-  write('다음에 해 볼 한 가지',548,Math.max(529,opinionEnd+12),590,18,true,'#315f52');
-  write(opinion.action,548,Math.max(563,opinionEnd+45),590,17,false,'#4e6058');
-  write('02  두 사람의 정리 친구 · 이번 그림에서 보인 선택',72,660,1096,22,true,'#315f52');
+  write('같이 이야기해요',548,479,590,19,true,'#315f52');
+  const opinionEnd=write(opinion.observation.split('. ')[0]+'.',548,510,590,18,false,'#4e6058');
+  
+  write(opinion.action,548,Math.max(552,opinionEnd+8),590,17,false,'#4e6058');
+  write('02  두 사람의 정리 친구 · 우리 가족이 고른 이야기',72,660,1096,22,true,'#315f52');
   cards.forEach((card,i)=>{
     const x=72+i*560,code=characterCode(i===0?'child':'adult'),profile=typeProfile(code);rect(x,697,536,210,i===0?'#f7f0e9':'#edf3f0',12);
     picture(card.querySelector('.mascot-still'),x+8,735,120,150);
@@ -2884,21 +2958,21 @@ async function renderPrintImage(report) {
   });
   write('03  같은 방, 두 사람의 선택',72,930,1096,22,true,'#315f52');
   rect(72,967,1096,35,'#315f52',5);
-  write('관찰 항목',88,975,166,18,true,'#ffffff');write('아이의 선택',281,975,410,18,true,'#ffffff');write('부모님의 선택',735,975,410,18,true,'#ffffff');
+  write('함께 본 것',88,975,166,18,true,'#ffffff');write('아이의 선택',281,975,410,18,true,'#ffffff');write('부모님의 선택',735,975,410,18,true,'#ffffff');
   reviewQuestions.forEach((q,i)=>{
     const y=1002+i*43;rect(72,y,1096,43,i%2?'#f6f8f7':'#ffffff');line(72,y+42,1096,'#e4e9e6');
     write(q.title,88,y+10,166,17,true);write(reviewAnswerLabel(q,reviewAnswers.child[i].choice),281,y+8,410,17);write(reviewAnswerLabel(q,reviewAnswers.adult[i].choice),735,y+8,410,17);
   });
-  write('04  집에서 이어 갈 가족 미션',72,1244,1096,22,true,'#315f52');
+  write('04  집에서 함께 해요',72,1244,1096,22,true,'#315f52');
   const {mission,childIndex}=missionPlan();write(mission.title,72,1283,1096,29,true);write(mission.intro,74,1327,1092,19,false,'#64736e');
   missionSteps(mission,childIndex).forEach(({role,text},i)=>{
     const y=1365+i*56;rect(72,y,1096,49,'#f3f6f3',8);
     write(role==='child'?'아이':'부모님',88,y+14,104,18,true,'#315f52');write(text,210,y+11,936,18);
   });
-  write('함께 정할 약속',74,1492,1092,19,true,'#315f52');write(mission.agreement,74,1525,1092,19,false,'#4e6058');
-  line(72,1574,1096);write('우리 가족의 다음 이야기',74,1593,1092,20,true,'#315f52');
+  write('우리의 약속',74,1492,1092,19,true,'#315f52');write(mission.agreement,74,1525,1092,19,false,'#4e6058');
+  line(72,1574,1096);write('이렇게 물어봐요',74,1593,1092,20,true,'#315f52');
   write('“'+mission.talk+'”',74,1627,1092,20);
-  write('이번 선택을 정리한 체험 기록입니다. 그래프는 답의 비교이며, 성격이나 정리 능력의 점수가 아닙니다.',74,1700,1092,16,false,'#74817a');
+  write('재미로 나누는 시선 이야기입니다. 검증된 심리검사가 아니며, 성격이나 능력을 판단하지 않습니다.',74,1700,1092,16,false,'#74817a');
   return canvas;
 }
 
@@ -3098,7 +3172,9 @@ document.addEventListener("click", (event) => {
     case "mission-play": return playMission();
     case "mission-pause": return pauseMission();
 
-    case "begin-voice": voiceEnabled ??= true; return show("intro");
+    case "begin-voice": voiceEnabled ??= true; return beginFreshBook();
+    case 'reason-mic': return toggleReasonVoice();
+    case 'resume-review': return edit(familySession.role,0);
     case 'station-create': return createStation();
     case 'station-join': return joinStation();
     case 'photo-location':
@@ -3114,7 +3190,7 @@ document.addEventListener("click", (event) => {
     case 'station-copy-child': return copyStationChildUrl();
     case 'station-next': return nextStationFamily();
     case 'station-renew': return renewStationPair();
-    case 'station-start': return stationView?.connected.child ? startBookFromCover(target) : undefined;
+    case 'station-start': return stationView?.connected.child && stationView.prepared && !familyView?.ownAnswers.some(a=>a.choice) ? startBookFromCover(target) : undefined;
     case "review-start": return familySession ? edit(familySession.role,state.index) : show("intro");
     case "review-next": return reviewNext();
     case "review-choice": return chooseReviewAnswer(value);

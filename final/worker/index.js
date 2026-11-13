@@ -77,7 +77,7 @@ async function stationView(db,sid,s,role,fresh){
   const row=await read(db,'families',s.code);if(!row)fail(410,'가족 기록이 만료됐어요. 현장 연결을 다시 준비해 주세요.');
   const f=JSON.parse(row.data),family={...view(f,s.code,role),token:f.roles[role].token,photo:null,ratio:null,photoLocked:true};
   for(const r of Object.keys(family.peers))family.peers[r].connected=s.connected[r];
-  const result={id:sid,role,round:s.round,connected:s.connected,family};
+  const result={id:sid,role,round:s.round,connected:s.connected,prepared:s.readyRound===s.round,family};
   if(role==='adult'&&!s.connected.child)Object.assign(result,{pairCode:s.pair,pairExpires:s.pairUntil});
   if(fresh)result.token=s.tokens[role];
   await db.batch([db.prepare('UPDATE stations SET updated=? WHERE id=?').bind(now(),sid),db.prepare('UPDATE families SET updated=? WHERE code=?').bind(now(),s.code)]);
@@ -125,10 +125,10 @@ async function stationApi(req,db,url,p){
     const row=await read(db,'stations',sid);if(!row)fail(404,'현장 연결이 만료됐어요. 진행자가 다시 준비해 주세요.');const s=JSON.parse(row.data),role=auth(req,s.tokens);
     if(m==='PATCH'){
       if(role!=='adult')fail(403,'부모님 쪽 진행자 화면에서 다음 가족을 시작해 주세요.');
-      if(p.next){
+      if(p.next || p.begin){
         if(!s.connected.child)fail(409,'태블릿 두 대를 먼저 연결해 주세요.');
         if(p.round!==s.round)fail(409,'이미 다음 가족으로 바뀌었어요. 화면을 다시 확인해 주세요.');
-        const code=digits(),f=newFamily();s.code=code;s.round++;
+        const code=digits(),f=newFamily();s.code=code;s.round++;s.readyRound=s.round;
         const results=await db.batch([
           db.prepare('INSERT INTO families (code,data,updated) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM stations WHERE id=? AND data=?)').bind(code,JSON.stringify(f),now(),sid,row.data),
           update(db,'stations',sid,s,row.data)
@@ -175,4 +175,3 @@ export default {async fetch(req,env,ctx){
     return json(200,await (url.pathname.startsWith('/api/stations')?stationApi(req,env.DB,url,p):familyApi(req,env.DB,url,p)));
   }catch(e){return json(e.status||500,{error:e.status?e.message:'저장하지 못했어요. 연결을 확인하고 다시 시도해 주세요.'});}
 }};
-

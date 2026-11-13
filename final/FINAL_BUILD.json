@@ -1,7 +1,7 @@
 {
   "edition": "시선사이 원안",
-  "revision": "role-cover-first-v11-20261113",
-  "cloudBackendChecks": 36,
+  "revision": "fresh-play-dictation-v12-20261113",
+  "cloudBackendChecks": 43,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
   "containsDeviceCredentials": false,
@@ -11,5 +11,7 @@
     "local browser preview unavailable",
     "automatic transcription and local speaker similarity screening do not equal human listening"
   ],
-  "navigationChecks": 18
+  "navigationChecks": 25,
+  "dictationMockChecks": 14,
+  "voiceRenewal": "partial: 40 new complete clips; remaining scripts blocked by provider daily quota"
 }

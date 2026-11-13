@@ -172,11 +172,11 @@ class Handler(SimpleHTTPRequestHandler):
             if not role:return self.reply(403,{'error':'이 태블릿의 현장 연결을 확인해 주세요.'})
             if method=='PATCH':
                 if role!='adult':return self.reply(403,{'error':'부모님 쪽 진행자 화면에서 다음 가족을 시작해 주세요.'})
-                if payload.get('next'):
+                if payload.get('next') or payload.get('begin'):
                     if not station['connected']['child']:return self.reply(409,{'error':'태블릿 두 대를 먼저 연결해 주세요.'})
                     if payload.get('round')!=station['round']:
                         return self.reply(409,{'error':'이미 다음 가족으로 바뀌었어요. 화면을 다시 확인해 주세요.'})
-                    station['code']=new_station_family(db);station['round']+=1
+                    station['code']=new_station_family(db);station['round']+=1;station['readyRound']=station['round']
                 elif payload.get('renew') and not station['connected']['child']:
                     station['pair']=''.join(secrets.choice('0123456789') for _ in range(8));station['pairUntil']=now+600
                 else:raise ValueError('현장 요청을 확인해 주세요.')
@@ -189,7 +189,7 @@ class Handler(SimpleHTTPRequestHandler):
                   photo=None,ratio=None,photoLocked=True,ownAnswers=own['answers'],complete=own['complete'],bothComplete=both,
                   peers={r:dict(connected=station['connected'][r],complete=v['complete']) for r,v in family['roles'].items()})
         if both:view['answers']={r:v['answers'] for r,v in family['roles'].items()}
-        result=dict(id=sid,role=role,round=station['round'],connected=station['connected'],family=view)
+        result=dict(id=sid,role=role,round=station['round'],connected=station['connected'],prepared=station.get('readyRound')==station['round'],family=view)
         if role=='adult' and not station['connected']['child']:result.update(pairCode=station['pair'],pairExpires=station['pairUntil'])
         if fresh:result['token']=station['tokens'][role]
         db.execute('INSERT OR REPLACE INTO stations VALUES (?,?,?)',(sid,json.dumps(station),now))
