@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const s=fs.readFileSync(new URL('../app/src/app.js',import.meta.url),'utf8');
+const resume=s.slice(s.indexOf('function resumeCurrentBook()'),s.indexOf('function familyIntro()'));
+const called=[];const answers=()=>Array.from({length:5},()=>({choice:null,reason:''}));
+const c={stationSession:{role:'child'},familySession:{role:'child'},familyView:{complete:false,bothComplete:false},state:{role:'child',index:0,demo:false},reviewAnswers:{child:answers(),adult:answers()},show:x=>called.push(['show',x]),edit:(r,i)=>called.push(['edit',r,i])};
+vm.runInNewContext(resume,c);let count=0;
+const expect=(expected)=>{called.length=0;const before=JSON.stringify(c.reviewAnswers);c.resumeCurrentBook();assert.deepEqual(called,[expected]);assert.equal(JSON.stringify(c.reviewAnswers),before);count++;};
+expect(['show','intro']);
+c.reviewAnswers.child[0].choice='A';c.state.index=2;expect(['edit','child',2]);
+c.familyView.complete=true;expect(['show','waiting']);
+c.familyView.bothComplete=true;expect(['show','report']);
+c.familyView={complete:false,bothComplete:false};c.stationSession={role:'adult'};c.reviewAnswers.adult[0].choice='B';c.state.role='adult';c.state.index=3;expect(['edit','adult',3]);
+c.stationSession=null;c.familySession=null;expect(['show','intro']);
+const home=s.match(/case "home": ([^\n]+)/)[1];
+const h={show:x=>called.push(['show',x]),restoreStation:()=>{throw Error('Home must not asynchronously replace the cover');}};
+called.length=0;vm.runInNewContext('(function(){'+home+'})()',h);assert.deepEqual(called,[['show','home']]);count++;
+const intro=s.slice(s.indexOf('function familyIntro()'),s.indexOf('function acceptStation('));
+const p={stationSession:{role:'child'},stationView:{connected:{child:true}},stationRibbon:()=>'<p>두 책이 연결됐어요</p>',room:()=>'<figure>공통 그림</figure>',voiceTools:scene=>'<button>'+scene+'</button>'};
+vm.runInNewContext(intro,p);
+for(const role of ['child','adult']){p.stationSession.role=role;const html=p.familyIntro();assert.ok(html.includes('준비 화면')&&html.includes('이 설문은 왜 할까요?')&&html.includes('정답은 없어요')&&html.includes('purpose'));assert.ok(!html.includes('station-code'));count++;}
+assert.ok(s.includes('narrate(stationSession ? "purpose" : "intro")'));assert.ok(s.includes('연결과 답을 유지하고, 하던 곳에서 이어 가요.'));count++;
+console.log(count+' cover, purpose, paired-role and resume preservation checks passed');

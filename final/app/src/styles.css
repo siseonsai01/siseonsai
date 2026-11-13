@@ -1222,7 +1222,7 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 @media(max-width:680px){.home-view .station-entry-link{padding:7px 10px;font-size:.78rem}}
 @media(max-width:680px){.station-setup-grid{grid-template-columns:1fr;gap:26px}.station-setup{padding:24px 16px!important}.station-ready{padding:22px 14px!important}.station-ribbon{gap:9px}.opening-audio{margin-top:14px}.opening-caption{font-size:.78rem}.operator-menu{flex-basis:100%}}
 @media print{.operator-menu,.opening-audio{display:none!important}}
-.station-ready>.book-eyebrow{display:none}
+.station-ready>.book-eyebrow{display:block;margin-bottom:8px}
 .station-ready h1{margin:10px 0 16px}
 .station-ready .family-ribbon{margin-bottom:8px}
 @media(min-width:681px){.storybook-view .station-ready{padding:24px 32px}.station-ready .room{width:min(100%,max(270px,calc((100dvh - 440px)*1.5)));max-width:540px;margin:16px auto}.station-ready .actions{margin-top:14px}}
@@ -1268,3 +1268,13 @@ body:not(.home-view) #app { padding-block: clamp(14px, 3vw, 32px) 0; }
 .chart-how li{margin:7px 0}
 @media(prefers-reduced-motion:no-preference){.spoken-choice .spoken-pointer{animation:spoken-hand 1.2s ease-in-out infinite}@keyframes spoken-hand{50%{transform:translateY(7px)}}}
 @media print{.spoken-pointer,.opinion-basis{display:none!important}.type-profile p{font-size:8pt}}
+
+/* Purpose and entry points: keep the storybook cover distinct from preparation. */
+.brand-caption{font-size:11px;font-weight:500;letter-spacing:0;color:#66716c;margin-left:3px}
+.cover-step{font-size:12px;letter-spacing:.08em;color:#8c6739;margin-bottom:12px}
+.hero-copy .cover-flow{font-size:12px;color:#6d7067;margin:12px 0 0;line-height:1.7;word-break:keep-all}
+.survey-purpose{max-width:650px;margin:18px auto;padding:14px 20px;border-radius:16px;background:#f5eddc;text-align:center}
+.survey-purpose h2{font-size:1rem;margin:0 0 7px;color:#395b4d}
+.survey-purpose p{font-size:.94rem;line-height:1.8;word-break:keep-all}
+.survey-purpose .small{font-size:.8rem;margin-top:6px;color:#79664e}
+@media(max-width:480px){.brand-caption{font-size:10px}.survey-purpose{padding:12px 14px}.survey-purpose p{font-size:.88rem}.hero-copy .cover-flow{font-size:11px}}
