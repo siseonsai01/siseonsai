@@ -257,14 +257,14 @@
     this.ctx = null;
   }
   Sfx.prototype.unlock = function () {
+    if(global.SiseonAudioRoute && !global.SiseonAudioRoute.canPlayEffects())return Promise.resolve(false);
     if (this.destroyed || !this.enabled || (this.allowed && !this.allowed())) return Promise.resolve(false);
     var AC = global.AudioContext || global.webkitAudioContext;
     if (!AC) return Promise.resolve(false);
+    if(this.ctx && this.ctx.state==='closed')this.ctx=null;
     if (!this.ctx) {
-      try {
-        if (navigator.audioSession) navigator.audioSession.type = 'playback'; // iOS 무음 스위치에서도 재생
-      } catch (e) { /* 무시 */ }
       var c = this.ctx = new AC();
+      if(global.SiseonAudioRoute)global.SiseonAudioRoute.registerContext(c);
       this.comp = c.createDynamicsCompressor();
       this.comp.threshold.value = -14; this.comp.ratio.value = 4;
       this.master = c.createGain();

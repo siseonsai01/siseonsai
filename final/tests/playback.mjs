@@ -21,6 +21,7 @@ function fixture(fetcher=async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer
   }
   const session={type:'auto'};
   const scope={window:{AudioContext:Context,fetch:fetcher},document:{baseURI:'https://example.test/app/'},navigator:{audioSession:session},URL,AbortController,setTimeout,clearTimeout,setInterval,clearInterval};
+  vm.runInNewContext(fs.readFileSync(new URL('../app/src/audio-route.js',import.meta.url),'utf8'),scope);
   vm.runInNewContext(playerSource,scope);
   const media={};const player=scope.window.SiseonNarration.create(media,{Context,fetch:fetcher,setInterval:fn=>{ticks.set(++tickId,fn);return tickId;},clearInterval:id=>ticks.delete(id)});
   return {player,contexts,session,tick(){for(const fn of [...ticks.values()])fn();}};
@@ -43,7 +44,7 @@ function fixture(fetcher=async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer
 {
   let resolveFetch;
   const f=fixture(()=>new Promise(resolve=>{resolveFetch=resolve;})),p=f.player;
-  await p.unlock();p.src='delayed.mp3';const pending=p.play();p.pause();
+  await p.unlock();p.src='delayed.mp3';const pending=p.play();await turn();p.pause();
   resolveFetch({ok:true,arrayBuffer:async()=>new ArrayBuffer(1)});
   await assert.rejects(pending,{name:'AbortError'});checks++;
   check(p.paused&&f.contexts[0].sources.length===1,'navigation cancels stale decoding without playing');p.dispose();

@@ -634,9 +634,10 @@
 
     // ---------- sound (opt-in, synthesized, quiet) ----------
     function sfx(kind) {
+      if(window.SiseonAudioRoute && !window.SiseonAudioRoute.canPlayEffects())return;
       if(destroyed || document.hidden || !(typeof soundAllowed === 'function' ? soundAllowed() : soundAllowed) || !kind) return;
       try {
-        if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+        if (!audio || audio.state==='closed') {audio = new (window.AudioContext || window.webkitAudioContext)();if(window.SiseonAudioRoute)window.SiseonAudioRoute.registerContext(audio);}
         if (audio.state === 'suspended') audio.resume();
         var now = audio.currentTime;
         var tone = function (f0, f1, at, dur, vol, type) {

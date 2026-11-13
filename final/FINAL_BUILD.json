@@ -1,6 +1,6 @@
 {
   "edition": "시선사이 원안",
-  "revision": "cache-safe-mic-release-v17-20261113",
+  "revision": "single-audio-route-v18-20261114",
   "cloudBackendChecks": 64,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
@@ -27,8 +27,10 @@
   "stableEntry": "canonical private role URLs preserved",
   "collectionValidation": "valid XLSX ZIP/XML, formula-safe text cells, scoped access, 200-record pagination, past-round retention",
   "playbackChecks": 48,
-  "playback": "iPad native media element, trusted tap priming, immediate preparation screen, speech-recognition missing-event cleanup; WebAudio retained elsewhere",
+  "playback": "single audio-route owner across narration, microphone and effects; capture release and output restoration gate; exact-same-file diagnostic",
   "eggRecoveryChecks": 50,
   "voiceRetake": "child-4 only: new complete take using previously selected storyteller; independent MP3 transcription exact; no voice processing",
-  "nativeSafariChecks": 43
+  "nativeSafariChecks": 43,
+  "fullAudioSessionChecks": 398,
+  "audioFileMeasurements": 109
 }

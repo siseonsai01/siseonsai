@@ -1,4 +1,4 @@
-const APP_RELEASE='20261113-17';
+const APP_RELEASE='20261114-18';
 const json=(status,data)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
 async function appAsset(req,env){
   const response=await env.ASSETS.fetch(req),type=response.headers.get('content-type')||'',path=new URL(req.url).pathname;

@@ -7,6 +7,8 @@ const offline_paper_mascot = {"FHMB":"assets/paper_mascot-FHMB.webp","FHMD":"ass
 "use strict";
 
 const roles = { child: "아이", adult: "부모님" };
+document.documentElement.dataset.appRelease='20261114-18';
+document.documentElement.dataset.startView=new URLSearchParams(location.search).get('view')||'';
 const activityIntro = [
   "장난감을 어디에 두면 너도 부모님도 찾기 쉬울까?",
   "그림을 보고 아이와 부모님이 하고 싶은 것을 하나씩 골라요.",
@@ -251,22 +253,23 @@ function setupReasonVoice(){
     const hint=app.querySelector('.review-reason > .small');if(hint)hint.textContent='말로 하면 보호자나 진행자가 여기에 적어 주세요.';
   }
 }
-function toggleReasonVoice(){
+async function toggleReasonVoice(){
   if(reasonVoice?.active){reasonVoice.stop();return;}
   if(!reasonVoiceSupported())return setupReasonVoice();
   stopNarration();
-  stopNextCue();stopPageTurnSound();voiceAudio.beginCapture?.();
+  stopNextCue();stopPageTurnSound();const microphoneReady=voiceAudio.beginCapture?.();
   const key=[familySession?.code || 'local',state.role,state.index].join(':');reasonVoiceKey=key;
   let request;
-  const valid=()=>reasonVoice===request && currentScreen==='quiz' && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
-  const base=app.querySelector('[name="review-reason"]')?.value || '';
+  const valid=()=>reasonVoice===request && ['quiz','audioCheck'].includes(currentScreen) && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
+  const base=app.querySelector('[name="review-reason"],[name="audio-check-reason"]')?.value || '';
   let received=false;
   reasonVoice=request=window.SiseonVoiceInput.create({
     status:text=>{if(valid())reasonVoiceStatus(text);},
-    text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
-    end:async()=>{await voiceAudio.endCapture?.();if(!valid())return;updateReasonMic();if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
+    text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"],[name="audio-check-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
+    end:async()=>{await voiceAudio.endCapture?.();if(!valid())return;updateReasonMic();if(currentScreen==='audioCheck'){reasonVoiceStatus('마이크 사용 전후에 같은 문장이 들려요. 크기가 같은지 확인해 주세요.');narrate(state.role+'-4');}else if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrate('speech-done');}else syncGuidePointer();}
   });
-  if(!reasonVoice.start(base))voiceAudio.endCapture?.();updateReasonMic();
+  const button=app.querySelector('[data-action="reason-mic"]');if(button){button.disabled=true;button.textContent='마이크 준비 중…';}
+  try{await microphoneReady;if(!valid())return;if(!reasonVoice.start(base))await voiceAudio.endCapture?.();}finally{if(button?.isConnected)button.disabled=false;updateReasonMic();}
 }
 function syncGuidePointer(){
   app.querySelectorAll('.guided-step').forEach(node=>node.classList.remove('guided-step'));
@@ -294,6 +297,13 @@ function syncGuidePointer(){
   if(target!==guideLastTarget && /^(reason-|speech-|next-step)/.test(playingScene||''))target.scrollIntoView?.({block:'nearest',behavior:motionAllowed()?'smooth':'auto'});
   guideLastTarget=target;
 }
+function audioCheck(){
+  return `<section class="book-foyer"><p class="book-eyebrow">${state.role==='adult'?'부모용':'아이용'} · 소리 점검</p><h1 tabindex="-1">말하기 전후 소리를 들어 봐요</h1><p>같은 문장을 먼저 듣고, 마이크로 짧게 말해 보세요.<br>마이크를 마치면 같은 문장을 다시 읽어요.</p>${voiceTools(state.role+'-4','① 같은 문장 먼저 듣기')}<section class="review-followup"><button class="voice-button" data-action="reason-mic">🎤 ② 말로 답하기</button><p class="reason-mic-status small" role="status"></p><label class="review-reason">점검용 받아쓰기<textarea name="audio-check-reason" rows="3"></textarea></label></section><p class="small" data-audio-route-state role="status"></p><p class="small">이 화면은 실제 가족의 답을 저장하거나 새 가족을 시작하지 않아요. 음성 파일을 녹음·보관하지 않아요.</p></section>`;
+}
+window.SiseonAudioRoute.onChange(()=>{
+  syncVoiceControls();
+  const status=app.querySelector('[data-audio-route-state]');if(status)status.textContent={capturing:'말을 듣고 있어요.',restoring:'마이크를 마치고 소리를 준비하고 있어요.',playback:'다시 들을 준비가 됐어요.'}[window.SiseonAudioRoute.phase];
+});
 function highlightSpokenChoice() {
   syncGuidePointer();
   const spoken=/^option-child-([0-4])-([AB])$/.exec(playingScene||""),spokenIndex=spoken?reviewChoices.indexOf(spoken[2]):-1;
@@ -962,7 +972,7 @@ function sfx(kind,n=0){try{if(!audio||options.soundEnabled?.()===false)return;co
         if(!destroyed && !raf && visible && !document.hidden && inPage) raf=requestAnimationFrame(frame);
       }
       function pause() {cancelAnimationFrame(raf);raf=0;}
-      function sync() {pause();last=now();lastWall=performance.now();if(document.hidden||!inPage)audio?.suspend().catch(()=>{});else audio?.resume().catch(()=>{});requestDraw();}
+      function sync() {pause();last=now();lastWall=performance.now();if(document.hidden||!inPage||!window.SiseonAudioRoute.canPlayEffects())audio?.suspend().catch(()=>{});else audio?.resume().catch(()=>{});requestDraw();}
       function pin(pt,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){
         const[xi,yi]=poly[i],[xj,yj]=poly[j];
         if((yi>pt[1])!==(yj>pt[1])&&pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi)c=!c;
@@ -975,7 +985,7 @@ function sfx(kind,n=0){try{if(!audio||options.soundEnabled?.()===false)return;co
         stage.setAttribute('aria-label',o.name+' 선택 완료');stage.setAttribute('aria-pressed','true');
         selection={x:x/W,y:y/H};chosenAt=now();stage.dataset.motionPhase='picked';
         hud.textContent=o.name+' 콕!';
-        try{if(options.soundEnabled?.()!==false){audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(()=>{});}}catch(_){}
+        try{if(options.soundEnabled?.()!==false){audio=audio?.state!=='closed'&&audio?audio:window.SiseonAudioRoute.registerContext(new(window.AudioContext||window.webkitAudioContext)());audio.resume().catch(()=>{});}}catch(_){}
         sfx('pick',4);
         if(reduce)finishReduced();else requestDraw();
       }
@@ -1049,7 +1059,7 @@ function openPractice(index) {
     const stage = panel.querySelector(".practice-motion");
     disposePracticeMotion = window.SiseonsaiPracticeMotion.mount(stage, ({ clientX, clientY }) => {
       finishPractice({ detail: 1, clientX, clientY }, stage);
-    }, { soundEnabled: () => voiceEnabled !== false });
+    }, { soundEnabled: () => voiceEnabled !== false && window.SiseonAudioRoute.canPlayEffects() });
   }
   panel.querySelector("h2").focus({ preventScroll: true });
   panel.scrollIntoView({ block: "start" });
@@ -1104,7 +1114,7 @@ function stopSharedRoomMotion() {
   sharedRoomMotion?.destroy(); sharedRoomMotion = null;
 }
 function syncSharedRoomSound() {
-  if (sharedRoomMotion && !sharedRoomMotion.o.soundButton) sharedRoomMotion.setSound(voiceEnabled !== false && !playingScene && !document.hidden, false);
+  if (sharedRoomMotion && !sharedRoomMotion.o.soundButton) sharedRoomMotion.setSound(voiceEnabled !== false && !playingScene && !document.hidden && window.SiseonAudioRoute.canPlayEffects(), false);
   else if (voiceEnabled === false) sharedRoomMotion?.sfx.stop();
   const hint = app.querySelector('.room-sound-hint');
   if (hint) hint.hidden = voiceEnabled !== false;
@@ -1123,7 +1133,7 @@ function mountSharedRoomMotion() {
     imageSrc: sampleRoom, hotspots: SISEON_ROOM_HOTSPOTS,
     respondent: role === 'adult' ? 'parent' : 'child', intro: screen === 'roomPreview',
     sound: voiceEnabled !== false, soundButton: screen === 'roomPreview',
-    soundAllowed: () => voiceEnabled !== false && !playingScene && !document.hidden,
+    soundAllowed: () => voiceEnabled !== false && !playingScene && !document.hidden && window.SiseonAudioRoute.canPlayEffects(),
     onFrame: instance => {
       if (screen !== 'quiz' || index !== 0) return;
       const point = reviewAnswers[role][0].point, pin = frame.querySelector('.room-marker');
@@ -1509,7 +1519,7 @@ function stopEndingMedia() {
 }
 function syncEndingSound() {
   missionMotion?.syncSound?.();
-  app.querySelector('#ending-egg-frame')?.contentWindow?.postMessage({type:'siseon-egg-controls',sound:voiceEnabled!==false,paused:document.hidden,narrating:!!playingScene},location.origin);
+  app.querySelector('#ending-egg-frame')?.contentWindow?.postMessage({type:'siseon-egg-controls',sound:voiceEnabled!==false&&window.SiseonAudioRoute.canPlayEffects(),paused:document.hidden,narrating:!!playingScene},location.origin);
 }
 function startEndingEgg() {
   const code=characterCode(endingRole());
@@ -1582,7 +1592,7 @@ function openMissionTheater() {
   const section=app.querySelector('#mission-theater'),code=characterCode(endingRole());
   if(!section || !code || !app.querySelector('.hatched-friend[data-hatched-code]'))return;
   section.hidden=false;
-  if(!missionMotion && window.SiseonMission) missionMotion=window.SiseonMission.create(section.querySelector('#mission-motion'),{code,name:characters[code],imageSrc:eggAsset('a/mission_'+code+'.png'),pattern:Number(section.dataset.pattern),childIndex:Number(section.dataset.childIndex),reducedMotion:!motionAllowed(),soundAllowed:()=>voiceEnabled!==false && !document.hidden,captionDurations:Object.fromEntries(Object.entries(motionVoiceCaptions).map(([text,v])=>[text,v.seconds])),onStageChanged:readMotionCaption});
+  if(!missionMotion && window.SiseonMission) missionMotion=window.SiseonMission.create(section.querySelector('#mission-motion'),{code,name:characters[code],imageSrc:eggAsset('a/mission_'+code+'.png'),pattern:Number(section.dataset.pattern),childIndex:Number(section.dataset.childIndex),reducedMotion:!motionAllowed(),soundAllowed:()=>voiceEnabled!==false && !document.hidden && window.SiseonAudioRoute.canPlayEffects(),captionDurations:Object.fromEntries(Object.entries(motionVoiceCaptions).map(([text,v])=>[text,v.seconds])),onStageChanged:readMotionCaption});
   section.querySelector('h2').focus({preventScroll:true});section.scrollIntoView({block:'start',behavior:motionAllowed()?'smooth':'auto'});
   missionMotion?.play();
 }
@@ -2326,7 +2336,7 @@ function stopNextCue() {
 }
 function queueNextCue() {
   clearTimeout(nextCueTimer); nextCueTimer = 0;
-  if (voiceEnabled === false || playingScene || coverMotion?.silent || document.hidden) return;
+  if (voiceEnabled === false || playingScene || coverMotion?.silent || document.hidden || !window.SiseonAudioRoute.canPlayEffects()) return;
   const buttons = [...app.querySelectorAll('.next-ready')].filter(b=>!b.disabled && !nextCueHeard.has(b));
   const button = buttons.find(b=>b.dataset.action === 'review-next') ?? buttons[0];
   if (!button || nextCueAudio?.state !== 'running') return;
@@ -2351,11 +2361,11 @@ function queueNextCue() {
   },180);
 }
 function unlockNextCueAudio(event) {
-  if (voiceEnabled === false || (event?.type === 'keydown' && !['Enter',' '].includes(event.key))) return;
+  if (voiceEnabled === false || !window.SiseonAudioRoute.canPlayEffects() || reasonVoice?.active || event?.target?.closest?.('[data-action="reason-mic"]') || (event?.type === 'keydown' && !['Enter',' '].includes(event.key))) return;
   const AudioEngine=window.AudioContext || window.webkitAudioContext;
   if (!AudioEngine) return;
   try {
-    if(!nextCueAudio||nextCueAudio.state==='closed')nextCueAudio=new AudioEngine();
+    if(!nextCueAudio||nextCueAudio.state==='closed')nextCueAudio=window.SiseonAudioRoute.registerContext(new AudioEngine());
     if (nextCueAudio.state !== 'running') nextCueAudio.resume().then(queueNextCue).catch(()=>{});
     else queueNextCue();
   } catch (_) { /* The bright button remains available if sound is blocked. */ }
@@ -2395,7 +2405,7 @@ function stopPageTurnSound() {
 function playPageTurnSound() {
   stopPageTurnSound();
   const ctx=nextCueAudio;
-  if(voiceEnabled===false || document.hidden || ctx?.state!=='running')return false;
+  if(voiceEnabled===false || document.hidden || !window.SiseonAudioRoute.canPlayEffects() || ctx?.state!=='running')return false;
   try {
     if(pageTurnContext!==ctx || !pageTurnBuffer) {
       pageTurnContext=ctx;
@@ -2459,7 +2469,7 @@ app.addEventListener('change',async event=>{
 window.addEventListener('pagehide',()=>{clearTimeout(familyPoll);clearTimeout(familySaveTimer);bookTurn?.cancel();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&familySession)startFamilyPolling();});
 
-const screens = { home, roomPreview, stationLink: stationLinkPage, intro: familyIntro, bookCover: familyBookCover, ready: familyReady, waiting: familyWaiting, quiz: reviewQuiz, handoff, report };
+const screens = { home, audioCheck, roomPreview, stationLink: stationLinkPage, intro: familyIntro, bookCover: familyBookCover, ready: familyReady, waiting: familyWaiting, quiz: reviewQuiz, handoff, report };
 
 function show(screen, focus = true, readVoice = true) {
   cancelReasonVoice();
@@ -3377,7 +3387,9 @@ const requestedRole = requestedBook.get('book');
 const requestedStationRole=requestedBook.get('station');
 const requestedStationLink=new URLSearchParams((location.hash||'').slice(1));
 stationEntryRole=['child','adult'].includes(requestedStationRole)?requestedStationRole:['child','adult'].includes(requestedRole)?requestedRole:null;
-if(requestedStationLink.has('pair') || requestedStationLink.has('key')) {
+if(requestedBook.get('view')==='sound-check'){
+  state.role=requestedBook.get('role')==='adult'?'adult':'child';state.index=4;state.demo=true;stationEntryRole=state.role;show('audioCheck',false,false);
+} else if(requestedStationLink.has('pair') || requestedStationLink.has('key')) {
   openStationLink(requestedStationRole,requestedStationLink);
 } else if(requestedBook.get('view') === 'room') {
   show('roomPreview',false);

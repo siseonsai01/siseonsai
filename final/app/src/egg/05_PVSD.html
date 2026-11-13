@@ -182,9 +182,12 @@ async function decodeOne(n) {
 }
 async function fetchSounds() { await Promise.all(SND.map(async n => { try { raw[n] = await (await fetch(n === 'egg_call' ? 'a/egg_call-storybook-v13.wav' : `a/${n}.wav`)).arrayBuffer(); decodeOne(n); } catch (e) {} })); }
 async function ensureAudio() {
+  if(EMBEDDED && parent.SiseonAudioRoute && !parent.SiseonAudioRoute.canPlayEffects())return;
+  if (actx?.state === 'closed') actx=null;
   if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
   try {
     actx = new (window.AudioContext || window.webkitAudioContext)();
+    if(EMBEDDED && parent.SiseonAudioRoute)parent.SiseonAudioRoute.registerContext(actx);
     master = actx.createDynamicsCompressor(); master.threshold.value = -3; master.knee.value = 2; master.ratio.value = 20; master.attack.value = 0.001; master.release.value = 0.12;
     const mg = actx.createGain(); mg.gain.value = 1.0; master.connect(mg).connect(actx.destination);
     await Promise.all(SND.map(decodeOne));
@@ -192,6 +195,7 @@ async function ensureAudio() {
   } catch (e) {}
 }
 function playBuf(b, gain = 1, rate = 1) {
+  if(EMBEDDED && parent.SiseonAudioRoute && !parent.SiseonAudioRoute.canPlayEffects())return;
   if (!soundOn || !actx || !b) return;
   const s = actx.createBufferSource(); s.buffer = b; s.playbackRate.value = rate;
   const g = actx.createGain(); g.gain.value = gain * (hostNarrating ? 0.15 : 1); s.connect(g).connect(master || actx.destination); s.start();

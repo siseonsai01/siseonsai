@@ -8,7 +8,9 @@
     function finish(id,abort=false){
       if(id!==epoch||!active)return;
       const r=active;active=null;epoch++;timers();detach(r);
-      if(abort)try{r.abort();}catch{}
+      // Safari may keep its capture category alive after a natural end event.
+      // Explicitly release this recognizer after detaching its late callbacks.
+      try{r.abort();}catch{}
       callbacks.end();
     }
     return {

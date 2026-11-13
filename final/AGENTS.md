@@ -1,3 +1,15 @@
+# 2026-11-14 전체 음성 전환 통합 v18
+
+- user reports that replay and following questions remain quiet after microphone input. Treat this as persistent output routing, not a single quiet recording. Physical iPad speaker volume is not observable from DOM or successful mocked playback.
+- audio-route.js is the only owner of navigator.audioSession.type. It suspends registered narration/effect contexts and media, opens capture, releases the recognizer, waits in a quiet auto phase, restores playback, resets the same activated native decoder, and only then permits narration/effects. A stale restore must not change a newer microphone session.
+- Room, next-step/page, practice, mission and embedded egg sound contexts register with that owner and cannot start/resume during capture or restoration. SpeechRecognition aborts its recognizer after natural end, error, stop, timeout and cancellation. Preserve the last accepted text and reject stale callbacks.
+- Parent and child share the same transition owner. tests/full-audio-session.mjs covers both covers, all ten questions, recognition success/error/manual stop, question replay, egg/friend, mission, graph, photo and report. Application volume remains unchanged. These checks do not verify iPad acoustic output.
+- ?view=sound-check&role=child|adult is a no-family-write diagnostic. It plays the exact same selected question before and after browser dictation. No family/session creation or answer submission occurs there. Never send microphone content to a new provider or secretly collect diagnostics.
+- Existing 116 voice routes/109 unique recordings, including the v16 page-five retake, remain byte-identical. Full BS.1770 loudness measurements are in work/full-audio-v18/loudness-audit.json. No gain/pitch/speed/timbre changes were made to disguise a platform routing issue.
+- Fixed participant/operator links, permanent answer retention, roles, results and graphics remain. Use release=20261114-18 consistently. Never reset a real family for QA. Do not claim microphone volume fixed until checked on actual iPad.
+
+---
+
 # 2026-11-13 iPad 기본 재생·즉시 준비 이동·파일 갱신 v17
 
 - 실제 Safari 요청 기록에서 v16 배포 뒤에도 이전 /child/src/egg/ 주소가 요청된 사실을 확인했습니다. 열어 둔 이전 페이지와 캐시 혼합을 구분하며 새로고침만으로 완치했다고 주장하지 않습니다.

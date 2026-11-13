@@ -13,6 +13,13 @@ runtime_files={p.name for p in src.iterdir() if p.is_file() and (p.suffix in {'.
 for p in client.iterdir():
     if p.is_file() and p.name not in runtime_files:p.unlink()
 for name in runtime_files:shutil.copy2(src/name,client/name)
+# Ship UI scripts/styles atomically with the HTML. Previously opened tablets
+# must never combine a new document with an older cached app script.
+html=(src/'index.html').read_text(encoding='utf-8')
+html=re.sub(r'<link rel="stylesheet" href="([A-Za-z0-9_-]+\.css)(?:\?[^\"]+)?" data-inline>',lambda m:'<style data-siseon-module="'+m.group(1)+'">'+(src/m.group(1)).read_text(encoding='utf-8')+'</style>',html)
+html=re.sub(r'<script src="([A-Za-z0-9_-]+\.js)(?:\?[^\"]+)?" data-inline></script>',lambda m:'<script data-siseon-module="'+m.group(1)+'">'+(src/m.group(1)).read_text(encoding='utf-8')+'</script>',html)
+assert not re.search(r'<script[^>]+src=[^>]+data-inline',html)
+(client/'index.html').write_text(html,encoding='utf-8')
 for folder,target in [(src/'egg',client/'src/egg'),(src/'assets',client/'assets')]:
     for p in folder.rglob('*'):
         if not p.is_file() or (folder.name=='assets' and p.name not in active):continue
