@@ -79,7 +79,8 @@ class Handler(SimpleHTTPRequestHandler):
             if length > 2500000: return self.reply(413, {'error':'사진이 너무 커요.'})
             payload = json.loads(self.rfile.read(length)) if length else {}
             with LOCK, database() as db:
-                db.execute('DELETE FROM families WHERE updated < ?', (time.time()-86400,))
+                # Family survey records are retained until explicitly managed by the operator.
+                pass
                 path = self.path.split('?')[0]
                 if path.startswith('/api/stations'):
                     return self.station_api(db, method, path, payload)

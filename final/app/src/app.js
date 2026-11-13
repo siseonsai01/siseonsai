@@ -1863,19 +1863,19 @@ function stationRibbon() {
   return `<div class="family-ribbon station-ribbon"><span>${stationSession.role==='child'?'아이':'부모님'}의 책</span><span data-station-status>${ready?'두 책이 연결됐어요 ✓':'다른 태블릿을 기다려요'}</span>${stationSession.role==='adult'?'<details class="operator-menu"><summary>진행자 메뉴</summary><p>새 가족의 답은 별도 기록으로 시작해요.</p><button class="button" data-action="station-next">다음 가족 시작</button></details>':''}</div>`;
 }
 function stationRoleUrl(role,connect=false) {
-  const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('station',role);if(connect)url.searchParams.set('connect','1');return url.href;
+  const url=new URL(location.href);url.pathname='/app/';url.search='';url.hash='';url.searchParams.set('station',role);if(connect)url.searchParams.set('connect','1');return url.href;
 }
 function stationLinkPage() {
   return `<section class="book-foyer station-setup"><p class="book-eyebrow">${stationEntryRole==='child'?'아이':'부모님'} 전용 화면</p><h1 tabindex="-1">${stationLinkError?'연결을 다시 확인해 주세요':'두 책을 연결하고 있어요'}</h1><p role="status">${stationLinkError?'인터넷 연결을 확인한 뒤 다시 눌러 주세요. 이 고정 주소로 다시 열어도 돼요.':'번호를 입력할 필요 없어요. 잠시만 기다려 주세요.'}</p>${stationLinkError?'<button class="button primary" data-action="station-link-retry">다시 연결하기 →</button>':''}</section>`;
 }
 async function openStationLink(role,params) {
   if(stationLinkBusy)return;
-  if(params)stationLinkCandidate={id:params.get('pair')||'',token:params.get('key')||'',role};
+  if(params){const entry=params.get('entry')||'';stationLinkCandidate={id:params.get('pair')||'',token:params.get('key')||'',role,...(new RegExp('^/'+(role==='adult'?'parent':'child')+'/[a-f0-9]{32}$').test(entry)?{entry}:{})};}
   const candidate=stationLinkCandidate;
   stationEntryRole=role;
   // Launch credentials stay in the fragment and are removed before any request.
   // Save them only after the server has confirmed this link's exact role.
-  history.replaceState(null,'',stationRoleUrl(['adult','child'].includes(role)?role:'adult'));
+  history.replaceState(null,'',candidate?.entry || stationRoleUrl(['adult','child'].includes(role)?role:'adult'));
   stationLinkBusy=true;stationLinkError=false;show('stationLink',false);
   try {
     if(!candidate || !['adult','child'].includes(candidate.role) || !/^[a-f0-9]{24}$/.test(candidate.id) || !(/^[A-Za-z0-9_-]{43}$/.test(candidate.token) || /^[a-f0-9]{64}$/.test(candidate.token)))throw new Error('invalid link');
@@ -1890,6 +1890,7 @@ async function openStationLink(role,params) {
   } finally {stationLinkBusy=false;}
 }
 function stationSetup() {
+  if(!new URLSearchParams(location.search).has('connect'))return `<section class="book-foyer station-setup"><p class="book-eyebrow">코드 없는 두 태블릿 시작</p><h1 tabindex="-1">${stationEntryRole==='child'?'아이용':'부모용'} 전용 주소를 열어 주세요</h1><p>진행자에게 받은 전용 링크를 각 태블릿에서 한 번 열면, 번호 입력 없이 함께 시작해요.</p><p class="small">이 일반 시작 주소에는 태블릿의 연결 정보가 없어요. 전용 주소를 열고 그 주소를 즐겨찾기에 저장해 주세요.</p><button class="button" data-action="demo">연결 없이 결과 미리보기</button></section>`;
   const child=stationEntryRole==='child',adult=stationEntryRole==='adult';
   const parentPanel=`<article><h2>부모님 화면</h2><p>여기서 연결 번호를 만들어요.</p><button class="button primary" data-action="station-create">연결 번호 만들기 →</button></article>`;
   const childPanel=`<article><h2>아이 화면</h2><p>부모님 화면에 나온 번호를 넣어 주세요.</p><label for="station-code">연결 번호</label><input id="station-code" name="station-code" inputmode="numeric" maxlength="16" autocomplete="off" placeholder="숫자 8자리" aria-describedby="station-code-help"><p class="small" id="station-code-help">번호는 부모님 화면에만 나와요. 여기에 입력하면 두 화면이 연결돼요.</p><button class="button primary" data-action="station-join" disabled>아이의 책으로 연결 →</button></article>`;
@@ -1987,7 +1988,7 @@ async function restoreStation(role) {
   try {
     const saved=JSON.parse(localStorage.getItem(stationStorage(role))||'null');if(!saved)return false;
     const data=await stationRequest('/'+saved.id,'GET',undefined,saved);
-    stationSession=saved;stationView=null;acceptStation(data,true);startStationPolling();
+    stationSession=saved;stationView=null;if(new RegExp('^/'+(role==='adult'?'parent':'child')+'/[a-f0-9]{32}$').test(saved.entry||''))history.replaceState(null,'',saved.entry);acceptStation(data,true);startStationPolling();
     return true;
   }catch(error){familyNotice(error.message);return false;}
 }
@@ -2486,7 +2487,7 @@ function show(screen, focus = true) {
     else narrate('cover',true);
   }
   else if (screen !== "home" && screen !== 'stationLink') {
-    if(screen === "intro") narrate(stationSession ? stationView?.prepared ? "room-play" : "waiting-start" : "intro");
+    if(screen === "intro") {if(stationSession)narrate(stationView?.prepared ? "room-play" : "waiting-start");else if(new URLSearchParams(location.search).has("connect"))narrate("intro");}
     else if(screen === "waiting") narrate("waiting-"+state.role);
     else if(screen === "report") narrate(state.demo && location.hash==='#family-choice-graph' ? 'chart' : characterCode(endingRole())?"ending":"ending-quiet");
     else narrate(screen);

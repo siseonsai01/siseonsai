@@ -30,9 +30,36 @@ const changed=r=>r.meta.changes===1;
 const digest=async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text))),v=>v.toString(16).padStart(2,'0')).join('');
 async function expire(db){
   await db.batch([
-    db.prepare("DELETE FROM families WHERE updated<? AND code NOT IN (SELECT json_extract(data,'$.code') FROM stations WHERE json_extract(data,'$.permanent')=1)").bind(now()-86400),
     db.prepare("DELETE FROM stations WHERE updated<? AND COALESCE(json_extract(data,'$.permanent'),0)<>1").bind(now()-86400)
   ]);
+}
+async function retainFamily(db,sid,s){
+  for(let n=0;n<8;n++){
+    const row=await db.prepare('SELECT data,updated FROM families WHERE code=?').bind(s.code).first();
+    if(!row)fail(410,'가족 기록을 찾지 못했어요.');
+    const f=JSON.parse(row.data);
+    if(f.stationId&&f.stationId!==sid)fail(409,'다른 현장의 기록이에요.');
+    if(f.stationId===sid)return;
+    Object.assign(f,{stationId:sid,round:s.round,createdAt:row.updated,retained:true});
+    if(changed(await update(db,'families',s.code,f,row.data).run()))return;
+  }fail(409,'가족 기록을 저장 중이에요. 다시 시도해 주세요.');
+}
+async function collectionApi(req,db,url){
+  if(req.method!=='GET')fail(405,'자료는 조회와 내려받기만 할 수 있어요.');
+  const supplied=req.headers.get('authorization')?.replace(/^Bearer /,'');
+  if(!/^[a-f0-9]{64}$/.test(supplied||''))fail(403,'진행자 전용 주소로 열어 주세요.');
+  const rows=await db.prepare("SELECT id,data FROM stations WHERE json_extract(data,'$.operatorHash')=?").bind(await digest(supplied)).all();
+  if(rows.results.length!==1)fail(403,'진행자 전용 주소를 확인해 주세요.');
+  const {id:sid,data}=rows.results[0],s=JSON.parse(data);await retainFamily(db,sid,s);
+  const cursor=url.searchParams.get('cursor')||'';if(cursor&&!/^\d{8}$/.test(cursor))fail(400,'목록을 다시 열어 주세요.');
+  const snapshot=Number(url.searchParams.get('snapshot')||now());if(!Number.isFinite(snapshot)||snapshot<0||snapshot>now()+60)fail(400,'목록을 다시 열어 주세요.');
+  const found=await db.prepare("SELECT code,data,updated FROM families WHERE json_extract(data,'$.stationId')=? AND code>? AND COALESCE(json_extract(data,'$.createdAt'),updated)<=? ORDER BY code LIMIT 201").bind(sid,cursor,snapshot).all();
+  const records=found.results.slice(0,200).map(row=>{
+    const f=JSON.parse(row.data),roles={};
+    for(const role of ['child','adult']){const r=f.roles[role];roles[role]={answers:r?.answers||blank(),complete:!!r?.complete};}
+    return {id:row.code,round:f.round,createdAt:f.createdAt||row.updated,updatedAt:f.updatedAt||row.updated,roles};
+  });
+  return {records,snapshot,nextCursor:found.results.length>200?records.at(-1).id:null,retention:'no_automatic_deletion'};
 }
 function auth(req,roles){const supplied=req.headers.get('authorization')?.replace(/^Bearer /,'');const r=Object.keys(roles).find(r=>(roles[r].token??roles[r])===supplied);if(!supplied||!r)fail(403,'이 기기의 연결을 확인해 주세요.');return r;}
 async function rate(db,req,kind){
@@ -67,13 +94,14 @@ async function familyApi(req,db,url,p){
         if(p.photo!==null&&(typeof p.photo!=='string'||!/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(p.photo)))fail(400,'사진을 다시 골라 주세요.');
         f.photo=p.photo;f.ratio=p.ratio??null;f.photoRevision++;
       }
-      f.revision++;
+      f.updatedAt=now();f.revision++;
     }else if(m!=='GET')fail(405,'지원하지 않는 요청이에요.');
     if(changed(await update(db,'families',code,f,row.data).run()))return view(f,code,role,url.search);
   }
   fail(409,'동시에 저장 중이에요. 다시 시도해 주세요.');
 }
 async function stationView(db,sid,s,role,fresh){
+  await retainFamily(db,sid,s);
   const row=await read(db,'families',s.code);if(!row)fail(410,'가족 기록이 만료됐어요. 현장 연결을 다시 준비해 주세요.');
   const f=JSON.parse(row.data),family={...view(f,s.code,role),token:f.roles[role].token,photo:null,ratio:null,photoLocked:true};
   for(const r of Object.keys(family.peers))family.peers[r].connected=s.connected[r];
@@ -85,6 +113,19 @@ async function stationView(db,sid,s,role,fresh){
 }
 async function stationApi(req,db,url,p){
   const path=url.pathname,m=req.method;
+  const manager=path.match(/^\/api\/stations\/([a-f0-9]{24})\/collection-access$/);
+  if(manager&&m==='POST'){
+    const sid=manager[1];if(!/^[a-f0-9]{64}$/.test(p.key||''))fail(400,'진행자 주소를 확인해 주세요.');
+    for(let n=0;n<8;n++){
+      const row=await read(db,'stations',sid);if(!row)fail(404,'현장을 찾지 못했어요.');
+      const s=JSON.parse(row.data);if(auth(req,s.tokens)!=='adult')fail(403,'진행자만 보관함을 준비할 수 있어요.');
+      if(Object.values(s.tokens).includes(p.key))fail(400,'진행자 전용 주소는 참가자 주소와 구분해 주세요.');
+      const hash=await digest(p.key);if(s.operatorHash&&s.operatorHash!==hash)fail(409,'기존 진행자 전용 주소를 사용해 주세요.');
+      s.operatorHash=hash;s.permanent=true;
+      if(!changed(await update(db,'stations',sid,s,row.data).run()))continue;
+      await retainFamily(db,sid,s);return {url:url.origin+'/manage/'+p.key,retention:'no_automatic_deletion'};
+    }fail(409,'다시 시도해 주세요.');
+  }
   const pin=path.match(/^\/api\/stations\/([a-f0-9]{24})\/links$/);
   if(pin&&m==='POST'){
     const sid=pin[1],keys=p.keys;
@@ -108,7 +149,7 @@ async function stationApi(req,db,url,p){
   }
   if(m==='POST'&&path==='/api/stations'){
     for(let n=0;n<5;n++){
-      const sid=token(12),code=digits(),f=newFamily(),s={round:1,code,pair:digits(),pairUntil:now()+600,tokens:{adult:token()},connected:{adult:true,child:false}};
+      const sid=token(12),code=digits(),f={...newFamily(),stationId:sid,round:1,createdAt:now(),retained:true},s={round:1,code,pair:digits(),pairUntil:now()+600,tokens:{adult:token()},connected:{adult:true,child:false}};
       try{await db.batch([insert(db,'families',code,f),insert(db,'stations',sid,s)]);return await stationView(db,sid,s,'adult',true);}catch(e){if(!/UNIQUE/.test(e.message))throw e;}
     }fail(503,'다시 시도해 주세요.');
   }
@@ -126,9 +167,10 @@ async function stationApi(req,db,url,p){
     if(m==='PATCH'){
       if(role!=='adult')fail(403,'부모님 쪽 진행자 화면에서 다음 가족을 시작해 주세요.');
       if(p.next || p.begin){
+        await retainFamily(db,sid,s);
         if(!s.connected.child)fail(409,'태블릿 두 대를 먼저 연결해 주세요.');
         if(p.round!==s.round)fail(409,'이미 다음 가족으로 바뀌었어요. 화면을 다시 확인해 주세요.');
-        const code=digits(),f=newFamily();s.code=code;s.round++;s.readyRound=s.round;
+        const code=digits(),f={...newFamily(),stationId:sid,round:s.round+1,createdAt:now(),retained:true};s.code=code;s.round++;s.readyRound=s.round;
         const results=await db.batch([
           db.prepare('INSERT INTO families (code,data,updated) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM stations WHERE id=? AND data=?)').bind(code,JSON.stringify(f),now(),sid,row.data),
           update(db,'stations',sid,s,row.data)
@@ -143,6 +185,8 @@ async function stationApi(req,db,url,p){
 }
 export default {async fetch(req,env,ctx){
   const url=new URL(req.url);
+  const manage=url.pathname.match(/^\/manage\/([a-f0-9]{64})$/);
+  if(manage)return new Response(null,{status:302,headers:{location:url.origin+'/app/collection.html#access='+manage[1],'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
   const launch=url.pathname.match(/^\/(parent|child)\/([a-f0-9]{32})$/);
   if(launch){
     if(!['GET','HEAD'].includes(req.method))return json(405,{error:'지원하지 않는 요청이에요.'});
@@ -154,7 +198,7 @@ export default {async fetch(req,env,ctx){
       if(!row)return json(404,{error:'연결을 찾지 못했어요.'});
       const s=JSON.parse(row.data);
       if(!s.permanent||!s.connected.child)return json(409,{error:'두 화면 연결을 확인해 주세요.'});
-      const location=url.origin+'/app/?station='+role+'#'+new URLSearchParams({pair:link.station_id,key:s.tokens[role]});
+      const location=url.origin+'/app/?station='+role+'#'+new URLSearchParams({pair:link.station_id,key:s.tokens[role],entry:url.pathname});
       return new Response(null,{status:302,headers:{location,'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
     }catch{return json(503,{error:'잠시 뒤 같은 주소로 다시 열어 주세요.'});}
   }
@@ -172,6 +216,6 @@ export default {async fetch(req,env,ctx){
     if(Math.random()<.01)ctx.waitUntil(env.DB.prepare('DELETE FROM attempts WHERE updated<?').bind(now()-120).run());
     // Deterministic reads also enforce retention when opportunistic cleanup has not run.
     await expire(env.DB);
-    return json(200,await (url.pathname.startsWith('/api/stations')?stationApi(req,env.DB,url,p):familyApi(req,env.DB,url,p)));
+    return json(200,await (url.pathname==='/api/collections'?collectionApi(req,env.DB,url):url.pathname.startsWith('/api/stations')?stationApi(req,env.DB,url,p):familyApi(req,env.DB,url,p)));
   }catch(e){return json(e.status||500,{error:e.status?e.message:'저장하지 못했어요. 연결을 확인하고 다시 시도해 주세요.'});}
 }};

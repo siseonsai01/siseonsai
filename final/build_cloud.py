@@ -9,7 +9,7 @@ client=out/'client/app'
 client.mkdir(parents=True,exist_ok=True)
 text='\n'.join(p.read_text(encoding='utf-8') for p in src.iterdir() if p.is_file() and p.suffix in {'.html','.js','.css','.json'})
 active={m for m in re.findall(r'assets/([A-Za-z0-9_\-]+\.(?:webp|mp3|mp4|png|jpg|jpeg|svg|gif|wav|json|woff2|woff|ttf))',text)}
-runtime_files={p.name for p in src.iterdir() if p.is_file() and (p.suffix in {'.js','.css'} or p.name in {'index.html','voice-release.json'})}
+runtime_files={p.name for p in src.iterdir() if p.is_file() and (p.suffix in {'.js','.css'} or p.name in {'index.html','collection.html','voice-release.json'})}
 for p in client.iterdir():
     if p.is_file() and p.name not in runtime_files:p.unlink()
 for name in runtime_files:shutil.copy2(src/name,client/name)

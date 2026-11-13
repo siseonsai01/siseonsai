@@ -1,7 +1,7 @@
 {
   "edition": "시선사이 원안",
-  "revision": "whole-fresh-storybook-v13-20261113",
-  "cloudBackendChecks": 43,
+  "revision": "retained-family-collection-v14-20261113",
+  "cloudBackendChecks": 64,
   "narrationAccessibilityChecks": 67,
   "containsFamilyRecords": false,
   "containsDeviceCredentials": false,
@@ -17,5 +17,13 @@
   "freshVoiceRoutes": 116,
   "uniqueCompleteTakes": 109,
   "independentDecodedClipChecks": 109,
-  "eggGames": 16
+  "eggGames": 16,
+  "collection": {
+    "retention": "no automatic deletion",
+    "access": "separate operator capability",
+    "format": "XLSX,3 sheets",
+    "containsPhotosOrCredentials": false
+  },
+  "stableEntry": "canonical private role URLs preserved",
+  "collectionValidation": "valid XLSX ZIP/XML, formula-safe text cells, scoped access, 200-record pagination, past-round retention"
 }

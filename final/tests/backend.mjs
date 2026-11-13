@@ -69,14 +69,16 @@ for(const [role,prefix] of [['adult','parent'],['child','child']]){
   ok(launch.status===302&&launch.headers.get('cache-control')==='no-store','fixed link redirects without caching');
   const target=new URL(launch.headers.get('location'));
   ok(target.pathname==='/app/'&&target.searchParams.get('station')===role,'fixed link selects requested role');
-  const storage=new Map();
+  ok(new URLSearchParams(target.hash.slice(1)).get('entry')==='/'+prefix+'/'+keys[role],'launch retains the stable private entry path');
+  const storage=new Map(),paths=[];
   const context={stationLinkBusy:false,stationLinkCandidate:null,stationEntryRole:null,stationLinkError:false,stationSession:null,stationView:null,
-    history:{replaceState(){}},stationRoleUrl:r=>'/app/?station='+r,show(){},stopStationPolling(){},startStationPolling(){},stationStorage:r=>'station-'+r,
+    history:{replaceState:(a,b,path)=>paths.push(path)},stationRoleUrl:r=>'/app/?station='+r,show(){},stopStationPolling(){},startStationPolling(){},stationStorage:r=>'station-'+r,
     localStorage:{setItem:(k,v)=>storage.set(k,v)},acceptStation:d=>{context.accepted=d;},
     stationRequest:async(path,method,body,session)=>{const r=await call('/api/stations'+path,method,body,session.token);if(r.status!==200)throw Error('request refused');return r.body;}};
   const open=vm.runInNewContext(openSource+';openStationLink',context);
   await open(role,new URLSearchParams(target.hash.slice(1)));
   ok(context.accepted?.role===role&&storage.has('station-'+role),'actual frontend accepts cloud-issued 64-character token');
+  ok(paths[0]==='/'+prefix+'/'+keys[role]&&JSON.parse(storage.get('station-'+role)).entry===paths[0],'fresh tablet preserves bookmarkable code-free address');
 }
 const badRole=await worker.fetch(new Request('https://test.example/child/'+keys.adult),{DB},{waitUntil(){}});
 ok(badRole.status===404,'parent link cannot be changed to child path');
@@ -91,7 +93,7 @@ const repeatedLaunch=await worker.fetch(new Request(pinned.body.links.adult),{DB
 ok(repeatedLaunch.status===302,'same fixed address survives next family');
 sqlite.prepare('UPDATE families SET updated=0 WHERE code=?').run(activeCode);
 await call('/api/stations/'+a.id,'GET',undefined,a.token);
-ok(!sqlite.prepare('SELECT code FROM families WHERE code=?').get(activeCode),'previous family still follows ordinary retention');
+ok(!!sqlite.prepare('SELECT code FROM families WHERE code=?').get(activeCode),'previous family is retained beyond 24 hours');
 ok((await call('/api/families','POST',null)).status===400,'invalid JSON body rejected');
 const trial=(await call('/api/stations','POST',{})).body;
 const trialChild=(await call('/api/stations/join','POST',{code:trial.pairCode})).body;
@@ -107,4 +109,22 @@ ok(freshChild.prepared&&freshChild.family.code===fresh.body.family.code&&freshCh
 const past=(await call('/api/families/'+trial.family.code,'GET',undefined,trial.family.token)).body;
 ok(past.bothComplete&&past.answers.child[0].choice==='B'&&past.answers.adult[0].choice==='A','starting fresh preserves prior family record');
 ok((await call('/api/stations/'+trial.id,'PATCH',{begin:true,round:1},trial.token)).status===409,'duplicate stale start cannot clear fresh attempt');
+const manager='e'.repeat(64),managerPath='/api/stations/'+a.id+'/collection-access';
+ok((await call(managerPath,'POST',{key:manager},c.token)).status===403,'child cannot provision collection access');
+const access=await call(managerPath,'POST',{key:manager},a.token);ok(access.status===200&&access.body.retention==='no_automatic_deletion','operator collection link provisioned');
+ok((await call(managerPath,'POST',{key:'f'.repeat(64)},a.token)).status===409,'participant capability cannot replace operator capability');
+for(const credential of [undefined,'0'.repeat(64),a.token,c.token])ok((await call('/api/collections','GET',undefined,credential)).status===403,'only operator key can read all family records');
+const collection=(await call('/api/collections','GET',undefined,manager)).body;
+ok(collection.records.some(r=>r.id===a.family.code)&&collection.records.some(r=>r.id===activeCode),'current and past rounds are grouped by station');
+ok(!collection.records.some(r=>r.id===solo.code||r.id===trial.family.code),'unrelated families and stations stay private');
+const original=collection.records.find(r=>r.id===a.family.code);assert.equal(original.roles.adult.answers[0].reason,'부모님의 이유');assert.equal(original.roles.child.answers[0].reason,'아이의 이유');count++;
+ok(!JSON.stringify(collection).includes(a.family.token)&&!JSON.stringify(collection).includes('operatorHash')&&!JSON.stringify(collection).includes('"photo"'),'export never includes credentials or photos');
+const launchManager=await worker.fetch(new Request(access.body.url),{DB},{waitUntil(){}});ok(launchManager.status===302&&launchManager.headers.get('cache-control')==='no-store','private manager link opens without cached credentials');
+for(let i=0;i<205;i++){const code=String(70000000+i);if(sqlite.prepare('SELECT code FROM families WHERE code=?').get(code))continue;sqlite.prepare('INSERT INTO families VALUES (?,?,?)').run(code,JSON.stringify({stationId:a.id,round:1000+i,createdAt:1,roles:{child:{answers:child,complete:true,token:'never-export-this'},adult:{answers:adult,complete:true,token:'never-export-that'}}}),0);}
+let cursor='',snapshot='',ids=[];do{const q=new URLSearchParams();if(cursor)q.set('cursor',cursor);if(snapshot)q.set('snapshot',snapshot);const response=await call('/api/collections?'+q,'GET',undefined,manager);ok(response.status===200&&response.body.records.length<=200,'bounded export pagination');const page=response.body;ids.push(...page.records.map(r=>r.id));cursor=page.nextCursor;snapshot=String(page.snapshot);}while(cursor);
+const expected=Number(sqlite.prepare("SELECT count(*) AS n FROM families WHERE json_extract(data,'$.stationId')=?").get(a.id).n);ok(ids.length===expected&&new Set(ids).size===expected,'pagination exports every family exactly once');
+ok((await call('/api/collections?cursor=bad','GET',undefined,manager)).status===400,'invalid collection cursor rejected');
+const savedStamp=JSON.parse(sqlite.prepare('SELECT data FROM families WHERE code=?').get(a.family.code).data).updatedAt;
+await call('/api/families/'+a.family.code,'GET',undefined,a.family.token);
+ok(JSON.parse(sqlite.prepare('SELECT data FROM families WHERE code=?').get(a.family.code).data).updatedAt===savedStamp,'polling does not change answer save timestamp');
 console.log(`${count} cloud backend checks passed`);
