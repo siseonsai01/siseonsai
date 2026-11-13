@@ -11,7 +11,7 @@
     "local browser preview unavailable",
     "automatic transcription and local speaker similarity screening do not equal human listening"
   ],
-  "navigationChecks": 25,
+  "navigationChecks": 26,
   "dictationMockChecks": 14,
   "voiceRenewal": "partial: 40 new complete clips; remaining scripts blocked by provider daily quota"
 }

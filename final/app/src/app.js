@@ -1887,7 +1887,7 @@ async function beginFreshBook() {
   try {
     const session=stationSession;
     const latest=await stationRequest('/'+session.id,'GET');
-    const data=session.role==='adult' ? await stationRequest('/'+session.id,'PATCH',{begin:true,round:latest.round}) : latest;
+    const data=session.role==='adult' && latest.connected.child ? await stationRequest('/'+session.id,'PATCH',{begin:true,round:latest.round}) : latest;
     if(session!==stationSession)return;
     acceptStation(data,true);startStationPolling();show('intro');
     if(!data.prepared)narrate('waiting-start');
