@@ -5,7 +5,7 @@
   if(/^[a-f0-9]{64}$/.test(key))sessionStorage.setItem('siseonsai-collection-access',key);
   else key='';
   history.replaceState(null,'',key?'/manage/'+key:location.pathname);
-  let records=[],busy=false;
+  let records=[],busy=false,loaded=false;
   function render(){
     const meaningful=records.filter(E.meaningful).sort((a,b)=>b.updatedAt-a.updatedAt);
     $('total').textContent=meaningful.length;
@@ -14,7 +14,8 @@
     const body=$('families');body.replaceChildren();
     for(const r of meaningful){const row=document.createElement('tr');for(const text of [r.id,r.round??'',E.date(r.updatedAt),E.answered(r,'child')+' / 5',E.answered(r,'adult')+' / 5',E.status(r)]){const cell=document.createElement('td');cell.textContent=String(text);row.append(cell);}body.append(row);}
     $('empty').hidden=meaningful.length>0;
-    $('download').disabled=busy||!meaningful.length;
+    $('download').disabled=busy||!loaded;
+    $('download').textContent=meaningful.length?'엑셀 내려받기':'엑셀 양식 내려받기';
   }
   async function load(){
     if(busy)return;busy=true;$('refresh').disabled=true;$('download').disabled=true;
@@ -28,7 +29,7 @@
         for(const r of data.records)all.set(r.id,r);snapshot=String(data.snapshot);cursor=data.nextCursor||'';
         $('status').textContent='저장한 가족 자료를 불러오고 있어요…';
       }while(cursor);
-      records=Array.from(all.values());$('status').textContent='서버에 저장된 최신 답변을 불러왔습니다. 자동 삭제하지 않습니다.';return true;
+      records=Array.from(all.values());loaded=true;$('status').textContent='서버에 저장된 최신 답변을 불러왔습니다. 자동 삭제하지 않습니다.';return true;
     }catch(error){$('status').textContent=error.message+' 새로 불러오기를 눌러 주세요.';return false;}
     finally{busy=false;$('refresh').disabled=false;render();}
   }
