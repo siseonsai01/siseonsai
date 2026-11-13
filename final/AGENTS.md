@@ -1,3 +1,13 @@
+# 2026-11-14 실제 설문 검수·마이크 마지막 말 저장 v21
+
+- An isolated live test station/collection is in private work/runtime-cloud/final-e2e-v20.json. Never publish its manager key or mix its records with the real field station. Existing field/operator URLs remain unchanged.
+- Real iPad users confirmed dictation and next-page audio. Browser readback nevertheless exposed missing first-page reason text on immediate navigation. finishBookPage now stops the active recognizer and awaits whenDone(), including its final text callback and audio recovery, before taking the saved answer snapshot or changing pages. Do not return to saving before recognition finishes.
+- Speech input retains the last actually recognized interim text if WebSpeech ends without a final result. Cancellation/failed start resolves completion; callbacks and existing timeouts still bound ending. No microphone recording is stored. Recognition error text must remain visible after recovery rather than a permanent preparing message.
+- Page transitions suppress an obsolete follow-up narration while saving. tests/final-answer-save.mjs exercises delayed-final, interim-only and error outcomes for both roles; the old implementation fails its late-final persistence check. Existing tests/full-audio-session.mjs now asserts error-status recovery with a correctly separated status element fixture.
+- Preserve v20 decoder/session recovery, warm voice originals, independent preparation, fixed URLs, private collection access and permanent records. Runtime=20261114-21. Finish the live paired survey, both eggs, shared report and actual downloaded XLSX before claiming end-to-end completion.
+
+---
+
 # 2026-11-14 클로드 검토·마이크 복구 v20
 
 - User hardware: iPad 10th generation, iPadOS 18.7.8. Actual acoustic validation must be reported separately from simulated/browser checks. Do not claim constant physical volume until the user verifies it on those devices.

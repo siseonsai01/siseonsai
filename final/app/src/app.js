@@ -7,7 +7,7 @@ const offline_paper_mascot = {"FHMB":"assets/paper_mascot-FHMB.webp","FHMD":"ass
 "use strict";
 
 const roles = { child: "아이", adult: "부모님" };
-document.documentElement.dataset.appRelease='20261114-20';
+document.documentElement.dataset.appRelease='20261114-21';
 document.documentElement.dataset.startView=new URLSearchParams(location.search).get('view')||'';
 const activityIntro = [
   "장난감을 어디에 두면 너도 부모님도 찾기 쉬울까?",
@@ -269,17 +269,18 @@ async function toggleReasonVoice(){
   let request;
   const valid=()=>reasonVoice===request && ['quiz','audioCheck'].includes(currentScreen) && reasonVoiceKey===key && [familySession?.code || 'local',state.role,state.index].join(':')===key;
   const base=app.querySelector('[name="review-reason"],[name="audio-check-reason"]')?.value || '';
-  let received=false;
+  let received=false,lastRecognitionStatus='';
   reasonVoice=request=window.SiseonVoiceInput.create({
-    status:text=>{if(valid())reasonVoiceStatus(text);},
+    status:text=>{if(valid()){lastRecognitionStatus=text;reasonVoiceStatus(text);}},
     text:text=>{if(!valid())return;received=true;const field=app.querySelector('[name="review-reason"],[name="audio-check-reason"]');if(field){field.value=text;field.dispatchEvent(new Event('input',{bubbles:true}));}},
     end:async()=>{
       if(valid())reasonVoiceStatus('말을 마쳤어요. 소리를 준비하고 있어요…');
       await voiceAudio.endCapture?.();if(!valid())return;
       updateReasonMic();
+      if(familyBusy){reasonVoiceStatus(received?'말한 글을 저장하고 있어요.':lastRecognitionStatus&&!lastRecognitionStatus.startsWith('듣고 있어요')?lastRecognitionStatus:'말하기를 마쳤어요. 다시 말하거나 직접 적어도 좋아요.');return;}
       if(currentScreen==='audioCheck'){reasonVoiceStatus('마이크 사용 전후에 같은 문장이 들려요. 크기가 같은지 확인해 주세요.');narrateAfterMic(state.role+'-4');}
       else if(received){reasonVoiceStatus('말한 글을 보호자와 함께 확인해 주세요.');narrateAfterMic('speech-done');}
-      else syncGuidePointer();
+      else {reasonVoiceStatus(lastRecognitionStatus&&!lastRecognitionStatus.startsWith('듣고 있어요')?lastRecognitionStatus:'말하기를 마쳤어요. 다시 말하거나 직접 적어도 좋아요.');syncGuidePointer();}
     }
   });
   const button=app.querySelector('[data-action="reason-mic"]');if(button){button.disabled=true;button.textContent='마이크 준비 중…';}
@@ -2318,6 +2319,10 @@ async function finishBookPage() {
   const next=app.querySelector('[data-action="review-next"]');
   if(next) {next.disabled=true;next.textContent='저장하고 있어요…';}
   try {
+    const microphone=reasonVoice;
+    if(microphone?.active){if(next)next.textContent='말을 저장하고 있어요…';microphone.stop();}
+    await microphone?.whenDone?.();
+    if(session!==familySession || currentScreen!=='quiz' || state.role!==role || state.index!==index)return;
     const data=await queueFamilySave(last);
     if(session !== familySession || currentScreen !== 'quiz' || state.role !== role || state.index !== index)return;
     if(data.bothComplete && data.answers) Object.entries(data.answers).forEach(([role,answers])=>setFamilyAnswers(role,answers));

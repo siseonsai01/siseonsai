@@ -40,8 +40,8 @@ const reason=source.slice(source.indexOf('function reasonVoiceSupported()'),sour
 for(const role of ['child','adult']){
  const media=new Media(),button={isConnected:true,setAttribute(){},disabled:false},field={value:'',dispatchEvent(){}},status={textContent:''};
  const c={window:{SpeechRecognition:Recognition},navigator:{audioSession:{type:'auto'}},document:{hidden:false,baseURI:'https://test.example/app/',querySelectorAll:()=>[media],addEventListener(){}},URL,AbortController,Event,setTimeout,clearTimeout,setInterval:()=>1,clearInterval(){},Date,
-  offlineVoice:voices,micResumeByTap:false,state:{role,index:0},currentScreen:'home',familySession:null,voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,reasonVoice:null,reasonVoiceKey:null,
-  app:{querySelector:selector=>selector.includes('reason-mic')?button:selector.includes('reason-mic-status')?status:selector.includes('[name=')?field:null,querySelectorAll:()=>[],insertAdjacentHTML(){}},
+  offlineVoice:voices,micResumeByTap:false,state:{role,index:0},currentScreen:'home',familySession:null,familyBusy:false,voiceEnabled:true,playingScene:null,narrationQueue:[],narrationRecovery:null,playbackId:0,coverMotion:null,missionPausedVoice:null,reasonVoice:null,reasonVoiceKey:null,
+  app:{querySelector:selector=>selector.includes('reason-mic-status')?status:selector.includes('reason-mic')?button:selector.includes('[name=')?field:null,querySelectorAll:()=>[],insertAdjacentHTML(){}},
   stopNextCue(){},stopCoverMotion(){},stopPageTurnSound(){},syncVoiceControls(){},highlightSpokenChoice(){},markNextReady(){},clearNextReady(){},startCoverMotion(){},syncGuidePointer(){},motionAllowed:()=>false,missionMotion:null,bookRoleLabel:()=>role==='adult'?'부모용':'아이용'};
  vm.createContext(c);vm.runInContext(read('audio-route.js'),c);c.window.SiseonAudioRoute=c.window.SiseonCreateAudioRoute({navigator:c.navigator,document:c.document,wait:async()=>{}});
  vm.runInContext(read('narration-player.js'),c);vm.runInContext(read('speech-input.js'),c);c.voiceAudio=c.window.SiseonNarration.create(media,{native:true,setInterval:()=>1,clearInterval(){}});
@@ -65,6 +65,7 @@ for(const role of ['child','adult']){
   await turn();check(r.aborted&&!c.reasonVoice.active,'every recognition path explicitly releases its microphone');
   while(c.playingScene){media.finish();await turn();}
   check(c.window.SiseonAudioRoute.phase==='playback'&&c.navigator.audioSession.type==='playback','same playback route after each microphone');
+  if(index===2)check(status.textContent.includes('음성인식 연결을 확인'),'recognition failure remains visible after playback recovery');
   check(media.volume===1,'application volume never changes');if(index!==2)check(field.value==='내 생각을 말했어요','dictated answer is retained');
   check(media.loads>=index+1,'same activated native element is reset after capture');
   const replay=await complete(role+'-'+index);assert.deepEqual(replay,q.map(scene=>voices[scene]));checks++;
