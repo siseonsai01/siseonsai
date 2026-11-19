@@ -6,7 +6,7 @@
 - 설문 버전: `siseon-mobile-v1.4-20261119`
 - 검토 링크(Claude 아티팩트): https://claude.ai/artifact/Ajtrv4dwf2nC3DSggKVCpa (비공개, 소유자만 열람)
 - v1.5 변경: 표지·장 안내 문구, 16종 친구 크기 맞춤, 말풍선 토끼 움직임, 안내 4단계 묶음, 첫 화면·부모님 차례·결과지·사진 놀이 손가락 안내, 결과지 보는 순서 1~5
-- 재녹음·새 음성 5줄 요청문: `voice-script/RERECORD-v1.5.md`
+- v15 음성 5줄 반영 완료(cover, choices-intro, scene-tip, egg-loading, friend-PVSD=사용자 선택 B). 기록: `voice-script/VOICE-AUDIT.md` 끝부분
 - v1.5 추가: 결과지 맨 위 ‘같은 방, 다른 시선’ 비교, 장에 맞는 칭찬, 성격 표시 기울기 제거, 알 준비 중 안내 음성 자리(egg-loading)
 
 ## 흐름

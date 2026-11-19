@@ -2,8 +2,8 @@
   {
     "id": "cover",
     "file": "cover.mp3",
-    "text": "안녕, 우리 친구! 여기는 토끼들의 방이야. 우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야! 맞고 틀린 답은 없어. 재미로 우리 집 정리 친구를 만나 보자!",
-    "seconds": 14.93
+    "text": "안녕, 우리 친구! 여기는 토끼들의 방이야. 우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야! 어떤 걸 선택해도 맞고 틀리는 건 없어. 재미로 우리 집 정리 친구를 만나 보자!",
+    "seconds": 16.33
   },
   {
     "id": "parent-cover",
@@ -32,8 +32,8 @@
   {
     "id": "choices-intro",
     "file": "choices-intro.mp3",
-    "text": "아래 그림 두 개 중에 골라도 되고, 위 방 그림에서 장난감을 직접 콕 눌러도 돼.",
-    "seconds": 7.43
+    "text": "아래 작은 그림 두 개 중에 골라도 되고, 위 큰 방 그림에서 장난감을 직접 콕 눌러도 돼.",
+    "seconds": 7.71
   },
   {
     "id": "option-child-0-A",
@@ -152,8 +152,8 @@
   {
     "id": "scene-tip",
     "file": "scene-tip.mp3",
-    "text": "아래 그림 중에서 골라 줘!",
-    "seconds": 1.85
+    "text": "아래 작은 그림 두 개 중에서 골라 줘!",
+    "seconds": 3.32
   },
   {
     "id": "ask-other",
@@ -226,6 +226,12 @@
     "file": "handoff-child.mp3",
     "text": "다시 우리 친구 차례야! 알 두 개를 톡톡 깨 볼까?",
     "seconds": 4.83
+  },
+  {
+    "id": "egg-loading",
+    "file": "egg-loading.mp3",
+    "text": "친구를 만나러 가요! 알이 준비될 때까지 잠깐만 기다려 줘.",
+    "seconds": 5.46
   },
   {
     "id": "egg-ready",
@@ -339,7 +345,7 @@
     "id": "friend-PVSD",
     "file": "friend-PVSD.mp3",
     "text": "나는 각각각 다람쥐! 도토리처럼 딱! 쓰고 나면 바로 제자리에 쏙!",
-    "seconds": 7.16
+    "seconds": 6.64
   },
   {
     "id": "meet",
@@ -456,3 +462,4 @@
     "seconds": 4.63
   }
 ]
+

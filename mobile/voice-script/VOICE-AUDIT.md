@@ -111,3 +111,13 @@
 | hp-play | 3.46 | 통과 | 해당 없음 | 어디서 놀고 싶어? 사진에서 콕 짚어 줘. | 일치 | 독립 받아쓰기 일치 | 미실시 |
 | hp-change | 4.33 | 통과 | 해당 없음 | 뭘 바꾸면 좋을까? 사진에서 콕 찝어줘. | 불일치·추가 대조 | 대본 참고 음성 대조 일치 | 미실시 |
 | hp-promise | 4.63 | 통과 | 해당 없음 | 둘 자리는 남겨두고 바꾸고 싶은 곳부터 같이 정리해 볼까? | 일치 | 독립 받아쓰기 일치 | 미실시 |
+
+
+## v15 반영 (5줄)
+
+- 받은 ZIP: `siseon-mobile-voice-v15.zip` SHA-256 `e02213f681b88bcc710f111192b300dfeaf4bacf485774d340d9c311c8f7289a`, 정확히 5개.
+- `friend-PVSD.mp3`는 사용자가 A/B를 직접 듣고 고른 B(SHA-256 `da23e6d17c894690530415b3bc2ab34158e240431378f869ae454cbbea93a1fe`). 자동 발음 대조 의견 차이는 남아 있으나 사용자 선택으로 확정.
+- 나머지 4개(cover, choices-intro, scene-tip, egg-loading)는 ChatGPT 쪽 받아쓰기 정규화 일치·자동 대조 통과로 전달받음. Claude 쪽에서는 받아쓰기를 다시 하지 않았음.
+- Claude 측정: 5개 모두 모노 44.1kHz 128kbps, 앞 무음 약 0.11~0.13초, 뒤 무음 약 0.12~0.16초. 길이 cover 16.33 · choices-intro 7.71 · scene-tip 3.32 · egg-loading 5.46 · friend-PVSD 6.64초.
+- manifest 77행(기존 76 + 새 egg-loading). 표지 자막 시작점은 실제 쉼 위치에 맞춰 0 · 4.8 · 9.9 · 13.4초로 고정.
+- egg-loading은 알 화면이 열리면 재생되고, 알이 먼저 준비되어도 끊지 않고 끝난 뒤 egg-ready로 이어짐. scene-tip 안내 글자는 음성 길이만큼 보임.

@@ -202,6 +202,7 @@ voice.addEventListener('playing', () => document.body.classList.add('voice-on'))
 ['pause', 'ended', 'error', 'emptied'].forEach((n) => voice.addEventListener(n, () => document.body.classList.remove('voice-on')));
 function blocked() { if (audioUnlocked) return; needTouch = true; document.body.classList.add('need-touch'); setTimeout(() => typeof syncTouchChip === 'function' && syncTouchChip(), 0); }
 let queue = [], playToken = 0, pending = null;
+let eggLoadingOn = false;
 function play(list, onDone) {
   stopVoice();
   list = list.filter((it) => hasVoice(it.f));
@@ -409,7 +410,8 @@ function missionPlan() {
 const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":3.344},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.312},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.099},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":2.968},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":2.725},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":3.458},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":4.973},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.843},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.419},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":5.346},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":3.527},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.822}};
 /* 원본 표지 음성: 마지막 문장(‘…시작 버튼을 눌러 줘’)은 버튼 이름이 달라 그 앞에서 멈춰요 */
 const introLines = {
-  child: { f: 'cover', orig: 19.44, stop: 15.25, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.707, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.627, '어떤 걸 선택해도 맞고 틀리는 건 없어.'], [12.267, '재미로 우리 집 정리 친구를 만나 보자!']] },
+  /* v15 표지 음성(16.33초): 자막 시작은 실제 쉼 위치(4.88·10.0·13.5초 말소리 시작)에 맞췄어요 */
+  child: { f: 'cover', orig: 16.33, stop: 16.4, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.8, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.9, '어떤 걸 선택해도 맞고 틀리는 건 없어.'], [13.4, '재미로 우리 집 정리 친구를 만나 보자!']] },
   adult: { f: 'parent-cover', orig: 18.768, stop: 16.35, caps: [[0, '부모님, 반갑습니다!'], [2.286, '아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요.'], [6.646, '다섯 질문에 각자 답하며 서로의 생각을 알아보세요.'], [10.766, '정답은 없어요.'], [12.566, '재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요.']] },
 };
 function playIntro(who) {
@@ -473,7 +475,7 @@ function homeHtml() {
     <div class="cover">${coverMedia('햇살이 드는 방에서 아이 토끼는 기차로 놀고, 부모 토끼는 그림책을 보는 움직이는 그림')}</div>
     <div class="cover-body">
       <h1 class="title">시선사이<br><span class="blue">같은 방, 다른 시선</span></h1>
-      <div class="intro-rabbit"><span class="rabbit-tap"><img src="assets/rabbit-star.webp" alt=""><i class="ripple" aria-hidden="true"></i></span><p class="speech" data-intro-cap>우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!</p></div>
+      <div class="intro-rabbit"><span class="rabbit-tap"><img src="assets/rabbit-star.webp" alt=""><i class="ripple" aria-hidden="true"></i></span><p class="speech" data-intro-cap>안녕, 우리 친구! 여기는 토끼들의 방이야.</p></div>
       <button class="btn-soft listen-intro" type="button" data-act="intro-listen">${I.speaker}<span>토끼 이야기 듣기</span></button>
       ${S.startedAt && !S.finishedAt ? '<p class="note"><b>하던 곳부터 이어서 할 수 있어요.</b></p>' : ''}
       ${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}
@@ -869,7 +871,7 @@ function afterRender() {
   if (S.screen === 'q' && S.role === 'adult' && S.answers.adult[S.index].choice) later(() => pointAt(barEl.querySelector('[data-act="q-next"]')), 1200);
   const v = stage.querySelector('.cover video, .book-art video');
   if (v) { v.play?.().catch(() => {}); }
-  if (S.screen === 'egg' && !S.eggs[S.eggStage]) { watchEgg(); if (soundOn) play([{ f: 'egg-loading' }]); }
+  if (S.screen === 'egg' && !S.eggs[S.eggStage]) { watchEgg(); if (soundOn && hasVoice('egg-loading')) { eggLoadingOn = true; play([{ f: 'egg-loading' }], () => { eggLoadingOn = false; }); } }
   if (S.screen === 'mission') mountMission();
   if (S.screen === 'egg' && S.eggs[S.eggStage] && soundOn) play([{ f: 'friend-' + code(S.eggStage) }]);
   syncTouchChip();
@@ -986,7 +988,8 @@ function pointToChoices(scroll = true) {
   box.classList.remove('nudge'); void box.offsetWidth; box.classList.add('nudge');
   if (scroll) revealAboveBar(box);
   if (S.role === 'child') { if (soundOn && voice.paused) play([{ f: hasVoice('scene-tip') ? 'scene-tip' : 'choices-ready' }], childGuide); else childGuide(); }
-  clearTimeout(pointTimer); pointTimer = setTimeout(() => { tip.remove(); box.classList.remove('nudge'); }, 2600);
+  /* 안내 글자는 안내 음성이 끝날 때까지 보여요 (scene-tip 음성 길이 + 0.4초, 최소 2.6초) */
+  clearTimeout(pointTimer); pointTimer = setTimeout(() => { tip.remove(); box.classList.remove('nudge'); }, Math.max(2600, Math.round(((VOICE_SEC['scene-tip'] || 0) + 0.4) * 1000)));
 }
 
 /* 1장에서 방 그림 속 장난감을 답으로 고르면, 다른 장처럼 ‘고른 카드’로 또렷하게 보여 줘요 (보기 두 개는 그대로) */
@@ -1085,7 +1088,7 @@ addEventListener('message', (e) => {
   if (d.code !== code(S.eggStage)) return;
   if (d.type === 'siseon-egg-guide') {
     const st = stage.querySelector('[data-egg-status]');
-    if (st && d.stage === 'ready') { clearTimeout(eggTimer); st.textContent = '알을 톡톡 눌러 봐!'; if (!eggSpoke) { eggSpoke = true; play([{ f: 'egg-ready' }]); } }
+    if (st && d.stage === 'ready') { clearTimeout(eggTimer); st.textContent = '알을 톡톡 눌러 봐!'; if (!eggSpoke) { eggSpoke = true; /* ‘친구를 만나러 가요’ 안내가 아직 나오는 중이면 끊지 않고 끝난 뒤에 이어요 */ if (eggLoadingOn && !voice.paused) queue.push({ f: 'egg-ready' }); else play([{ f: 'egg-ready' }]); } }
     if (st && d.stage === 'more') play([{ f: 'egg-more' }]);
     if (st && d.stage === 'error') { st.textContent = '그림을 불러오지 못했어요. 아래 버튼으로 친구를 바로 만나요.'; showSkip(); play([{ f: 'egg-error' }]); }
     return;
