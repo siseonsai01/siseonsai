@@ -670,6 +670,14 @@ body.need-touch .rabbit-tap .ripple { display: block; }
 .hp-pin.child { border-radius: 50%; background: var(--child); }
 .hp-pin.adult { border-radius: 8px; background: #FFFDF8; color: var(--adult); border-color: var(--adult); }
 .hp-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.hp-turn { position: sticky; top: calc(var(--head-h) + env(safe-area-inset-top, 0px) + 8px); z-index: 4; display: flex; justify-content: center; }
+.hp-turn-badge { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 64px; padding: 14px 20px; border-radius: 999px; font-size: clamp(20px, 5.5vw, 25px); font-weight: 700; letter-spacing: .02em; border: 2px solid; box-shadow: 0 4px 0 rgba(80, 56, 30, .12); }
+.hp-turn-badge.child { background: #FFE6A8; border-color: #DDA54B; color: #85501F; }
+.hp-turn-badge.adult { background: #E0EADD; border-color: #9DAF94; color: #485B3F; }
+.experience-card .feedback-label { font-size: 18px; font-weight: 700; }
+.experience-card textarea { width: 100%; resize: vertical; min-height: 92px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); line-height: 1.6; }
+.experience-card p { margin: 0; }
+.experience-card [data-feedback-status].err { color: var(--warn); }
 .hp-legend li { display: flex; align-items: center; gap: 8px; font-size: 16px; }
 .hp-legend b { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #FFFDF8; font-size: 14px; }
 .hp-legend .same { font-size: 13px; font-weight: 700; color: var(--ok); }

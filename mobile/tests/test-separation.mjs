@@ -26,7 +26,7 @@ const elements=new Map();
 const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',checked:false,disabled:false,className:'',events:{},addEventListener(n,f){this.events[n]=f;}});return elements.get(id);};
 el('recent').tHead={innerHTML:''};el('recent').tBodies=[{innerHTML:''}];
 const answers=choice=>Array.from({length:5},(_,i)=>({title:'제목 '+i,choice,label:'선택 '+choice,reason:'이유 '+i}));
-const record=(id,test)=>({id,test,receivedAt:1,child:{code:'PVSD',name:'아이친구',answers:answers('A')},adult:{code:'FVMB',name:'부모친구',answers:answers('B')}});
+const record=(id,test)=>({id,test,receivedAt:1,feedback:{comment:test?'시험 소감':'함께해서 좋았어요',submittedAt:'2026-11-20T00:00:00Z'},child:{code:'PVSD',name:'아이친구',answers:answers('A')},adult:{code:'FVMB',name:'부모친구',answers:answers('B')}});
 const blobs=[];
 const c={location:{hash:'#access='+'a'.repeat(64)},URLSearchParams,Blob,
   fetch:async()=>({ok:true,json:async()=>({records:[record('mrealrecord01',false),record('mtestrecord01',true)],nextCursor:null})}),
@@ -37,6 +37,7 @@ assert.equal(el('n-all').textContent,1);assert.equal(el('n-real').textContent,1)
 assert.equal((el('recent').tBodies[0].innerHTML.match(/<tr>/g)||[]).length,1);checks++;
 el('csv').events.click();const realCsv=await blobs.at(-1).text();
 assert.ok(realCsv.includes('mrealrecord01'));assert.ok(!realCsv.includes('mtestrecord01'));checks+=2;
+assert.ok(realCsv.includes('체험 소감'));assert.ok(realCsv.includes('소감 남긴 때'));assert.ok(realCsv.includes('함께해서 좋았어요'));assert.ok(!realCsv.includes('시험 소감'));checks+=4;
 for(let q=1;q<=5;q++){assert.ok(realCsv.includes(q+'장 아이가 한 말'));assert.ok(realCsv.includes(q+'장 부모님 이유'));checks+=2;}
 el('with-test').checked=true;el('with-test').events.change();assert.equal(el('n-all').textContent,2);checks++;
 assert.equal((el('recent').tBodies[0].innerHTML.match(/<tr>/g)||[]).length,2);checks++;

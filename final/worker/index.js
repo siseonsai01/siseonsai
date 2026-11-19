@@ -222,8 +222,26 @@ async function mobileApi(req,db,url,p){
     const record={id,surveyVersion:String(p.surveyVersion||'').slice(0,60),sourceRelease:String(p.sourceRelease||'').slice(0,60),stimulus:String(p.stimulus||'').slice(0,200),
       mode:'one-phone',test:!!p.test,startedAt:iso(p.startedAt),finishedAt:iso(p.finishedAt),child:cleanMobileRole(p.child),adult:cleanMobileRole(p.adult)};
     if(!record.child.answers.every(a=>a.choice)||!record.adult.answers.every(a=>a.choice))fail(400,'두 사람의 답을 모두 마친 뒤 보내 주세요.');
+    if(p.feedback!==undefined){
+      if(typeof p.feedback!=='string'||!p.feedback.trim()||p.feedback.trim().length>300)fail(400,'소감을 300자 이내로 적어 주세요.');
+      record.feedback={comment:p.feedback.trim(),submittedAt:new Date().toISOString()};
+    }
     const r=await db.prepare('INSERT OR IGNORE INTO mobile_records (id,data,created) VALUES (?,?,?)').bind(id,JSON.stringify(record),now()).run();
-    return {ok:true,id,duplicate:!changed(r)};
+    if(!record.feedback)return {ok:true,id,duplicate:!changed(r)};
+    if(changed(r))return {ok:true,id,duplicate:false,feedbackSaved:true,feedback:record.feedback};
+    const row=await db.prepare('SELECT data FROM mobile_records WHERE id=?').bind(id).first();
+    if(!row)fail(409,'가족 답을 다시 확인해 주세요.');
+    const stored=JSON.parse(row.data);
+    if(!!stored.test!==record.test||JSON.stringify(stored.child)!==JSON.stringify(record.child)||JSON.stringify(stored.adult)!==JSON.stringify(record.adult))fail(409,'소감을 남길 가족 답과 일치하지 않아요.');
+    if(stored.feedback){
+      if(stored.feedback.comment!==record.feedback.comment)fail(409,'이미 소감을 보냈어요.');
+      return {ok:true,id,duplicate:true,feedbackSaved:true,feedback:stored.feedback};
+    }
+    // Attach one comment to the same record; never replace the family's answers or timestamps.
+    const attached={...stored,feedback:record.feedback};
+    const result=await db.prepare('UPDATE mobile_records SET data=? WHERE id=? AND data=?').bind(JSON.stringify(attached),id,row.data).run();
+    if(!changed(result))fail(409,'소감을 저장 중이에요. 다시 눌러 주세요.');
+    return {ok:true,id,duplicate:true,feedbackSaved:true,feedback:record.feedback};
   }
   if(req.method!=='GET')fail(405,'지원하지 않는 요청이에요.');
   const supplied=req.headers.get('authorization')?.replace(/^Bearer /,'');
