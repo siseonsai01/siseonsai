@@ -1,0 +1,63 @@
+/* 시선사이 · 공동관찰 입체방 */
+.rs-root {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;               /* 스크롤·확대 대신 터치를 그림에 전달 */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.rs-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: default;                  /* 호버로 장난감을 드러내지 않도록 커서 변화 없음 */
+  outline: none;
+}
+.rs-sr {                            /* 화면낭독기 전용, 화면에는 보이지 않음 */
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.rs-root.rs-error::after {
+  content: attr(data-error);
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font: 600 16px/1.5 system-ui, sans-serif;
+  color: #7a4a2a;
+}
+.rs-debug {
+  position: absolute; left: 12px; bottom: 12px;
+  padding: 6px 10px; border-radius: 8px;
+  background: rgba(0,0,0,.65); color: #fff;
+  font: 600 13px/1.3 ui-monospace, Menlo, monospace;
+  pointer-events: none;
+}
+.rs-gl { pointer-events: none; transition: opacity .2s linear; }
+.rs-fx { z-index: 1; }
+/* 효과음 켜기/끄기 — 그림 밖 모서리에 작게, 장난감과 겹치지 않음 */
+.rs-sound {
+  position: absolute; z-index: 2;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid rgba(122,74,42,.18);
+  background: rgba(255,248,236,.72);
+  color: #7a4a2a;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(90,60,30,.15);
+  cursor: pointer; padding: 0;
+  touch-action: manipulation;
+}
+.rs-sound .rs-off { display: none; }
+.rs-sound.is-off .rs-on { display: none; }
+.rs-sound.is-off .rs-off { display: inline; }
+.rs-sound:focus-visible { outline: 3px solid #7fb8f0; outline-offset: 2px; }

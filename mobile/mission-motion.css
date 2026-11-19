@@ -1,0 +1,101 @@
+/* 시선사이 · 정리 친구의 가족 미션 시범 — every rule is scoped to .smm-* inside the host */
+.smm-root {
+  --smm-ink: #5b3a24;
+  --smm-paper: #fbf4e8;
+  --smm-card: #fffaf2;
+  --smm-line: #e3cfb3;
+  --smm-wood: #c98c52;
+  --smm-child: #ff8c5a;
+  --smm-family: #6fa86b;
+  --smm-font: "Jua", "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  container-type: inline-size;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--smm-ink);
+  font-family: var(--smm-font);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.smm-root *, .smm-root *::before, .smm-root *::after { box-sizing: border-box; }
+
+.smm-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.smm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 12px 4px 4px;
+  background: var(--smm-card);
+  border: 2px solid var(--smm-line);
+  border-radius: 999px;
+  font-size: clamp(14px, 2.6cqw, 18px);
+  line-height: 1.2;
+}
+.smm-tag-code {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #fbefe0;
+  border: 2px solid #c9a27a;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.smm-tag-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.smm-step {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #f1e3cd;
+  font-size: clamp(13px, 2.4cqw, 16px);
+  white-space: nowrap;
+}
+.smm-step.smm-role-child { background: #ffe3d4; color: #a6431c; }
+.smm-step.smm-role-family { background: #e1f0dc; color: #3f6b3c; }
+
+.smm-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--smm-paper);
+  box-shadow: inset 0 0 0 2px var(--smm-line);
+}
+.smm-root.smm-portrait .smm-stage { aspect-ratio: 1 / 1; }
+.smm-svg { display: block; width: 100%; height: 100%; }
+
+.smm-caption {
+  margin: 0;
+  min-height: 2.7em;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: var(--smm-card);
+  border: 2px solid var(--smm-line);
+  font-size: clamp(17px, 3.6cqw, 26px);
+  line-height: 1.32;
+  text-align: center;
+  text-wrap: balance;
+  word-break: keep-all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.smm-caption.smm-k-title { font-size: clamp(19px, 4.2cqw, 30px); color: #8a4a22; }
+.smm-caption.smm-k-done { color: #a6431c; }
+
+/* reduced motion: each step is a still frame; a soft fade marks the change */
+.smm-root.smm-flip .smm-svg { animation: smm-fade 0.5s ease-out; }
+@keyframes smm-fade { from { opacity: 0.25; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .smm-root.smm-flip .smm-svg { animation-duration: 0.01s; }
+}
