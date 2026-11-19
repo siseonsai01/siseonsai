@@ -149,7 +149,7 @@ const fillEl = document.getElementById('fill'), meterEl = document.getElementByI
 const soundBtn = document.getElementById('sound'), voiceBtn = document.getElementById('voiceBtn'), voiceFile = document.getElementById('voiceFile');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const TAP_TARGET = 3, GLOW_AT = 0.8; // Every third tap hatches, independent of pressure or frame rate.
+const TAP_TARGET = 5, GLOW_AT = 0.8; // Five taps: small cracks, glowing cracks, then the original burst.
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lerp = (a, b, t) => a + (b - a) * t;
 const easeOut = t => 1 - (1 - clamp(t)) ** 3;
@@ -225,13 +225,15 @@ function newState() {
     ['#ff96a0', '#ffcd64', '#8ccdeb', '#aadca0', '#d2aaf0'][Math.floor(rnd(0, 4.99))], rnd(10, 18)]);
   const spark = Array.from({ length: 14 }, () => [rnd(100, 980), rnd(650, 1650), rnd(0, 6.28), rnd(14, 30)]);
   const beams = Array.from({ length: 16 }, (_, i) => [-Math.PI + 2 * Math.PI * ((i * 7) % 16) / 16 + rnd(-0.12, 0.12), 0.08 + 0.75 * i / 16, rnd(0.6, 1)]);
-  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, taps: 0, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
+  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, taps: 0, tapTime: -9, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
 }
 const power = () => st.strength;
 
 function updateHud() {
   cv.dataset.hatchState = st.done ? 'done' : 'playing';
   cv.dataset.typeCode = TYPE_CODE;
+  cv.dataset.tapCount = String(st.taps);
+  cv.dataset.eggStage = st.done ? 'friend' : st.burstT !== null ? 'burst' : st.taps >= 3 ? 'glowing-cracks' : st.taps ? 'small-cracks' : 'ready';
   if (st.done && !st.reported) {
     st.reported = true;
     parent.postMessage({type:'siseon-egg-hatched',code:TYPE_CODE},location.origin);
@@ -258,13 +260,15 @@ function tap(e) {
   const now = nowS();
   if (st.done) { if (!EMBEDDED) { st = newState(); updateHud(); } return; }
   if (st.burstT !== null || e?.repeat) return;
-  st.taps++;
+  st.taps++; st.tapTime = now;
+  st.p = st.taps / TAP_TARGET;
+  updateHud();
   if (!st.called) { st.called = true; callOut(now, INTRO); }
   if (st.taps === TAP_TARGET) {
     st.p = 1; st.burstT = now; st.swing = null; st.queued = 0;
     updateHud();
     const burstState = st;
-    // A throttled iframe animation must still notify the book after three taps.
+    // A throttled iframe animation must still notify the book after five taps.
     setTimeout(() => {
       if (st !== burstState || st.done) return;
       st.done = true; updateHud();
@@ -308,7 +312,8 @@ function callOut(now, lines) {
 }
 function drawBubble(now) {
   let lines = null, t0 = 0;
-  if (st.hits === 0) { lines = INTRO; t0 = st.called ? st.callT : 0.3; }
+  if (st.taps >= 3 && st.taps < TAP_TARGET) { lines = ['조금만 더!', '톡톡!']; t0 = st.tapTime; }
+  else if (st.hits === 0) { lines = INTRO; t0 = st.called ? st.callT : 0.3; }
   else if (now - st.lastTap > 3.5 && st.p < 1) { lines = MORE; t0 = st.lastTap + 3.5; }
   if (!lines) return;
   const s = now - t0, z = backOut(s / 0.3, 2.4), bob = 6 * Math.sin(now * 3);
@@ -357,7 +362,7 @@ const CHEER = [
 ];
 function drawCheer(now) {
   const idle = now - st.lastTap;
-  let txt = st.cheer, t0 = st.cheerT;
+  let txt = st.taps >= 3 && st.taps < TAP_TARGET ? '조금만 더!' : st.cheer, t0 = st.taps >= 3 ? st.tapTime : st.cheerT;
   if (!txt) return;
   const s = now - t0, z = backOut(s / 0.28, 2.6), wig = 3 * Math.sin(now * 6);
   const big = st.p >= GLOW_AT ? 1.15 : 1;
@@ -512,6 +517,10 @@ function drawPops(now) {
   }
 }
 
+function eggVisual(taps) {
+  const n = Math.max(0, Math.min(4, taps));
+  return { level: [0, 1.2, 2.4, 5.6, 8][n], glow: [0, 0, 0, 0.38, 0.85][n] };
+}
 const VOICE = 0.35;
 function frame() {
   const now = nowS();
@@ -521,14 +530,15 @@ function frame() {
   const since = last !== null ? now - last : 99, s0 = power();
   const bs = st.burstT !== null ? now - st.burstT : -1;
 
-  // crack level from taps 1-24, glow from taps 25-29
-  let pd = 0; for (const [h, a] of st.prog) pd += a * easeOut((now - h) / 0.2);
-  pd = Math.min(pd, 1);
-  const level = 8 * clamp(pd / GLOW_AT), glow = clamp((pd - GLOW_AT) / (1 - GLOW_AT - 0.03));
+  // Visual stages follow accepted taps, never pressure or animation-frame timing.
+  const visual = eggVisual(st.taps), before = eggVisual(Math.max(0, st.taps - 1));
+  const tapAge = now - st.tapTime, reveal = easeOut(tapAge / 0.25);
+  const level = lerp(before.level, visual.level, reveal), glow = lerp(before.glow, visual.glow, reveal);
 
   let shake = since < 0.2 ? (3 + 7 * s0) * (1 - since / 0.2) : 0;
   if (glow > 0 && bs < 0) shake = Math.max(shake, 1.5 + 5 * glow);
   if (bs >= 0 && bs < 0.5) shake = 18 * (1 - bs / 0.5);
+  if (bs < 0 && st.taps > 0) shake = Math.max(shake, (st.taps <= 2 ? 28 : 18) * Math.exp(-Math.max(0, tapAge) * 4));
   if (reduce) shake *= 0.25;
   const sx = Math.round(shake * Math.sin(now * 97)), sy = Math.round(shake * Math.cos(now * 83));
   const ox = EX - EA - PAD + sx, oy = EY - EB - PAD + sy;
@@ -544,6 +554,7 @@ function frame() {
       wob = (1.2 + 3 * s0) * Math.exp(-since * 4) * Math.sin(since * 16);
     }
     wob += insideWobble(now);
+    if (st.taps > 0) wob += (st.taps <= 2 ? 13 : 7) * Math.exp(-Math.max(0, tapAge) * 4) * Math.sin(tapAge * 18);
     ctx.save(); ctx.translate(ox + EW / 2, oy + EH - PAD); ctx.rotate(rad(-wob)); ctx.scale(1 + sq, 1 - sq);
     ctx.drawImage(ec, -EW / 2, -(EH - PAD)); ctx.restore();
     if (glow > 0) { const pg = glow * (0.85 + 0.15 * Math.sin(now * 12)); radialGlow(EX + sx, EY - 40 + sy, 520 * (0.6 + 0.5 * pg), 0.6 * pg); drawBeams(glow, EX + sx, EY - 30 + sy, now * 0.25); }
