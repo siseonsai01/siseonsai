@@ -90,14 +90,14 @@
     const cell = (v) => { let s = String(v ?? ''); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
     const head = ['기록ID', '받은때', '시작', '마침', '시험여부', '조사버전', '아이 유형', '아이 정리친구', '부모님 유형', '부모님 정리친구', '다르게 고른 장 수'];
     for (let i = 1; i <= 5; i++) head.push(`${i}장 제목`, `${i}장 아이 선택`, `${i}장 아이 보기`, `${i}장 아이가 한 말`, `${i}장 부모님 선택`, `${i}장 부모님 보기`, `${i}장 부모님 이유`, `${i}장 같음`);
-    head.push('1장 아이 위치 x%', '1장 아이 위치 y%', '1장 아이 장난감', '1장 부모님 위치 x%', '1장 부모님 위치 y%', '1장 부모님 장난감');
+    head.push('1장 아이 위치 x%', '1장 아이 위치 y%', '1장 아이 장난감', '1장 부모님 위치 x%', '1장 부모님 위치 y%', '1장 부모님 장난감', '체험 소감', '소감 남긴 때');
     const lines = [head];
     rows.forEach((r) => {
       const C = r.child?.answers || [], A = r.adult?.answers || [];
       const diff = [0, 1, 2, 3, 4].filter((i) => C[i]?.choice !== A[i]?.choice).length;
       const line = [r.id, fmt(r.receivedAt), fmt(r.startedAt), fmt(r.finishedAt), r.test ? '예' : '', r.surveyVersion, r.child?.code, r.child?.name, r.adult?.code, r.adult?.name, diff];
       for (let i = 0; i < 5; i++) line.push(C[i]?.title || A[i]?.title || '', C[i]?.choice, C[i]?.label, C[i]?.reason, A[i]?.choice, A[i]?.label, A[i]?.reason, C[i]?.choice === A[i]?.choice ? '같음' : '다름');
-      line.push(C[0]?.point?.x, C[0]?.point?.y, C[0]?.toy, A[0]?.point?.x, A[0]?.point?.y, A[0]?.toy);
+      line.push(C[0]?.point?.x, C[0]?.point?.y, C[0]?.toy, A[0]?.point?.x, A[0]?.point?.y, A[0]?.toy, r.feedback?.comment || '', r.feedback?.submittedAt ? fmt(r.feedback.submittedAt) : '');
       lines.push(line);
     });
     const text = '﻿' + lines.map((l) => l.map(cell).join(',')).join('\r\n');

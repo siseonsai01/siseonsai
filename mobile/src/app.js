@@ -152,9 +152,13 @@ const praiseAllow = {
   child: (last) => last ? [0, 2, 3, 4, 5, 7] : [0, 1, 2, 3, 4, 5, 6, 7],
   adult: (last) => last ? [4] : [0, 1, 2, 3, 5],
 };
+const childStageCheers = ['좋아, 첫 번째 생각 잘 골랐어!', '재밌는 생각이네, 다음 장도 볼까?', '벌써 절반 넘었어! 잘하고 있어.', '벌써 절반 넘었어! 잘하고 있어.', '최고야! 다섯 장 다 골랐네!'];
+const childStageClips = [5, 6, 1, 1, 0];
 function cheerHtml(role) {
   const p = praise[role], last = S.index === Q.length - 1;
-  return `<img class="mascot" src="assets/rabbit-star-laugh.webp" alt=""><p class="says" style="margin:0">${pick(role + 's', p.says, praiseAllow[role](last))}</p><span class="stamp-ink" aria-hidden="true">${pick(role + 't', p.stamp).replace(' ', '<br>')}</span>`;
+  const message = role === 'child' ? childStageCheers[S.index] : pick(role + 's', p.says, praiseAllow[role](last));
+  if (role === 'child') lastPick.childs = childStageClips[S.index];
+  return `<img class="mascot" src="assets/rabbit-star-laugh.webp" alt=""><p class="says" style="margin:0">${message}</p><span class="stamp-ink" aria-hidden="true">${pick(role + 't', p.stamp).replace(' ', '<br>')}</span>`;
 }
 const reasonAsk = {
   child: ["그게 먼저 보인 이야기를 들려줄래?", "어떤 생각이 났는지 말해 줄래?", "그렇게 하고 싶은 까닭이 있으면 알려 줘!", "거기서 뭘 하고 놀고 싶어?", "바꾸면 어떤 방이 될 것 같아?"],
@@ -302,14 +306,17 @@ function downloads() { return dlP || (dlP = cap('downloads')); }
 let saveState = 'idle';
 /* 운영 사이트(/mobile/)에서 열렸을 때는 같은 사이트의 설문 서버로 답을 보내요. Claude 검토 링크에서는 지금처럼 Claude 저장소를 써요 */
 const ONLINE = /^\/mobile(\/|$)/.test(location.pathname) && !window.claude?.use;
+function recordPayload() {
+  const pack = (role) => ({ code: code(role), name: characters[code(role)] || '', answers: S.answers[role].map((a, i) => ({ q: i + 1, title: Q[i].title, choice: a.choice, label: optionLabel(role, i, a.choice), reason: a.reason.trim(), point: a.point, toy: a.toy || '' })) });
+  return { id: S.savedId || S.recordId, surveyVersion: SURVEY_VERSION, sourceRelease: SOURCE_RELEASE, stimulus: STIMULUS, mode: 'one-phone', test: !!S.test, startedAt: S.startedAt, finishedAt: S.finishedAt || new Date().toISOString(), child: pack('child'), adult: pack('adult') };
+}
 async function saveRecord() {
   if (S.savedId) { saveState = 'ok'; paintSave(); return; }
   saveState = 'saving'; paintSave();
   /* 같은 가족 기록은 한 번만 저장되도록 번호를 한 번만 만들고 다시 보낼 때도 같은 번호를 써요 */
   if (!S.recordId) { S.recordId = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); persist(); }
   const id = S.recordId;
-  const pack = (role) => ({ code: code(role), name: characters[code(role)] || '', answers: S.answers[role].map((a, i) => ({ q: i + 1, title: Q[i].title, choice: a.choice, label: optionLabel(role, i, a.choice), reason: a.reason.trim(), point: a.point, toy: a.toy || '' })) });
-  const record = { surveyVersion: SURVEY_VERSION, sourceRelease: SOURCE_RELEASE, stimulus: STIMULUS, mode: 'one-phone', test: !!S.test, startedAt: S.startedAt, finishedAt: S.finishedAt || new Date().toISOString(), child: pack('child'), adult: pack('adult') };
+  const { id: recordId, ...record } = recordPayload();
   if (ONLINE) {
     try {
       const r = await fetch('/api/mobile-records', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, ...record }), cache: 'no-store' });
@@ -339,6 +346,38 @@ function paintSave() {
   el.className = 'save-line ' + cls; el.textContent = text;
   const retry = document.querySelector('[data-act="save-retry"]');
   if (retry) retry.hidden = saveState !== 'err';
+}
+let feedbackState = 'idle', feedbackError = '';
+function paintFeedback() {
+  const status = stage.querySelector('[data-feedback-status]'), button = stage.querySelector('[data-act="send-feedback"]'), input = stage.querySelector('#experience-comment');
+  if (!status || !button || !input) return;
+  const busy = feedbackState === 'sending';
+  input.readOnly = busy || !!S.feedbackSent;
+  button.disabled = busy || !!S.feedbackSent;
+  button.textContent = busy ? '보내는 중…' : S.feedbackSent ? '보냈어요' : '보내기';
+  status.textContent = S.feedbackSent ? '소중한 의견 고마워요!' : busy ? '소감을 보내고 있어요…' : feedbackError;
+  status.classList.toggle('err', !!feedbackError && !S.feedbackSent);
+}
+async function sendFeedback() {
+  if (feedbackState === 'sending' || S.feedbackSent) return;
+  const comment = String(S.feedbackDraft || '').trim();
+  feedbackError = '';
+  if (!comment) { feedbackError = '한 줄 소감을 적어 주세요.'; paintFeedback(); return; }
+  if (!ONLINE) { feedbackError = '소감을 보내려면 모바일 설문 링크에서 열어 주세요.'; paintFeedback(); return; }
+  const owner = S;
+  feedbackState = 'sending'; paintFeedback();
+  try {
+    await saveRecord();
+    if (S !== owner) { feedbackState = 'idle'; return; }
+    if (!S.savedId) throw new Error('save');
+    const response = await fetch('/api/mobile-records', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...recordPayload(), feedback: comment }), cache: 'no-store' });
+    const body = await response.json();
+    if (S !== owner) { feedbackState = 'idle'; return; }
+    if (!response.ok || !body.feedbackSaved) throw new Error('feedback');
+    S.feedbackDraft = body.feedback.comment; S.feedbackSent = true; persist();
+    feedbackState = 'sent';
+  } catch { if (S !== owner) { feedbackState = 'idle'; return; } feedbackState = 'error'; feedbackError = '보내지 못했어요. 적은 글은 남아 있어요. 다시 눌러 주세요.'; }
+  paintFeedback();
 }
 
 /* ---------- 화면 ---------- */
@@ -730,9 +769,9 @@ function resultHtml() {
     <section class="photo-cta"><img class="cta-rabbit" src="assets/rabbit-star-laugh.webp" alt="">
       <span class="sec-label">이제 진짜 우리 집에서!</span>
       <h2 class="msg-title">우리 집 사진 놀이</h2>
-      <p>오늘 본 그림은 토끼네 방이었어요. 이번엔 <b>우리 집 사진</b>으로 아이와 번갈아 콕콕 짚어 봐요.</p>
+      <p>오늘 본 그림은 토끼네 방이었어요. 이번엔 <b>우리 집 사진</b>에서 아이가 세 곳을 먼저 짚고, 부모님이 세 곳을 짚어 봐요.</p>
       <ul class="cta-steps"><li><b>1</b> 먼저 보인 곳</li><li><b>2</b> 놀고 싶은 곳</li><li><b>3</b> 바꾸고 싶은 곳</li></ul>
-      <p class="small">세 번만 짚으면 끝! 아이가 고른 <b>놀 자리</b>를 알면 오늘 정리를 어디서 시작할지 같이 정할 수 있어요. 사진은 이 폰에서만 보여요.</p>
+      <p class="small">아이와 부모님이 세 곳씩 짚어요. 폰은 한 번만 건네요. 아이가 고른 <b>놀 자리</b>를 알면 오늘 정리를 어디서 시작할지 같이 정할 수 있어요. 사진은 이 폰에서만 보여요.</p>
       <button class="btn-photo" type="button" data-act="open-photo">${I.camera}<span>우리 집 사진으로 해 보기</span></button></section>
     ${graphSection('함께 보기')}
     <details class="card"><summary>고른 답과 남긴 말 보기</summary>${qa}<p class="small" style="margin:8px 0 0">네 글자 뜻</p><ul class="small axis-list">${axisRows}</ul></details>
@@ -740,6 +779,12 @@ function resultHtml() {
       <div class="bar-row"><button class="btn-soft" type="button" data-act="save-image" style="flex:1">${I.photo} 결과지 사진으로 저장</button></div>
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
+    </section>
+    <section class="experience-card"><label class="feedback-label" for="experience-comment">오늘 체험 어땠나요? 한 줄 소감 남기기</label>
+      <p class="small">이름·연락처는 적지 말아 주세요.</p>
+      <textarea id="experience-comment" rows="3" maxlength="300" placeholder="편하게 한 줄 남겨 주세요." ${S.feedbackSent ? 'readonly' : ''}>${esc(S.feedbackDraft || '')}</textarea>
+      <button class="btn-soft" type="button" data-act="send-feedback" ${S.feedbackSent ? 'disabled' : ''}>${S.feedbackSent ? '보냈어요' : '보내기'}</button>
+      <p class="small" data-feedback-status role="status" aria-live="polite">${S.feedbackSent ? '소중한 의견 고마워요!' : ''}</p>
     </section>
     <p class="save-line" data-save role="status"></p><button class="btn-soft" type="button" data-act="save-retry" hidden>다시 보내기</button>
     <div data-owner hidden class="stack"><button class="btn-soft" type="button" data-act="export">진행자 · 모바일 기록 내려받기 (CSV)</button><p class="small" data-export-status role="status" style="margin:0"></p></div>
@@ -757,6 +802,18 @@ const hpSteps = [
 ];
 const hpFresh = () => ({ step: 0, turn: 'child', pins: { look: {}, play: {}, change: {} } });
 function hp() { if (!S.hp) S.hp = hpFresh(); return S.hp; }
+function hpAdvance(h) {
+  if (h.step < hpSteps.length) h.step++;
+  else if (h.turn === 'child') { h.turn = 'adult'; h.step = 1; }
+  else h.step = hpSteps.length + 1;
+}
+function hpRetreat(h) {
+  if (h.step > hpSteps.length) { h.turn = 'adult'; h.step = hpSteps.length; }
+  else if (h.step > 1) h.step--;
+  else if (h.turn === 'adult') { h.turn = 'child'; h.step = hpSteps.length; }
+  else return false;
+  return true;
+}
 const near = (a, b) => a && b && Math.hypot(a.x - b.x, a.y - b.y) < 12;
 function pinHtml(role, pt, label) { return pt ? `<span class="hp-pin ${role}" style="left:${pt.x}%;top:${pt.y}%">${label ?? ''}</span>` : ''; }
 function photoHtml() {
@@ -787,7 +844,7 @@ function photoHtml() {
   }
   const s = hpSteps[h.step - 1], role = h.turn, pt = h.pins[s.key][role];
   return `<div class="page ${role}"><div class="stack">
-    <div class="q-top"><span class="role-tag ${role}">${roleName[role]} 차례 · ${s.n}/3</span></div>
+    <div class="hp-turn"><span class="hp-turn-badge ${role}">${roleName[role]} 차례 · ${s.n}/3</span></div>
     <h1 class="question" tabindex="-1">${s[role]}</h1>
     <div class="hp-photo" data-act="photo-tap"><img src="${photoUrl}" alt="우리 집 사진" draggable="false">${pinHtml(role, pt, s.n)}</div>
     <p class="other-pick">${pt ? '다시 누르면 옮길 수 있어요' : '사진에서 콕 짚어요'}</p>
@@ -800,7 +857,7 @@ function photoBar() {
   const s = hpSteps[h.step - 1], has = !!h.pins[s.key][h.turn];
   const last = h.turn === 'adult' && h.step === hpSteps.length;
   return `<div class="bar-row"><button class="paw-back" type="button" data-act="photo-back"><span class="paw-badge">${I.pawArrow}</span><span>이전</span></button>
-    <button class="paw-next" type="button" data-act="photo-next" ${has ? '' : 'disabled'}><span class="label">${h.turn === 'child' ? '부모님 차례' : last ? '모아 보기' : '다음'}</span>${pawBadge()}</button></div>`;
+    <button class="paw-next" type="button" data-act="photo-next" ${has ? '' : 'disabled'}><span class="label">${h.turn === 'child' && h.step === hpSteps.length ? '부모님께 폰 건네기' : last ? '모아 보기' : '다음'}</span>${pawBadge()}</button></div>`;
 }
 
 const views = {
@@ -920,7 +977,7 @@ function afterRender() {
   if (S.screen === 'mission') mountMission();
   if (S.screen === 'egg' && S.eggs[S.eggStage] && soundOn) play([{ f: 'friend-' + code(S.eggStage) }]);
   syncTouchChip();
-  if (S.screen === 'result') { paintSave(); saveRecord(); }
+  if (S.screen === 'result') { paintSave(); paintFeedback(); saveRecord(); }
 }
 
 /* ---------- 공통 방 그림 (1장: 원본 입체방 엔진 그대로) ---------- */
@@ -1359,6 +1416,7 @@ document.addEventListener('click', (e) => {
       break;
     case 'to-result': S.finishedAt = S.finishedAt || new Date().toISOString(); go('result'); break;
     case 'save-retry': S.savedId = null; saveRecord(); break;
+    case 'send-feedback': sendFeedback(); break;
     case 'export': exportCsv(); break;
     case 'save-image': saveSheet('jpg'); break;
     case 'save-pdf': saveSheet('pdf'); break;
@@ -1387,12 +1445,14 @@ document.addEventListener('click', (e) => {
     }
     case 'photo-next': {
       const h = hp();
-      if (h.turn === 'child') h.turn = 'adult'; else { h.turn = 'child'; h.step++; }
+      const current = hpSteps[h.step - 1];
+      if (!current || !h.pins[current.key][h.turn]) break;
+      hpAdvance(h);
       render('next'); break;
     }
     case 'photo-back': {
       const h = hp();
-      if (h.turn === 'adult') h.turn = 'child'; else if (h.step > 1) { h.step--; h.turn = 'adult'; } else { go('result', 'back'); break; }
+      if (!hpRetreat(h)) { go('result', 'back'); break; }
       render('back'); break;
     }
     case 'sound':
@@ -1407,7 +1467,7 @@ document.addEventListener('click', (e) => {
       sheet({ title: '첫 화면으로 갈까요?', body: '지금까지 고른 답은 이 휴대폰에 그대로 남아 있어요. 첫 화면에서 ‘이어서 하기’를 누르면 같은 곳부터 다시 열려요.', yes: '첫 화면으로 가기', no: '계속하기', onYes: async () => { await micSettle(); const ta = stage.querySelector('#reason'); if (ta && S.screen === 'q') S.answers[S.role][S.index].reason = ta.value; persist(); S.resumeScreen = S.screen; S.screen = 'home'; render('back'); } });
       break;
     case 'ask-new':
-      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? (ONLINE ? '우리 가족 답은 이미 잘 보냈어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.') : '아직 보내지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; S = fresh(); persist(); render('back'); } });
+      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? (ONLINE ? '우리 가족 답은 이미 잘 보냈어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.') : '아직 보내지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; feedbackState = 'idle'; feedbackError = ''; S = fresh(); persist(); render('back'); } });
       break;
     case 'mic': {
       if (!rec) return;
@@ -1420,6 +1480,7 @@ document.addEventListener('click', (e) => {
   }
 });
 document.addEventListener('input', (e) => {
+  if (e.target.id === 'experience-comment' && !S.feedbackSent) { S.feedbackDraft = e.target.value.slice(0, 300); persist(); }
   if (e.target.id === 'reason' && S.screen === 'q') {
     if (e.isTrusted && rec?.active) rec.cancel();
     S.answers[S.role][S.index].reason = e.target.value; persist();
