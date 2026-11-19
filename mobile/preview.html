@@ -686,9 +686,9 @@ details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: 
 .reason label { font-size: 16px; }
 
 /* ---------- 정리 친구 16종: 색·움직임으로 성격을 보여요 ---------- */
-.pal { margin: 0; position: relative; display: grid; place-items: center; }
+.pal { margin: 0; position: relative; display: grid; justify-items: center; align-items: end; }
 .pal::before { content: ""; position: absolute; inset: 12% 8% 0; border-radius: 50%; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--pc) 30%, transparent), transparent 70%); z-index: 0; }
-.pal img { position: relative; z-index: 1; width: 100%; filter: drop-shadow(0 10px 10px rgba(90,60,30,.22)); transform-origin: 50% 90%; }
+.pal img { position: relative; z-index: 1; width: 100%; max-width: 100%; filter: drop-shadow(0 10px 10px rgba(90,60,30,.22)); transform-origin: 50% 90%; }
 .pal.big { width: min(230px, 62vw); }
 .pal.mini { width: 84px; flex: none; }
 .m-hop img    { animation: pHop 1.1s ease-in-out infinite; }
@@ -953,6 +953,28 @@ body.need-touch .rabbit-tap .ripple { display: block; }
 .leaf.roll + .turn-shade, .turn-shade { animation-duration: .95s; }
 .save-box { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
 .save-box .btn-main svg { width: 24px; height: 24px; }
+
+/* ---------- v1.5 다듬기 ---------- */
+/* 말풍선 앞 토끼: 가만히 있을 때는 숨 쉬듯 흔들, 토끼가 말할 때는 통통 들썩 */
+.intro-rabbit img, .guide-line img { transform-origin: 50% 95%; animation: hop .6s ease-out, rabbitIdle 3.4s ease-in-out .6s infinite; }
+body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabbitTalk .62s ease-in-out infinite; }
+@keyframes rabbitIdle { 0%, 100% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-4deg) translateY(-2px); } 50% { transform: rotate(0) translateY(0) scale(1.02, .98); } 75% { transform: rotate(4deg) translateY(-2px); } }
+@keyframes rabbitTalk { 0%, 100% { transform: translateY(0) rotate(-2deg) scale(1); } 35% { transform: translateY(-6px) rotate(3deg) scale(.97, 1.04); } 65% { transform: translateY(0) rotate(-1deg) scale(1.04, .96); } }
+@media (prefers-reduced-motion: reduce) { .intro-rabbit img, .guide-line img, body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: none; } }
+
+/* 부모님 안내: 네 단계를 한 묶음 카드로, 번호를 선으로 이어요 */
+.steps { background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 6px 14px; gap: 0; box-shadow: 0 3px 0 var(--line); }
+.steps li { position: relative; background: none; border: 0; border-radius: 0; padding: 12px 2px; }
+.steps li + li { border-top: 1px dashed var(--line); }
+.steps li:not(:last-child)::after { content: ""; position: absolute; left: 18px; top: calc(50% + 17px); height: calc(100% - 34px); border-left: 2px dotted #CDB596; }
+.steps .n { position: relative; z-index: 1; }
+
+/* 결과지: 보는 순서 */
+.read-order { list-style: none; margin: 0; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--sub); }
+.read-order li { display: inline-flex; align-items: center; gap: 4px; }
+.read-order li + li::before { content: "→"; color: #C7AE8C; margin-right: 2px; }
+.read-order b, .sec-label .ord { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #C9862F; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+.sec-label .ord { margin-right: 6px; vertical-align: 1px; }
 
 </style>
 <header class="head" id="head" hidden></header>
@@ -3494,12 +3516,15 @@ voice.preload = 'auto';
 /* 녹음해 둔 목소리 목록 (build.py가 assets/voice를 보고 채워요). 아직 녹음 전인 새 대사는 조용히 건너뛰어요 */
 const VOICES = new Set(["ask-other", "book-adult", "book-child", "child-0", "child-1", "child-2", "child-3", "child-4", "child-done", "choices-intro", "choices-ready", "cover", "egg-error", "egg-more", "egg-ready", "friend-FHMB", "friend-FHMD", "friend-FHSB", "friend-FHSD", "friend-FVMB", "friend-FVMD", "friend-FVSB", "friend-FVSD", "friend-PHMB", "friend-PHMD", "friend-PHSB", "friend-PHSD", "friend-PVMB", "friend-PVMD", "friend-PVSB", "friend-PVSD", "handoff-child", "hp-change", "hp-look", "hp-pick", "hp-play", "hp-promise", "meet", "mission-done-mobile", "mission-done", "motion-0-0", "motion-0-1", "motion-1-0", "motion-1-1", "motion-2-0", "motion-2-1", "motion-3-0", "motion-3-1", "motion-3-2", "motion-4-0", "motion-4-1", "option-child-0-A", "option-child-0-B", "option-child-1-A", "option-child-1-B", "option-child-2-A", "option-child-2-B", "option-child-3-A", "option-child-3-B", "option-child-4-A", "option-child-4-B", "parent-cover", "praise-child-0", "praise-child-1", "praise-child-2", "praise-child-3", "praise-child-4", "praise-child-5", "praise-child-6", "praise-child-7", "result-child", "scene-tip", "story-0", "story-1", "story-2", "story-3", "story-4"]);
 const hasVoice = (f) => VOICES.has(f);
-const VOICE_SEC = {"ask-other": 2.0, "book-adult": 7.17, "book-child": 9.29, "child-0": 3.52, "child-1": 4.181, "child-2": 4.26, "child-3": 3.79, "child-4": 4.94, "child-done": 8.77, "choices-intro": 7.43, "choices-ready": 3.07, "cover": 14.93, "egg-error": 6.1, "egg-more": 2.25, "egg-ready": 2.68, "friend-FHMB": 8.31, "friend-FHMD": 8.38, "friend-FHSB": 8.62, "friend-FHSD": 8.43, "friend-FVMB": 7.69, "friend-FVMD": 7.5, "friend-FVSB": 6.99, "friend-FVSD": 7.35, "friend-PHMB": 8.01, "friend-PHMD": 6.49, "friend-PHSB": 7.86, "friend-PHSD": 6.73, "friend-PVMB": 7.92, "friend-PVMD": 8.05, "friend-PVSB": 6.52, "friend-PVSD": 7.16, "handoff-child": 4.83, "hp-change": 4.33, "hp-look": 4.0, "hp-pick": 4.43, "hp-play": 3.46, "hp-promise": 4.63, "meet": 4.56, "mission-done-mobile": 2.88, "mission-done": 3.344, "motion-0-0": 3.71, "motion-0-1": 3.76, "motion-1-0": 3.73, "motion-1-1": 3.51, "motion-2-0": 4.38, "motion-2-1": 3.41, "motion-3-0": 4.91, "motion-3-1": 4.62, "motion-3-2": 4.38, "motion-4-0": 3.03, "motion-4-1": 4.41, "option-child-0-A": 1.96, "option-child-0-B": 2.58, "option-child-1-A": 3.14, "option-child-1-B": 3.21, "option-child-2-A": 2.48, "option-child-2-B": 1.82, "option-child-3-A": 2.15, "option-child-3-B": 2.36, "option-child-4-A": 2.52, "option-child-4-B": 2.97, "parent-cover": 16.69, "praise-child-0": 2.05, "praise-child-1": 2.75, "praise-child-2": 2.12, "praise-child-3": 3.13, "praise-child-4": 1.72, "praise-child-5": 2.68, "praise-child-6": 3.15, "praise-child-7": 3.65, "result-child": 4.39, "scene-tip": 1.85, "story-0": 5.44, "story-1": 4.23, "story-2": 3.46, "story-3": 4.22, "story-4": 4.13};
+const VOICE_SEC = {"ask-other": 2.038, "book-adult": 7.21, "book-child": 9.326, "child-0": 3.553, "child-1": 4.232, "child-2": 4.31, "child-3": 3.84, "child-4": 4.989, "child-done": 8.803, "choices-intro": 7.471, "choices-ready": 3.109, "cover": 14.968, "egg-error": 6.139, "egg-more": 2.299, "egg-ready": 2.717, "friend-FHMB": 8.359, "friend-FHMD": 8.411, "friend-FHSB": 8.647, "friend-FHSD": 8.464, "friend-FVMB": 7.732, "friend-FVMD": 7.549, "friend-FVSB": 7.027, "friend-FVSD": 7.393, "friend-PHMB": 8.046, "friend-PHMD": 6.531, "friend-PHSB": 7.889, "friend-PHSD": 6.766, "friend-PVMB": 7.967, "friend-PVMD": 8.098, "friend-PVSB": 6.557, "friend-PVSD": 7.21, "handoff-child": 4.859, "hp-change": 4.362, "hp-look": 4.049, "hp-pick": 4.467, "hp-play": 3.5, "hp-promise": 4.676, "meet": 4.598, "mission-done-mobile": 2.926, "mission-done": 3.408, "motion-0-0": 3.762, "motion-0-1": 3.788, "motion-1-0": 3.762, "motion-1-1": 3.553, "motion-2-0": 4.415, "motion-2-1": 3.448, "motion-3-0": 4.937, "motion-3-1": 4.65, "motion-3-2": 4.415, "motion-4-0": 3.056, "motion-4-1": 4.441, "option-child-0-A": 2.011, "option-child-0-B": 2.612, "option-child-1-A": 3.187, "option-child-1-B": 3.239, "option-child-2-A": 2.508, "option-child-2-B": 1.855, "option-child-3-A": 2.194, "option-child-3-B": 2.403, "option-child-4-A": 2.56, "option-child-4-B": 3.004, "parent-cover": 16.718, "praise-child-0": 2.09, "praise-child-1": 2.795, "praise-child-2": 2.168, "praise-child-3": 3.161, "praise-child-4": 1.75, "praise-child-5": 2.717, "praise-child-6": 3.187, "praise-child-7": 3.683, "result-child": 4.441, "scene-tip": 1.881, "story-0": 5.486, "story-1": 4.258, "story-2": 3.5, "story-3": 4.258, "story-4": 4.18};
 /* 브라우저는 사람이 한 번 화면을 만지기 전에는 소리를 못 내게 막아요.
    그래서 첫 화면에서 먼저 틀어 보고, 막히면 '어디든 첫 톡'에 바로 이어서 틀어요 */
 let audioUnlocked = false, needTouch = false;
 function markUnlocked() { if (audioUnlocked) return; audioUnlocked = true; needTouch = false; document.body.classList.remove('need-touch'); }
 voice.addEventListener('playing', markUnlocked);
+/* 토끼가 말하는 동안 말풍선 앞 토끼가 함께 들썩여요 */
+voice.addEventListener('playing', () => document.body.classList.add('voice-on'));
+['pause', 'ended', 'error', 'emptied'].forEach((n) => voice.addEventListener(n, () => document.body.classList.remove('voice-on')));
 function blocked() { if (audioUnlocked) return; needTouch = true; document.body.classList.add('need-touch'); setTimeout(() => typeof syncTouchChip === 'function' && syncTouchChip(), 0); }
 let queue = [], playToken = 0, pending = null;
 function play(list, onDone) {
@@ -3689,9 +3714,12 @@ const personas = {
   FHMB: { color: '#4C83B3', move: 'flip',   trait: '우주 대청소',     say: '우주 대청소 시작! 하나씩 보며 추억 여행~ 끼룩!' },
 };
 const pv = (c) => personas[c] || { color: '#7A4F2A', move: 'hop', trait: '', say: '' };
+/* 16종 그림은 가로세로 비율이 제각각이라 같은 폭이면 크기가 달라 보여요(예: 넓은 토끼 귀 vs 길쭉한 햄스터).
+   그림의 실제 칠해진 면적이 비슷하게 보이도록 폭을 맞춰요 (egg/a/hog_*.png 알파 면적으로 계산, 원본 그림은 그대로) */
+const palFit = {"FHMB": 97, "FHMD": 89, "FHSB": 86, "FHSD": 92, "FVMB": 97, "FVMD": 93, "FVSB": 86, "FVSD": 86, "PHMB": 92, "PHMD": 100, "PHSB": 79, "PHSD": 93, "PVMB": 93, "PVMD": 92, "PVSB": 91, "PVSD": 95};
 function friendFigure(c, extra = '') {
   const p = pv(c);
-  return `<figure class="pal m-${p.move} ${extra}" style="--pc:${p.color}"><img src="egg/a/hog_${c}.png" alt="${esc(characters[c])}"></figure>`;
+  return `<figure class="pal m-${p.move} ${extra}" style="--pc:${p.color}"><img src="egg/a/hog_${c}.png" alt="${esc(characters[c])}" style="width:${palFit[c] || 100}%"></figure>`;
 }
 
 /* ---------- 정리 시범 (원본 mission-motion 엔진 그대로) ----------
@@ -3706,7 +3734,7 @@ function missionPlan() {
 const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":3.344},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.312},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.099},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":2.968},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":2.725},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":3.458},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":4.973},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.843},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.419},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":5.346},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":3.527},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.822}};
 /* 원본 표지 음성: 마지막 문장(‘…시작 버튼을 눌러 줘’)은 버튼 이름이 달라 그 앞에서 멈춰요 */
 const introLines = {
-  child: { f: 'cover', orig: 19.44, stop: 15.25, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.707, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.627, '맞고 틀린 답은 없어.'], [12.267, '재미로 우리 집 정리 친구를 만나 보자!']] },
+  child: { f: 'cover', orig: 19.44, stop: 15.25, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.707, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.627, '어떤 걸 선택해도 맞고 틀리는 건 없어.'], [12.267, '재미로 우리 집 정리 친구를 만나 보자!']] },
   adult: { f: 'parent-cover', orig: 18.768, stop: 16.35, caps: [[0, '부모님, 반갑습니다!'], [2.286, '아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요.'], [6.646, '다섯 질문에 각자 답하며 서로의 생각을 알아보세요.'], [10.766, '정답은 없어요.'], [12.566, '재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요.']] },
 };
 function playIntro(who) {
@@ -3868,7 +3896,7 @@ function qBar() {
   const backLabel = S.index === 0 ? '표지' : '이전';
   return `<div class="bar-row"><button class="paw-back" type="button" data-act="q-back" aria-label="${backLabel} 쪽으로"><span class="paw-badge">${I.pawArrow}</span><span>${backLabel}</span></button>
     <button class="paw-next" type="button" data-act="q-next" ${a.choice ? '' : 'disabled'}><span class="label">${last ? '내 책 마치기' : '다음 장'}</span>${pawBadge()}</button></div>
-    <p class="bar-hint" data-hint>${a.choice ? '' : (S.role === 'child' ? '그림을 하나 골라 줘' : '하나를 골라 주세요')}</p>`;
+    <p class="bar-hint" data-hint>${a.choice ? '' : (S.role === 'child' ? '아래 작은 그림 두 개 중 하나를 골라 줘' : '아래 작은 그림 두 개 중 하나를 골라 주세요')}</p>`;
 }
 
 function childDoneHtml() {
@@ -3963,11 +3991,12 @@ function resultHtml() {
   const axisRows = axes.map((ax) => { const [x, y] = ax.pair.split('/'); return `<li><b>${x}</b> ${codeNames[x]} · <b>${y}</b> ${codeNames[y]} <span class="small">(${ax.title})</span></li>`; }).join('');
   return `<div class="page"><div class="report">
     <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족<br><span class="blue">정리 이야기</span></h1><p class="lead">5장 중 <b>${same}장</b>이 같았어요. 다른 답도 다 좋아요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
-    <section><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
-    <section class="msg parent-msg"><span class="sec-label">부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
-    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label">아이에게</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
+    <ol class="read-order" aria-label="결과지 보는 순서"><li><b>1</b>두 친구</li><li><b>2</b>부모님께</li><li><b>3</b>아이에게</li><li><b>4</b>우리 집 사진</li><li><b>5</b>간직하기</li></ol>
+    <section><span class="sec-label"><b class="ord">1</b>우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
+    <section class="msg parent-msg"><span class="sec-label"><b class="ord">2</b>부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
+    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label"><b class="ord">3</b>아이에게 들려주기</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
     <section class="photo-cta"><img class="cta-rabbit" src="assets/rabbit-star-laugh.webp" alt="">
-      <span class="sec-label">이제 진짜 우리 집에서!</span>
+      <span class="sec-label"><b class="ord">4</b>이제 진짜 우리 집에서!</span>
       <h2 class="msg-title">우리 집 사진 놀이</h2>
       <p>오늘 본 그림은 토끼네 방이었어요. 이번엔 <b>우리 집 사진</b>으로 아이와 번갈아 콕콕 짚어 봐요.</p>
       <ul class="cta-steps"><li><b>1</b> 먼저 보인 곳</li><li><b>2</b> 놀고 싶은 곳</li><li><b>3</b> 바꾸고 싶은 곳</li></ul>
@@ -3975,7 +4004,7 @@ function resultHtml() {
       <button class="btn-photo" type="button" data-act="open-photo">${I.camera}<span>우리 집 사진으로 해 보기</span></button></section>
     ${graphSection('함께 보기')}
     <details class="card"><summary>고른 답과 남긴 말 보기</summary>${qa}<p class="small" style="margin:8px 0 0">네 글자 뜻</p><ul class="small axis-list">${axisRows}</ul></details>
-    <section class="save-box"><span class="sec-label">결과지 간직하기</span>
+    <section class="save-box"><span class="sec-label"><b class="ord">5</b>결과지 간직하기</span>
       <div class="bar-row"><button class="btn-soft" type="button" data-act="save-image" style="flex:1">${I.photo} 결과지 사진으로 저장</button></div>
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
@@ -4144,7 +4173,12 @@ function afterRender() {
   if (S.screen === 'home' && !homeSpoke) { homeSpoke = true; playIntro('child'); }
   if (S.screen === 'guide') playIntro('adult');
   if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step >= 1 && S.hp.step <= hpSteps.length && S.hp.turn === 'child' && !S.hp.pins[hpSteps[S.hp.step - 1].key].child) later(() => pointAt(stage.querySelector('.hp-photo')), 1200);
-  if (['childBook', 'childDone', 'handoffChild', 'meet'].includes(S.screen) || (S.screen === 'egg' && S.eggs[S.eggStage])) later(() => pointAt(barEl.querySelector('.paw-next')), 2000);
+  if (['childBook', 'childDone', 'handoffChild', 'meet', 'guide', 'handoffParent'].includes(S.screen) || (S.screen === 'egg' && S.eggs[S.eggStage])) later(() => pointAt(barEl.querySelector('.paw-next')), 2000);
+  if (S.screen === 'home') later(() => pointAt(barEl.querySelector('.btn-main')), 2200);
+  if (S.screen === 'result') later(() => pointAt(stage.querySelector('[data-act="open-photo"]')), 2500);
+  if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step > hpSteps.length) later(() => pointAt(barEl.querySelector('[data-act="to-result"]')), 2500);
+  if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step >= 1 && S.hp.step <= hpSteps.length && S.hp.turn === 'adult' && !S.hp.pins[hpSteps[S.hp.step - 1].key].adult) later(() => pointAt(stage.querySelector('.hp-photo')), 1200);
+  if (S.screen === 'q' && S.role === 'adult' && S.answers.adult[S.index].choice) later(() => pointAt(barEl.querySelector('[data-act="q-next"]')), 1200);
   const v = stage.querySelector('.cover video, .book-art video');
   if (v) { v.play?.().catch(() => {}); }
   if (S.screen === 'egg' && !S.eggs[S.eggStage]) watchEgg();
@@ -4260,7 +4294,7 @@ function pointToChoices(scroll = true) {
   const box = stage.querySelector('.choices'); if (!box) return;
   let tip = stage.querySelector('[data-scene-tip]');
   if (!tip) { tip = document.createElement('p'); tip.className = 'scene-tip'; tip.setAttribute('data-scene-tip', ''); tip.setAttribute('role', 'status'); box.before(tip); }
-  tip.textContent = S.role === 'child' ? '아래 그림 중에서 골라 줘!' : '아래 두 그림 중에서 골라 주세요';
+  tip.textContent = S.role === 'child' ? '아래 작은 그림 두 개 중에서 골라 줘!' : '아래 작은 그림 두 개 중에서 골라 주세요';
   box.classList.remove('nudge'); void box.offsetWidth; box.classList.add('nudge');
   if (scroll) revealAboveBar(box);
   if (S.role === 'child') { if (soundOn && voice.paused) play([{ f: hasVoice('scene-tip') ? 'scene-tip' : 'choices-ready' }], childGuide); else childGuide(); }
@@ -4300,7 +4334,7 @@ function choose(v, point = null) {
     if (wasHidden) setTimeout(() => revealAboveBar(follow.querySelector('[data-cheer]')), 80);
   }
   const next = barEl.querySelector('[data-act="q-next"]'); if (next) next.disabled = false;
-  hidePointer(); if (S.role === 'child') later(childGuide, 1100);
+  hidePointer(); if (S.role === 'child') later(childGuide, 1100); else later(() => pointAt(next), 900);
   const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = ''; hint.className = 'bar-hint'; }
 }
 
@@ -4320,7 +4354,7 @@ function setupMic() {
 function go(screen, dir = 'next', extra = {}) { stopVoice(); Object.assign(S, { screen }, extra); render(dir); }
 async function qNext() {
   const a = S.answers[S.role][S.index];
-  if (!a.choice) { const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = S.role === 'child' ? '그림을 하나 골라 줘' : '하나를 골라 주세요'; hint.className = 'bar-hint err'; } return; }
+  if (!a.choice) { const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = S.role === 'child' ? '아래 작은 그림 두 개 중 하나를 골라 줘' : '아래 작은 그림 두 개 중 하나를 골라 주세요'; hint.className = 'bar-hint err'; } return; }
   if (rec?.active) await micSettle();
   const ta = stage.querySelector('#reason'); if (ta) a.reason = ta.value;
   persist();
@@ -4585,7 +4619,7 @@ document.addEventListener('click', (e) => {
       const h = hp(), s = hpSteps[h.step - 1];
       h.pins[s.key][h.turn] = { x: +x.toFixed(1), y: +y.toFixed(1) }; persist();
       render(null, { still: true, keepScroll: true });
-      if (h.turn === 'child') later(() => pointAt(barEl.querySelector('[data-act="photo-next"]')), 900);
+      later(() => pointAt(barEl.querySelector('[data-act="photo-next"]')), 900);
       break;
     }
     case 'photo-next': {

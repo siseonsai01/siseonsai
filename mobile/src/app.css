@@ -513,9 +513,9 @@ details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: 
 .reason label { font-size: 16px; }
 
 /* ---------- 정리 친구 16종: 색·움직임으로 성격을 보여요 ---------- */
-.pal { margin: 0; position: relative; display: grid; place-items: center; }
+.pal { margin: 0; position: relative; display: grid; justify-items: center; align-items: end; }
 .pal::before { content: ""; position: absolute; inset: 12% 8% 0; border-radius: 50%; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--pc) 30%, transparent), transparent 70%); z-index: 0; }
-.pal img { position: relative; z-index: 1; width: 100%; filter: drop-shadow(0 10px 10px rgba(90,60,30,.22)); transform-origin: 50% 90%; }
+.pal img { position: relative; z-index: 1; width: 100%; max-width: 100%; filter: drop-shadow(0 10px 10px rgba(90,60,30,.22)); transform-origin: 50% 90%; }
 .pal.big { width: min(230px, 62vw); }
 .pal.mini { width: 84px; flex: none; }
 .m-hop img    { animation: pHop 1.1s ease-in-out infinite; }
@@ -780,3 +780,25 @@ body.need-touch .rabbit-tap .ripple { display: block; }
 .leaf.roll + .turn-shade, .turn-shade { animation-duration: .95s; }
 .save-box { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
 .save-box .btn-main svg { width: 24px; height: 24px; }
+
+/* ---------- v1.5 다듬기 ---------- */
+/* 말풍선 앞 토끼: 가만히 있을 때는 숨 쉬듯 흔들, 토끼가 말할 때는 통통 들썩 */
+.intro-rabbit img, .guide-line img { transform-origin: 50% 95%; animation: hop .6s ease-out, rabbitIdle 3.4s ease-in-out .6s infinite; }
+body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabbitTalk .62s ease-in-out infinite; }
+@keyframes rabbitIdle { 0%, 100% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-4deg) translateY(-2px); } 50% { transform: rotate(0) translateY(0) scale(1.02, .98); } 75% { transform: rotate(4deg) translateY(-2px); } }
+@keyframes rabbitTalk { 0%, 100% { transform: translateY(0) rotate(-2deg) scale(1); } 35% { transform: translateY(-6px) rotate(3deg) scale(.97, 1.04); } 65% { transform: translateY(0) rotate(-1deg) scale(1.04, .96); } }
+@media (prefers-reduced-motion: reduce) { .intro-rabbit img, .guide-line img, body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: none; } }
+
+/* 부모님 안내: 네 단계를 한 묶음 카드로, 번호를 선으로 이어요 */
+.steps { background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 6px 14px; gap: 0; box-shadow: 0 3px 0 var(--line); }
+.steps li { position: relative; background: none; border: 0; border-radius: 0; padding: 12px 2px; }
+.steps li + li { border-top: 1px dashed var(--line); }
+.steps li:not(:last-child)::after { content: ""; position: absolute; left: 18px; top: calc(50% + 17px); height: calc(100% - 34px); border-left: 2px dotted #CDB596; }
+.steps .n { position: relative; z-index: 1; }
+
+/* 결과지: 보는 순서 */
+.read-order { list-style: none; margin: 0; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--sub); }
+.read-order li { display: inline-flex; align-items: center; gap: 4px; }
+.read-order li + li::before { content: "→"; color: #C7AE8C; margin-right: 2px; }
+.read-order b, .sec-label .ord { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #C9862F; color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+.sec-label .ord { margin-right: 6px; vertical-align: 1px; }

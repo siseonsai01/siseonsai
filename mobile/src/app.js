@@ -192,6 +192,9 @@ const VOICE_SEC = /*@VOICE_SECONDS@*/;
 let audioUnlocked = false, needTouch = false;
 function markUnlocked() { if (audioUnlocked) return; audioUnlocked = true; needTouch = false; document.body.classList.remove('need-touch'); }
 voice.addEventListener('playing', markUnlocked);
+/* 토끼가 말하는 동안 말풍선 앞 토끼가 함께 들썩여요 */
+voice.addEventListener('playing', () => document.body.classList.add('voice-on'));
+['pause', 'ended', 'error', 'emptied'].forEach((n) => voice.addEventListener(n, () => document.body.classList.remove('voice-on')));
 function blocked() { if (audioUnlocked) return; needTouch = true; document.body.classList.add('need-touch'); setTimeout(() => typeof syncTouchChip === 'function' && syncTouchChip(), 0); }
 let queue = [], playToken = 0, pending = null;
 function play(list, onDone) {
@@ -381,9 +384,12 @@ const personas = {
   FHMB: { color: '#4C83B3', move: 'flip',   trait: '우주 대청소',     say: '우주 대청소 시작! 하나씩 보며 추억 여행~ 끼룩!' },
 };
 const pv = (c) => personas[c] || { color: '#7A4F2A', move: 'hop', trait: '', say: '' };
+/* 16종 그림은 가로세로 비율이 제각각이라 같은 폭이면 크기가 달라 보여요(예: 넓은 토끼 귀 vs 길쭉한 햄스터).
+   그림의 실제 칠해진 면적이 비슷하게 보이도록 폭을 맞춰요 (egg/a/hog_*.png 알파 면적으로 계산, 원본 그림은 그대로) */
+const palFit = {"FHMB": 97, "FHMD": 89, "FHSB": 86, "FHSD": 92, "FVMB": 97, "FVMD": 93, "FVSB": 86, "FVSD": 86, "PHMB": 92, "PHMD": 100, "PHSB": 79, "PHSD": 93, "PVMB": 93, "PVMD": 92, "PVSB": 91, "PVSD": 95};
 function friendFigure(c, extra = '') {
   const p = pv(c);
-  return `<figure class="pal m-${p.move} ${extra}" style="--pc:${p.color}"><img src="egg/a/hog_${c}.png" alt="${esc(characters[c])}"></figure>`;
+  return `<figure class="pal m-${p.move} ${extra}" style="--pc:${p.color}"><img src="egg/a/hog_${c}.png" alt="${esc(characters[c])}" style="width:${palFit[c] || 100}%"></figure>`;
 }
 
 /* ---------- 정리 시범 (원본 mission-motion 엔진 그대로) ----------
@@ -398,7 +404,7 @@ function missionPlan() {
 const motionVoiceCaptions = {"이제 집으로 가서 가족이 정리를 해 볼 차례예요!":{"scene":"mission-done","seconds":3.344},"장난감 셋 중에 공의 자리를 먼저 정해요.":{"scene":"motion-0-0","seconds":3.312},"나머지 둘도 하나씩 들고 자리를 찾아요.":{"scene":"motion-0-1","seconds":3.099},"상자 앞에 붙일 블록 그림을 하나 골라요.":{"scene":"motion-1-0","seconds":2.968},"블록을 상자에 넣고 그림 표시를 붙여요.":{"scene":"motion-1-1","seconds":2.725},"매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.":{"scene":"motion-2-0","seconds":3.458},"소중한 별은 보물상자에 쏙 넣어요.":{"scene":"motion-2-1","seconds":4.973},"길 위의 공과 자동차를 바구니로 옮겨 길을 비워요.":{"scene":"motion-3-0","seconds":4.843},"블록 작품은 부수지 않고 옆 안전한 자리에 둬요.":{"scene":"motion-3-1","seconds":4.419},"작품은 시계가 알려 줄 때 나중에 같이 정리해요.":{"scene":"motion-3-2","seconds":5.346},"자동차의 자리를 함께 골라요.":{"scene":"motion-4-0","seconds":3.527},"손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.":{"scene":"motion-4-1","seconds":4.822}};
 /* 원본 표지 음성: 마지막 문장(‘…시작 버튼을 눌러 줘’)은 버튼 이름이 달라 그 앞에서 멈춰요 */
 const introLines = {
-  child: { f: 'cover', orig: 19.44, stop: 15.25, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.707, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.627, '맞고 틀린 답은 없어.'], [12.267, '재미로 우리 집 정리 친구를 만나 보자!']] },
+  child: { f: 'cover', orig: 19.44, stop: 15.25, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.707, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.627, '어떤 걸 선택해도 맞고 틀리는 건 없어.'], [12.267, '재미로 우리 집 정리 친구를 만나 보자!']] },
   adult: { f: 'parent-cover', orig: 18.768, stop: 16.35, caps: [[0, '부모님, 반갑습니다!'], [2.286, '아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요.'], [6.646, '다섯 질문에 각자 답하며 서로의 생각을 알아보세요.'], [10.766, '정답은 없어요.'], [12.566, '재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요.']] },
 };
 function playIntro(who) {
@@ -560,7 +566,7 @@ function qBar() {
   const backLabel = S.index === 0 ? '표지' : '이전';
   return `<div class="bar-row"><button class="paw-back" type="button" data-act="q-back" aria-label="${backLabel} 쪽으로"><span class="paw-badge">${I.pawArrow}</span><span>${backLabel}</span></button>
     <button class="paw-next" type="button" data-act="q-next" ${a.choice ? '' : 'disabled'}><span class="label">${last ? '내 책 마치기' : '다음 장'}</span>${pawBadge()}</button></div>
-    <p class="bar-hint" data-hint>${a.choice ? '' : (S.role === 'child' ? '그림을 하나 골라 줘' : '하나를 골라 주세요')}</p>`;
+    <p class="bar-hint" data-hint>${a.choice ? '' : (S.role === 'child' ? '아래 작은 그림 두 개 중 하나를 골라 줘' : '아래 작은 그림 두 개 중 하나를 골라 주세요')}</p>`;
 }
 
 function childDoneHtml() {
@@ -655,11 +661,12 @@ function resultHtml() {
   const axisRows = axes.map((ax) => { const [x, y] = ax.pair.split('/'); return `<li><b>${x}</b> ${codeNames[x]} · <b>${y}</b> ${codeNames[y]} <span class="small">(${ax.title})</span></li>`; }).join('');
   return `<div class="page"><div class="report">
     <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족<br><span class="blue">정리 이야기</span></h1><p class="lead">5장 중 <b>${same}장</b>이 같았어요. 다른 답도 다 좋아요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
-    <section><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
-    <section class="msg parent-msg"><span class="sec-label">부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
-    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label">아이에게</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
+    <ol class="read-order" aria-label="결과지 보는 순서"><li><b>1</b>두 친구</li><li><b>2</b>부모님께</li><li><b>3</b>아이에게</li><li><b>4</b>우리 집 사진</li><li><b>5</b>간직하기</li></ol>
+    <section><span class="sec-label"><b class="ord">1</b>우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
+    <section class="msg parent-msg"><span class="sec-label"><b class="ord">2</b>부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
+    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label"><b class="ord">3</b>아이에게 들려주기</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
     <section class="photo-cta"><img class="cta-rabbit" src="assets/rabbit-star-laugh.webp" alt="">
-      <span class="sec-label">이제 진짜 우리 집에서!</span>
+      <span class="sec-label"><b class="ord">4</b>이제 진짜 우리 집에서!</span>
       <h2 class="msg-title">우리 집 사진 놀이</h2>
       <p>오늘 본 그림은 토끼네 방이었어요. 이번엔 <b>우리 집 사진</b>으로 아이와 번갈아 콕콕 짚어 봐요.</p>
       <ul class="cta-steps"><li><b>1</b> 먼저 보인 곳</li><li><b>2</b> 놀고 싶은 곳</li><li><b>3</b> 바꾸고 싶은 곳</li></ul>
@@ -667,7 +674,7 @@ function resultHtml() {
       <button class="btn-photo" type="button" data-act="open-photo">${I.camera}<span>우리 집 사진으로 해 보기</span></button></section>
     ${graphSection('함께 보기')}
     <details class="card"><summary>고른 답과 남긴 말 보기</summary>${qa}<p class="small" style="margin:8px 0 0">네 글자 뜻</p><ul class="small axis-list">${axisRows}</ul></details>
-    <section class="save-box"><span class="sec-label">결과지 간직하기</span>
+    <section class="save-box"><span class="sec-label"><b class="ord">5</b>결과지 간직하기</span>
       <div class="bar-row"><button class="btn-soft" type="button" data-act="save-image" style="flex:1">${I.photo} 결과지 사진으로 저장</button></div>
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
@@ -836,7 +843,12 @@ function afterRender() {
   if (S.screen === 'home' && !homeSpoke) { homeSpoke = true; playIntro('child'); }
   if (S.screen === 'guide') playIntro('adult');
   if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step >= 1 && S.hp.step <= hpSteps.length && S.hp.turn === 'child' && !S.hp.pins[hpSteps[S.hp.step - 1].key].child) later(() => pointAt(stage.querySelector('.hp-photo')), 1200);
-  if (['childBook', 'childDone', 'handoffChild', 'meet'].includes(S.screen) || (S.screen === 'egg' && S.eggs[S.eggStage])) later(() => pointAt(barEl.querySelector('.paw-next')), 2000);
+  if (['childBook', 'childDone', 'handoffChild', 'meet', 'guide', 'handoffParent'].includes(S.screen) || (S.screen === 'egg' && S.eggs[S.eggStage])) later(() => pointAt(barEl.querySelector('.paw-next')), 2000);
+  if (S.screen === 'home') later(() => pointAt(barEl.querySelector('.btn-main')), 2200);
+  if (S.screen === 'result') later(() => pointAt(stage.querySelector('[data-act="open-photo"]')), 2500);
+  if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step > hpSteps.length) later(() => pointAt(barEl.querySelector('[data-act="to-result"]')), 2500);
+  if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step >= 1 && S.hp.step <= hpSteps.length && S.hp.turn === 'adult' && !S.hp.pins[hpSteps[S.hp.step - 1].key].adult) later(() => pointAt(stage.querySelector('.hp-photo')), 1200);
+  if (S.screen === 'q' && S.role === 'adult' && S.answers.adult[S.index].choice) later(() => pointAt(barEl.querySelector('[data-act="q-next"]')), 1200);
   const v = stage.querySelector('.cover video, .book-art video');
   if (v) { v.play?.().catch(() => {}); }
   if (S.screen === 'egg' && !S.eggs[S.eggStage]) watchEgg();
@@ -952,7 +964,7 @@ function pointToChoices(scroll = true) {
   const box = stage.querySelector('.choices'); if (!box) return;
   let tip = stage.querySelector('[data-scene-tip]');
   if (!tip) { tip = document.createElement('p'); tip.className = 'scene-tip'; tip.setAttribute('data-scene-tip', ''); tip.setAttribute('role', 'status'); box.before(tip); }
-  tip.textContent = S.role === 'child' ? '아래 그림 중에서 골라 줘!' : '아래 두 그림 중에서 골라 주세요';
+  tip.textContent = S.role === 'child' ? '아래 작은 그림 두 개 중에서 골라 줘!' : '아래 작은 그림 두 개 중에서 골라 주세요';
   box.classList.remove('nudge'); void box.offsetWidth; box.classList.add('nudge');
   if (scroll) revealAboveBar(box);
   if (S.role === 'child') { if (soundOn && voice.paused) play([{ f: hasVoice('scene-tip') ? 'scene-tip' : 'choices-ready' }], childGuide); else childGuide(); }
@@ -992,7 +1004,7 @@ function choose(v, point = null) {
     if (wasHidden) setTimeout(() => revealAboveBar(follow.querySelector('[data-cheer]')), 80);
   }
   const next = barEl.querySelector('[data-act="q-next"]'); if (next) next.disabled = false;
-  hidePointer(); if (S.role === 'child') later(childGuide, 1100);
+  hidePointer(); if (S.role === 'child') later(childGuide, 1100); else later(() => pointAt(next), 900);
   const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = ''; hint.className = 'bar-hint'; }
 }
 
@@ -1012,7 +1024,7 @@ function setupMic() {
 function go(screen, dir = 'next', extra = {}) { stopVoice(); Object.assign(S, { screen }, extra); render(dir); }
 async function qNext() {
   const a = S.answers[S.role][S.index];
-  if (!a.choice) { const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = S.role === 'child' ? '그림을 하나 골라 줘' : '하나를 골라 주세요'; hint.className = 'bar-hint err'; } return; }
+  if (!a.choice) { const hint = barEl.querySelector('[data-hint]'); if (hint) { hint.textContent = S.role === 'child' ? '아래 작은 그림 두 개 중 하나를 골라 줘' : '아래 작은 그림 두 개 중 하나를 골라 주세요'; hint.className = 'bar-hint err'; } return; }
   if (rec?.active) await micSettle();
   const ta = stage.querySelector('#reason'); if (ta) a.reason = ta.value;
   persist();
@@ -1277,7 +1289,7 @@ document.addEventListener('click', (e) => {
       const h = hp(), s = hpSteps[h.step - 1];
       h.pins[s.key][h.turn] = { x: +x.toFixed(1), y: +y.toFixed(1) }; persist();
       render(null, { still: true, keepScroll: true });
-      if (h.turn === 'child') later(() => pointAt(barEl.querySelector('[data-act="photo-next"]')), 900);
+      later(() => pointAt(barEl.querySelector('[data-act="photo-next"]')), 900);
       break;
     }
     case 'photo-next': {
