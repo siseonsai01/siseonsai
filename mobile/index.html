@@ -3370,9 +3370,10 @@ window.SISEON_ROOM_HOTSPOTS = {
 const SURVEY_VERSION = 'siseon-mobile-v1.4-20261119';
 const SOURCE_RELEASE = '20261114-21';
 const STIMULUS = 'shared-room-messy-depth-v1(1·2·3·5장) · book-cover-full-room(4장) · reviewChoiceArt(v13) · 장별 확대·빛 v3';
-const STORE_KEY = 'siseon-mobile-v1-state';
-const SOUND_KEY = 'siseon-mobile-v1-sound';
 const TEST = location.hash === '#test';
+const LEGACY_STORE_KEY = 'siseon-mobile-v1-state';
+const STORE_KEY = LEGACY_STORE_KEY + (TEST ? '-test' : '-live');
+const SOUND_KEY = 'siseon-mobile-v1-sound';
 
 /* ---------- 원본 기준 데이터 (app.js 그대로) ---------- */
 const characters = {
@@ -3451,7 +3452,7 @@ const fresh = () => ({ v: 1, screen: 'home', role: 'child', index: 0, answers: {
 let S = load() || fresh();
 if (TEST) S.test = true;
 function load() {
-  try { const raw = localStorage.getItem(STORE_KEY); if (!raw) return null; const s = JSON.parse(raw); return s && s.v === 1 ? s : null; } catch { return null; }
+  try { const raw = localStorage.getItem(STORE_KEY) || localStorage.getItem(LEGACY_STORE_KEY); if (!raw) return null; const s = JSON.parse(raw); return s && s.v === 1 && !!s.test === TEST ? s : null; } catch { return null; }
 }
 function persist() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch {} }
 let soundOn = true;

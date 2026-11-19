@@ -35,7 +35,7 @@
   <h1>시선사이 모바일 · 모인 답</h1>
   <p class="status" id="status" role="status">불러오는 중…</p>
   <section class="card nums" aria-label="모인 답 수">
-    <div class="num"><b id="n-all">–</b><span>모인 가족</span></div>
+    <div class="num"><b id="n-all">–</b><span>표시 중인 가족</span></div>
     <div class="num"><b id="n-real">–</b><span>시험 기록 제외</span></div>
     <div class="num"><b id="n-last">–</b><span>마지막으로 받은 때</span></div>
   </section>
@@ -74,12 +74,13 @@
   }
   function render() {
     const real = records.filter((r) => !r.test);
-    $('n-all').textContent = records.length; $('n-real').textContent = real.length;
-    const last = records.reduce((m, r) => Math.max(m, r.receivedAt || 0), 0); $('n-last').textContent = last ? fmt(last) : '–';
+    const visible = records.filter((r) => $('with-test').checked || !r.test);
+    $('n-all').textContent = visible.length; $('n-real').textContent = real.length;
+    const last = visible.reduce((m, r) => Math.max(m, r.receivedAt || 0), 0); $('n-last').textContent = last ? fmt(last) : '–';
     const t = $('recent');
     t.tHead.innerHTML = '<tr><th>받은 때</th><th>아이 친구</th><th>부모님 친구</th>' + [1, 2, 3, 4, 5].map((n) => `<th>${n}장 아이 / 부모님</th>`).join('') + '<th>시험</th></tr>';
     const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    t.tBodies[0].innerHTML = [...records].sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0)).slice(0, 20).map((r) => '<tr>' +
+    t.tBodies[0].innerHTML = [...visible].sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0)).slice(0, 20).map((r) => '<tr>' +
       `<td>${esc(fmt(r.receivedAt))}</td><td>${esc(r.child?.name || r.child?.code)}</td><td>${esc(r.adult?.name || r.adult?.code)}</td>` +
       [0, 1, 2, 3, 4].map((i) => { const c = r.child?.answers?.[i], a = r.adult?.answers?.[i]; return `<td class="${c?.choice !== a?.choice ? 'diff' : ''}">${esc(c?.choice)} / ${esc(a?.choice)}</td>`; }).join('') +
       `<td>${r.test ? '예' : ''}</td></tr>`).join('');
@@ -105,6 +106,7 @@
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
     say(`${rows.length}가족을 CSV로 내려받았어요.`);
   }
+  $('with-test').addEventListener('change', render);
   $('csv').addEventListener('click', csv); $('reload').addEventListener('click', load);
   load();
 })();
