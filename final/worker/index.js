@@ -196,10 +196,51 @@ async function stationApi(req,db,url,p){
   }
   fail(409,'연결을 다시 확인해 주세요.');
 }
+/* ---------- 모바일 한 대 설문 (/mobile/) ----------
+   태블릿 현장·가족 기록과 섞지 않는 별도 표(mobile_records)에 답만 받아요. 이름·연락처는 받지 않아요.
+   같은 기록 id로 다시 보내면 한 번만 저장해요(재시도 안전). 내려받기는 기존 진행자 전용 키로만 열려요. */
+const MOBILE_CODES=['F','P','V','H','M','S','B','D'];
+function cleanMobileRole(r){
+  if(!r||typeof r!=='object')fail(400,'답변을 확인해 주세요.');
+  const code=r.code==null?null:String(r.code);
+  if(code!==null&&!/^[FP][VH][MS][BD]$/.test(code))fail(400,'답변을 확인해 주세요.');
+  if(!Array.isArray(r.answers)||r.answers.length!==5)fail(400,'다섯 답변을 확인해 주세요.');
+  const answers=r.answers.map((a,i)=>{
+    if(!a||![null,'A','B','other'].includes(a.choice)||(a.choice==='other'&&i!==0))fail(400,'답변을 확인해 주세요.');
+    let point=null;
+    if(a.point!=null){point={};for(const k of ['x','y']){if(!Number.isFinite(Number(a.point[k])))fail(400,'위치를 확인해 주세요.');point[k]=Math.round(Math.max(0,Math.min(100,Number(a.point[k])))*10)/10;}}
+    return {q:i+1,title:String(a.title??'').slice(0,40),choice:a.choice,label:String(a.label??'').slice(0,80),reason:String(a.reason??'').slice(0,180),point,toy:String(a.toy??'').slice(0,40)};
+  });
+  return {code,name:String(r.name??'').slice(0,40),answers};
+}
+async function mobileApi(req,db,url,p){
+  if(req.method==='POST'){
+    await rate(db,req,'mobile-record');
+    if(JSON.stringify(p).length>40000)fail(413,'답이 너무 길어요.');
+    const id=String(p.id||'');if(!/^m[a-z0-9]{8,24}$/.test(id))fail(400,'기록 번호를 확인해 주세요.');
+    const iso=v=>{if(v==null)return null;const t=Date.parse(v);if(!Number.isFinite(t))fail(400,'시간을 확인해 주세요.');return new Date(t).toISOString();};
+    const record={id,surveyVersion:String(p.surveyVersion||'').slice(0,60),sourceRelease:String(p.sourceRelease||'').slice(0,60),stimulus:String(p.stimulus||'').slice(0,200),
+      mode:'one-phone',test:!!p.test,startedAt:iso(p.startedAt),finishedAt:iso(p.finishedAt),child:cleanMobileRole(p.child),adult:cleanMobileRole(p.adult)};
+    if(!record.child.answers.every(a=>a.choice)||!record.adult.answers.every(a=>a.choice))fail(400,'두 사람의 답을 모두 마친 뒤 보내 주세요.');
+    const r=await db.prepare('INSERT OR IGNORE INTO mobile_records (id,data,created) VALUES (?,?,?)').bind(id,JSON.stringify(record),now()).run();
+    return {ok:true,id,duplicate:!changed(r)};
+  }
+  if(req.method!=='GET')fail(405,'지원하지 않는 요청이에요.');
+  const supplied=req.headers.get('authorization')?.replace(/^Bearer /,'');
+  if(!/^[a-f0-9]{64}$/.test(supplied||''))fail(403,'진행자 전용 주소로 열어 주세요.');
+  const op=await db.prepare("SELECT id FROM stations WHERE json_extract(data,'$.operatorHash')=?").bind(await digest(supplied)).first();
+  if(!op)fail(403,'진행자 전용 주소를 확인해 주세요.');
+  const cursor=url.searchParams.get('cursor')||'';if(cursor&&!/^m[a-z0-9]{8,24}$/.test(cursor))fail(400,'목록을 다시 열어 주세요.');
+  const found=await db.prepare('SELECT id,data,created FROM mobile_records WHERE id>? ORDER BY id LIMIT 201').bind(cursor).all();
+  const records=found.results.slice(0,200).map(row=>({...JSON.parse(row.data),id:row.id,receivedAt:row.created}));
+  return {records,nextCursor:found.results.length>200?records.at(-1).id:null,retention:'no_automatic_deletion'};
+}
 export default {async fetch(req,env,ctx){
   const url=new URL(req.url);
   const manage=url.pathname.match(/^\/manage\/([a-f0-9]{64})$/);
   if(manage)return new Response(null,{status:302,headers:{location:url.origin+'/app/collection.html#access='+manage[1],'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
+  const manageMobile=url.pathname.match(/^\/manage-mobile\/([a-f0-9]{64})$/);
+  if(manageMobile)return new Response(null,{status:302,headers:{location:url.origin+'/mobile/collect.html#access='+manageMobile[1],'cache-control':'no-store','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow'}});
   const launch=url.pathname.match(/^\/(parent|child)\/([a-f0-9]{32})$/);
   if(launch){
     if(!['GET','HEAD'].includes(req.method))return json(405,{error:'지원하지 않는 요청이에요.'});
@@ -219,6 +260,12 @@ export default {async fetch(req,env,ctx){
     const oldEgg=url.pathname.match(/^\/(?:parent|child)\/src\/egg\/(.+)$/);
     if(oldEgg){const asset=new URL(req.url);asset.pathname='/app/src/egg/'+oldEgg[1];return appAsset(new Request(asset,req),env);}
     if(url.pathname==='/')return Response.redirect(url.origin+'/app/index.html'+url.search,302);
+    if(url.pathname==='/mobile')return Response.redirect(url.origin+'/mobile/'+url.search,302);
+    if(url.pathname.startsWith('/mobile/')){
+      if(!['GET','HEAD'].includes(req.method))return json(405,{error:'지원하지 않는 요청이에요.'});
+      const asset=new URL(req.url);if(asset.pathname==='/mobile/')asset.pathname='/mobile/index.html';
+      return appAsset(new Request(asset,req),env);
+    }
     if(!url.pathname.startsWith('/app/'))return new Response('Not found',{status:404});
     return appAsset(req,env);
   }
@@ -231,6 +278,7 @@ export default {async fetch(req,env,ctx){
     if(Math.random()<.01)ctx.waitUntil(env.DB.prepare('DELETE FROM attempts WHERE updated<?').bind(now()-120).run());
     // Deterministic reads also enforce retention when opportunistic cleanup has not run.
     await expire(env.DB);
+    if(url.pathname==='/api/mobile-records'){if(req.method==='POST'&&Number(req.headers.get('content-length'))>40000)fail(413,'답이 너무 길어요.');return json(200,await mobileApi(req,env.DB,url,p));}
     return json(200,await (url.pathname==='/api/collections'?collectionApi(req,env.DB,url):url.pathname.startsWith('/api/stations')?stationApi(req,env.DB,url,p):familyApi(req,env.DB,url,p)));
   }catch(e){return json(e.status||500,{error:e.status?e.message:'저장하지 못했어요. 연결을 확인하고 다시 시도해 주세요.'});}
 }};
