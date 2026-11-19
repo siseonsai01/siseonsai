@@ -319,7 +319,7 @@ function insideWobble(now) {
   if (st.hits === 0 && !st.called && (now % 3) < 0.6) w += 3 * Math.sin(now * 30);
   return w;
 }
-const TYPE_CODE = 'PVSD', TYPE_NAME = '칵칵각 다람쥐';
+const TYPE_CODE = 'PVSD', TYPE_NAME = '각각각 다람쥐';
 function drawType(s) {
   const b = s - 1.0, n = s - 1.25; if (b <= 0) return;
   const y0 = G.EY + G.EB + 70, y1 = y0 + 120;
