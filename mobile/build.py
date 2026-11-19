@@ -24,7 +24,7 @@ def secs(f):
         return round(float(out), 3)
     except Exception:
         return None
-parts['/*@VOICE_SECONDS@*/'] = json.dumps({f.stem: secs(f) for f in voice_files if f.stem in ('cover', 'parent-cover')})
+parts['/*@VOICE_SECONDS@*/'] = json.dumps({f.stem: secs(f) for f in voice_files})
 for k, v in parts.items():
     assert k in html, k
     assert '</script' not in v.lower() or k.endswith('CSS@*/'), k

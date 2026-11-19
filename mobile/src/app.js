@@ -437,7 +437,7 @@ function mountMission() {
       code: c, name: characters[c], imageSrc: `assets/mission/mission_${c}.webp`,
       pattern: plan.pattern, childIndex: plan.childIndex, reducedMotion: reduced(),
       soundAllowed: () => soundOn && !document.hidden,
-      captionDurations: Object.fromEntries(Object.entries(motionVoiceCaptions).map(([t, v]) => [t, v.seconds])),
+      captionDurations: Object.fromEntries(Object.entries(motionVoiceCaptions).map(([t, v]) => [t, VOICE_SEC[v.scene === 'mission-done' ? 'mission-done-mobile' : v.scene] || v.seconds])),
       onStageChanged: (text) => { const clip = motionVoiceCaptions[text]; if (clip && clip.scene !== 'mission-done' && soundOn && !document.hidden) play([{ f: clip.scene }]); if (clip?.scene === 'mission-done') { swapDoneLine(); if (soundOn && !document.hidden) play([{ f: 'mission-done-mobile' }]); } if (clip?.scene === 'mission-done') { const b = barEl.querySelector('[data-act="to-result"]'); b?.classList.add('ready'); later(() => pointAt(b), 1500); } },
     });
     missionInst.play();
