@@ -145,10 +145,15 @@ const praise = {
            stamp: ["고마워요", "좋아요", "감사해요"] },
 };
 const lastPick = {};
-function pick(key, list) { let k; do { k = Math.floor(Math.random() * list.length); } while (list.length > 1 && k === lastPick[key]); lastPick[key] = k; return list[k]; }
+function pick(key, list, allow) { const ok = (allow || list.map((_, i) => i)); let k; do { k = ok[Math.floor(Math.random() * ok.length)]; } while (ok.length > 1 && k === lastPick[key]); lastPick[key] = k; return list[k]; }
+/* 장에 맞는 칭찬만 골라요: ‘다음 장도/한 장씩 넘겨’는 마지막 장 전까지, ‘끝까지 함께해 주셔서’는 마지막 장에서만 (아이 칭찬은 녹음 파일 번호와 같은 순서) */
+const praiseAllow = {
+  child: (last) => last ? [0, 2, 3, 4, 5, 7] : [0, 1, 2, 3, 4, 5, 6, 7],
+  adult: (last) => last ? [4] : [0, 1, 2, 3, 5],
+};
 function cheerHtml(role) {
-  const p = praise[role];
-  return `<img class="mascot" src="assets/rabbit-star-laugh.webp" alt=""><p class="says" style="margin:0">${pick(role + 's', p.says)}</p><span class="stamp-ink" aria-hidden="true">${pick(role + 't', p.stamp).replace(' ', '<br>')}</span>`;
+  const p = praise[role], last = S.index === Q.length - 1;
+  return `<img class="mascot" src="assets/rabbit-star-laugh.webp" alt=""><p class="says" style="margin:0">${pick(role + 's', p.says, praiseAllow[role](last))}</p><span class="stamp-ink" aria-hidden="true">${pick(role + 't', p.stamp).replace(' ', '<br>')}</span>`;
 }
 const reasonAsk = {
   child: ["그게 먼저 보인 이야기를 들려줄래?", "어떤 생각이 났는지 말해 줄래?", "그렇게 하고 싶은 까닭이 있으면 알려 줘!", "거기서 뭘 하고 놀고 싶어?", "바꾸면 어떤 방이 될 것 같아?"],
@@ -649,6 +654,19 @@ function forParent() {
   return lines.slice(0, 2);
 }
 let photoUrl = null;
+/* 같은 방, 다른 시선: 장마다 아이와 부모님이 고른 그림을 나란히. 다르게 본 장을 크게 보여 줘요 */
+function gapSection() {
+  const plan = missionPlan(), missionQ = [1, 3, 4, 2][plan.pattern];
+  const art = (i, ch) => ch === 'A' || ch === 'B' ? `assets/${choiceArt[i][ch === 'A' ? 0 : 1]}` : 'assets/shared-room.webp';
+  const side = (role, i) => { const ch = S.answers[role][i].choice; return `<figure class="gap-pick ${role}"><span class="who">${roleName[role]}</span><img src="${art(i, ch)}" alt=""><figcaption>${esc(meaningLabel(i, ch) || optionLabel(role, i, ch))}</figcaption></figure>`; };
+  const rows = Q.map((q, i) => {
+    const same = S.answers.child[i].choice === S.answers.adult[i].choice;
+    return `<li class="gap-row ${same ? 'same' : 'diff'}"><div class="gap-q"><b>${i + 1}장</b> ${esc(q.title)}<span class="gap-tag">${same ? '같은 걸 골랐어요' : '서로 다르게 봤어요'}</span>${!same && i === missionQ ? '<span class="gap-tag mission">정리 시범</span>' : ''}</div>
+      <div class="gap-pair">${side('child', i)}<span class="gap-vs" aria-hidden="true">${same ? '=' : '≠'}</span>${side('adult', i)}</div></li>`;
+  }).join('');
+  return `<section class="gap"><span class="sec-label">같은 방, 다른 시선</span><h2 class="msg-title">우리는 이렇게 다르게 봤어요</h2><ol class="gap-list">${rows}</ol>
+    <p class="small" style="margin:0">다르게 본 곳이 서로를 알아 가는 시작이에요. 어느 쪽도 틀리지 않았어요.</p></section>`;
+}
 function resultHtml() {
   const c = code('child'), p = code('adult');
   const same = Q.filter((_, i) => S.answers.child[i].choice && S.answers.child[i].choice === S.answers.adult[i].choice).length;
@@ -660,13 +678,13 @@ function resultHtml() {
   }).join('');
   const axisRows = axes.map((ax) => { const [x, y] = ax.pair.split('/'); return `<li><b>${x}</b> ${codeNames[x]} · <b>${y}</b> ${codeNames[y]} <span class="small">(${ax.title})</span></li>`; }).join('');
   return `<div class="page"><div class="report">
-    <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족<br><span class="blue">정리 이야기</span></h1><p class="lead">5장 중 <b>${same}장</b>이 같았어요. 다른 답도 다 좋아요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
-    <ol class="read-order" aria-label="결과지 보는 순서"><li><b>1</b>두 친구</li><li><b>2</b>부모님께</li><li><b>3</b>아이에게</li><li><b>4</b>우리 집 사진</li><li><b>5</b>간직하기</li></ol>
-    <section><span class="sec-label"><b class="ord">1</b>우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
-    <section class="msg parent-msg"><span class="sec-label"><b class="ord">2</b>부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
-    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label"><b class="ord">3</b>아이에게 들려주기</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
+    <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족<br><span class="blue">정리 이야기</span></h1><p class="lead">같은 방을 보고도 <b class="gap-num">${Q.length - same}장</b>에서 서로 다르게 봤어요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
+    ${gapSection()}
+    <section><span class="sec-label">우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
+    <section class="msg parent-msg"><span class="sec-label">부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
+    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label">아이에게 들려주기</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
     <section class="photo-cta"><img class="cta-rabbit" src="assets/rabbit-star-laugh.webp" alt="">
-      <span class="sec-label"><b class="ord">4</b>이제 진짜 우리 집에서!</span>
+      <span class="sec-label">이제 진짜 우리 집에서!</span>
       <h2 class="msg-title">우리 집 사진 놀이</h2>
       <p>오늘 본 그림은 토끼네 방이었어요. 이번엔 <b>우리 집 사진</b>으로 아이와 번갈아 콕콕 짚어 봐요.</p>
       <ul class="cta-steps"><li><b>1</b> 먼저 보인 곳</li><li><b>2</b> 놀고 싶은 곳</li><li><b>3</b> 바꾸고 싶은 곳</li></ul>
@@ -674,7 +692,7 @@ function resultHtml() {
       <button class="btn-photo" type="button" data-act="open-photo">${I.camera}<span>우리 집 사진으로 해 보기</span></button></section>
     ${graphSection('함께 보기')}
     <details class="card"><summary>고른 답과 남긴 말 보기</summary>${qa}<p class="small" style="margin:8px 0 0">네 글자 뜻</p><ul class="small axis-list">${axisRows}</ul></details>
-    <section class="save-box"><span class="sec-label"><b class="ord">5</b>결과지 간직하기</span>
+    <section class="save-box"><span class="sec-label">결과지 간직하기</span>
       <div class="bar-row"><button class="btn-soft" type="button" data-act="save-image" style="flex:1">${I.photo} 결과지 사진으로 저장</button></div>
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
@@ -851,7 +869,7 @@ function afterRender() {
   if (S.screen === 'q' && S.role === 'adult' && S.answers.adult[S.index].choice) later(() => pointAt(barEl.querySelector('[data-act="q-next"]')), 1200);
   const v = stage.querySelector('.cover video, .book-art video');
   if (v) { v.play?.().catch(() => {}); }
-  if (S.screen === 'egg' && !S.eggs[S.eggStage]) watchEgg();
+  if (S.screen === 'egg' && !S.eggs[S.eggStage]) { watchEgg(); if (soundOn) play([{ f: 'egg-loading' }]); }
   if (S.screen === 'mission') mountMission();
   if (S.screen === 'egg' && S.eggs[S.eggStage] && soundOn) play([{ f: 'friend-' + code(S.eggStage) }]);
   syncTouchChip();
