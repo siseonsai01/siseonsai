@@ -147,7 +147,7 @@
     "id": "choices-ready",
     "file": "choices-ready.mp3",
     "text": "마음에 드는 그림을 콕 눌러 줘!",
-    "seconds": 2.88
+    "seconds": 3.07
   },
   {
     "id": "scene-tip",
@@ -255,7 +255,7 @@
     "id": "friend-FHMD",
     "file": "friend-FHMD.mp3",
     "text": "나는 마음부자 쿼카! 히히, 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해.",
-    "seconds": 6.3
+    "seconds": 8.38
   },
   {
     "id": "friend-FHSB",
@@ -291,7 +291,7 @@
     "id": "friend-FVSD",
     "file": "friend-FVSD.mp3",
     "text": "나는 자유로운 사막여우! 손 닿는 데가 최고! 다 쓰면 보이는 곳에 휙~",
-    "seconds": 6.23
+    "seconds": 7.35
   },
   {
     "id": "friend-PHMB",
@@ -339,7 +339,7 @@
     "id": "friend-PVSD",
     "file": "friend-PVSD.mp3",
     "text": "나는 각각각 다람쥐! 도토리처럼 딱! 쓰고 나면 바로 제자리에 쏙!",
-    "seconds": 7.3
+    "seconds": 7.16
   },
   {
     "id": "meet",

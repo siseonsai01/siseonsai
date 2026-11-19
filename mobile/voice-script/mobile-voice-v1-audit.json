@@ -1,16 +1,16 @@
 {
   "release": "mobile-voice-v1",
-  "createdUTC": "2026-11-19T09:44:31.613208+00:00",
+  "createdUTC": "2026-11-19T10:23:56.697327+00:00",
   "summary": {
     "clipCount": 76,
     "freshFiles": 76,
     "technicalPass": 76,
-    "independentNormalizedMatch": 56,
-    "targetAssistedMatch": 20,
+    "independentNormalizedMatch": 57,
+    "targetAssistedMatch": 19,
     "unresolved": 0,
     "motionClips": 11,
     "motionDurationPass": true,
-    "seconds": 370.961,
+    "seconds": 374.211,
     "voice": "voice_94cruhwim89u",
     "model": "gemini-3.8-flash-lite-tts",
     "sameV13VoiceModelAndBaseStyle": true,
@@ -18,14 +18,16 @@
     "actualPhoneSafariTestPerformed": false,
     "tabletFilesModified": false,
     "surveyDataModified": false,
-    "publicDeploymentPerformed": false
+    "publicDeploymentPerformed": false,
+    "fullReferenceAudioComparisonPass": 76
   },
   "methods": {
     "independentTranscription": "Each actual exported MP3 was transcribed independently with no target script supplied. Raw transcripts and literal/normalized character comparisons are preserved. Normalization excludes whitespace and punctuation only; it is not a claim of character-for-character equality.",
     "assistedReview": "Clips not matching independent ASR were compared by an audio model against the target script and approved v13 reference. This target-assisted evaluation is separately labeled and is neither independent ASR nor human listening.",
     "processing": "Only outer silence trimming, 44.1kHz mono 128kbps MP3 encoding, and 0.04s leading silence for motion-4-0 (edge limit preserved). No pitch, speed, gain or timbre conversion.",
     "performanceDirection": "All use the actual saved v13 narrator, model and base style. Two retakes have short duration direction; friend-FHSB has explicit final-consonant direction. No old tablet recordings fill the 76 mobile output slots.",
-    "scope": "Only mobile/ branch assets, manifest, build output, motion timing connection and audit records. Copied engines, tablet files, original data and unrelated audio are preserved."
+    "scope": "Only mobile/ branch assets, manifest, build output, motion timing connection and audit records. Copied engines, tablet files, original data and unrelated audio are preserved.",
+    "supplementaryFullAudioComparison": "All 76 current clips were additionally compared with the approved v13 reference for words, narrator compatibility, lively warm storybook delivery, endings and noise. Conflicts were checked again. Automated audio-model results are not human listening."
   },
   "browserPlayback": {
     "method": "Chrome browser UI operated via CUA; temporary event-only observer in local preview; native Audio playing/ended events read through DOM; not human listening",
@@ -94,7 +96,46 @@
     "scope": "cover -> parent introduction -> child book -> child chapter 1 complete narration and choices",
     "observerRemovedBeforeCommit": true,
     "actualPhoneOrTabletTest": false,
-    "actualHumanListening": false
+    "actualHumanListening": false,
+    "originalFlowCheckPrecededRetakes": true,
+    "supplementaryRetakePlayback": {
+      "method": "CUA observed Chrome native Audio playing/ended events in a dedicated local playback harness; not human listening or an additional end-to-end app flow test",
+      "url": "http://127.0.0.1:8765/voice-script/.work/qa-retake-playback.html",
+      "observedStatus": "완료: 4개 재생 끝, 중복 0",
+      "clips": [
+        {
+          "id": "choices-ready",
+          "seconds": 3.07,
+          "sha256": "36ae43b01990ddd51fd76a0148102315c0ae5ce55d04c212e1e817b9524185b6",
+          "playingObserved": true,
+          "endedObserved": true
+        },
+        {
+          "id": "friend-FHMD",
+          "seconds": 8.38,
+          "sha256": "8cd3e99a1866856feffc0f11902f564e3274ab78d8843d615a27d18b7c13a0e2",
+          "playingObserved": true,
+          "endedObserved": true
+        },
+        {
+          "id": "friend-FVSD",
+          "seconds": 7.35,
+          "sha256": "ca9cdca232aa1fd9f9ba1ec0ccc0bac4ecf097fed9307bc95e28e8154d0ce0a5",
+          "playingObserved": true,
+          "endedObserved": true
+        },
+        {
+          "id": "friend-PVSD",
+          "seconds": 7.16,
+          "sha256": "b32ed4df79203d1a404330e6f5d5ada7ea9039b08862988204d56661e778b1ae",
+          "playingObserved": true,
+          "endedObserved": true
+        }
+      ],
+      "overlap": 0,
+      "errors": 0,
+      "checkedUTC": "2026-11-19T10:23:33.543280+00:00"
+    }
   },
   "clips": [
     {
@@ -162,7 +203,22 @@
         "sha256": "9c42118c07552bdc8b60566cb576fd69d0961f782edfb33647b8eedfe993ebd1",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "cover",
+        "heard": "안녕 우리 친구 여기는 토끼들의 방이야 우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야 맞고 틀린 답은 없어 재미로 우리 집 정리 친구를 만나 보자",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "대본과 일치하며 발음 및 음질이 양호함.",
+        "sha256": "9c42118c07552bdc8b60566cb576fd69d0961f782edfb33647b8eedfe993ebd1",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -232,7 +288,22 @@
         "sha256": "4e768fc33cd37214667ac373c5886b98a34217665ec5a6d2f36179682c50fd85",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "parent-cover",
+        "heard": "부모님 반갑습니다 아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요 다섯 질문에 각자 답하며 서로의 생각을 알아보세요 정답은 없어요 재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "대본과 정확히 일치하며 안정적인 톤으로 잘 전달됨.",
+        "sha256": "4e768fc33cd37214667ac373c5886b98a34217665ec5a6d2f36179682c50fd85",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -291,8 +362,33 @@
         },
         "createdUTC": "2026-11-19T08:54:27.855854+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "book-child",
+        "text": "우리 친구의 책이야! 그림 다섯 장을 보고, 마음에 드는 걸 콕 골라 봐. 발바닥 버튼을 누르면 책이 열려!",
+        "transcript": "우리 친구의 책이야 그림 5장을 보고 마음에 드는 걸 콕 골라봐 발바닥 버튼을 누르면 책이 열려",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.961,
+        "endingMatches": true,
+        "sha256": "f779ac3a05112ccc280d46c0fa9bcbd4fab5a7c4d276aa17f88de35587db14a5",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "book-child",
+        "heard": "우리 친구의 책이야 그림 다섯 장을 보고 마음에 드는 걸 콕 골라 봐 발바닥 버튼을 누르면 책이 열려",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "어린이 청자 대상 억양이 자연스럽고 대본과 일치함.",
+        "sha256": "f779ac3a05112ccc280d46c0fa9bcbd4fab5a7c4d276aa17f88de35587db14a5",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -362,7 +458,22 @@
         "sha256": "bf5c49ccc75764b9c95b7a6f4d8225ca149ac3cd77036269e8b4c86fc260fbee",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "story-0",
+        "heard": "두 토끼가 방을 가만히 바라봤어요 우리 친구도 함께 볼까요",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "누락 없이 명확하게 녹음되었음.",
+        "sha256": "bf5c49ccc75764b9c95b7a6f4d8225ca149ac3cd77036269e8b4c86fc260fbee",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -432,7 +543,22 @@
         "sha256": "6ff903e2e665cb3cf59760072306e359f5b63d24b4a2ccf9532baf246cf1ac8a",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "child-0",
+        "heard": "이 방을 보니까 뭐가 제일 먼저 보여?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear delivery matching script and reference narrator.",
+        "sha256": "6ff903e2e665cb3cf59760072306e359f5b63d24b4a2ccf9532baf246cf1ac8a",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -491,8 +617,33 @@
         },
         "createdUTC": "2026-11-19T08:54:33.684556+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "choices-intro",
+        "text": "아래 그림 두 개 중에 골라도 되고, 위 방 그림에서 장난감을 직접 콕 눌러도 돼.",
+        "transcript": "아래 그림 2개 중에 골라도 되고 이 방 그림에서 장난감을 직접 콕 눌러도 돼",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.9333,
+        "endingMatches": true,
+        "sha256": "7a566ddb87e27dd0a256e502572d2eddbf7b7c16efbb68c25581e9930e5b064a",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "choices-intro",
+        "heard": "아래 그림 두 개 중에 골라도 되고, 위 방 그림에서 장난감을 직접 콕 눌러도 돼.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate pronunciation and tone matching the reference.",
+        "sha256": "7a566ddb87e27dd0a256e502572d2eddbf7b7c16efbb68c25581e9930e5b064a",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -562,7 +713,22 @@
         "sha256": "4f86ff6143f19e8d5a9193ab33d77508e22034c6014eceb90e044ff762bf96a6",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-0-A",
+        "heard": "바닥에 놓인 물건들",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches expected text clearly.",
+        "sha256": "4f86ff6143f19e8d5a9193ab33d77508e22034c6014eceb90e044ff762bf96a6",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -632,7 +798,22 @@
         "sha256": "417c87d028206e26d97178e52c5803659c8f3648a5cdaded6f074743cfcae9ea",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-0-B",
+        "heard": "책상이나 선반 위의 물건들",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear pronunciation consistent with the reference and target script.",
+        "sha256": "417c87d028206e26d97178e52c5803659c8f3648a5cdaded6f074743cfcae9ea",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -702,7 +883,22 @@
         "sha256": "5aaac16d3a829025633ac31870c01a6d87e3e2d06c11eda332155f78ea71b91e",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "story-1",
+        "heard": "두 토끼가 장난감을 보며 생각에 잠겼어요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate delivery and tone matching the reference without issues.",
+        "sha256": "5aaac16d3a829025633ac31870c01a6d87e3e2d06c11eda332155f78ea71b91e",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -772,7 +968,22 @@
         "sha256": "a643384e80a103a501471c3367d512f8a5eefa6f560f09590eb309e677ad2771",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "child-1",
+        "heard": "바닥에 있는 장난감을 보니까 어떤 생각이 먼저 나?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Text and tone fully aligned with requirements.",
+        "sha256": "a643384e80a103a501471c3367d512f8a5eefa6f560f09590eb309e677ad2771",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -842,7 +1053,22 @@
         "sha256": "a124ea83b3285becea6ff9950765d016a598bd88869ffb7515261c66633213c7",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-1-A",
+        "heard": "이걸로 무엇을 할 수 있을까?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear pronunciation and matching character intonation.",
+        "sha256": "a124ea83b3285becea6ff9950765d016a598bd88869ffb7515261c66633213c7",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -901,8 +1127,33 @@
         },
         "createdUTC": "2026-11-19T08:54:38.351975+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "option-child-1-B",
+        "text": "이건 원래 어디에 있었을까?",
+        "transcript": "이건 원래 어디에 있었을까?",
+        "rawExact": true,
+        "normalizedExact": true,
+        "similarity": 1.0,
+        "endingMatches": true,
+        "sha256": "205eb458b9aa46eb5ff458573bdb90ab0382c62828d0404e00f3a3d9b855f7b0",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "option-child-1-B",
+        "heard": "이건 원래 어디에 있었을까?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate and lively delivery with no defects.",
+        "sha256": "205eb458b9aa46eb5ff458573bdb90ab0382c62828d0404e00f3a3d9b855f7b0",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -972,7 +1223,22 @@
         "sha256": "0298f4421ceed7cac80eae1f1a210e62e17ea32758bbeff0f01060551d2599a3",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "story-2",
+        "heard": "방에는 만들던 놀이도 남아 있었어요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate narration matching the script clearly and smoothly.",
+        "sha256": "0298f4421ceed7cac80eae1f1a210e62e17ea32758bbeff0f01060551d2599a3",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1042,7 +1308,22 @@
         "sha256": "a5d4dd65f8293344f14301c3d7c2427d4a5861a2bc4d5579fce2fd3775db0335",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "child-2",
+        "heard": "누가 만들던 게 바닥에 남아 있으면 어떻게 하고 싶어?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Text and tone match the target well without issues.",
+        "sha256": "a5d4dd65f8293344f14301c3d7c2427d4a5861a2bc4d5579fce2fd3775db0335",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1112,7 +1393,22 @@
         "sha256": "4663983ef6d3ab8b3b05237f0a4937e36fd6797a5ae60f6f3577a5eb65e7e86a",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-2-A",
+        "heard": "그 자리에 두고 계속 놀기",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Read naturally with rising question inflection; all words present.",
+        "sha256": "4663983ef6d3ab8b3b05237f0a4937e36fd6797a5ae60f6f3577a5eb65e7e86a",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1182,7 +1478,22 @@
         "sha256": "fd0998b1ac5052fc9b99ce7e5b1d3ac11c19787012708f089efa4d0a4e156647",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-2-B",
+        "heard": "다른 곳으로 옮겨 두기",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear reading consistent with narrator and text.",
+        "sha256": "fd0998b1ac5052fc9b99ce7e5b1d3ac11c19787012708f089efa4d0a4e156647",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1252,7 +1563,22 @@
         "sha256": "91592abd52f7c6db3ba87a7cda2e47a1f4352fb2bd0e9e31bafae7fef741d84b",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "story-3",
+        "heard": "이번에는 두 토끼와 새 놀이를 시작해 볼까요?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Audio matches the expected script accurately with appropriate tone and complete endings.",
+        "sha256": "91592abd52f7c6db3ba87a7cda2e47a1f4352fb2bd0e9e31bafae7fef741d84b",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1322,7 +1648,22 @@
         "sha256": "38b499b6d6d2426c695dff413eb3d730c0a09d858be1127d17ae578c03176989",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "child-3",
+        "heard": "이 방에서 새로 놀 거면 어디서 놀고 싶어?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pronunciation and delivery match the expected script clearly without defects.",
+        "sha256": "38b499b6d6d2426c695dff413eb3d730c0a09d858be1127d17ae578c03176989",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1392,7 +1733,22 @@
         "sha256": "6c5f1b3ebdaab1f8b8335099bff3bee28d707221d6aff8501d4ced1096bac3f5",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-3-A",
+        "heard": "바닥의 넓은 자리",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Normal Korean particle pronunciation matches the script and context smoothly.",
+        "sha256": "6c5f1b3ebdaab1f8b8335099bff3bee28d707221d6aff8501d4ced1096bac3f5",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1462,7 +1818,22 @@
         "sha256": "902990f672680717f23fee1274d70bd00c84e1ceb0e2e247d195b01e93a17f2a",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-3-B",
+        "heard": "책상이나 작은 자리",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear narration matching the expected words cleanly with intact audio.",
+        "sha256": "902990f672680717f23fee1274d70bd00c84e1ceb0e2e247d195b01e93a17f2a",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1532,7 +1903,22 @@
         "sha256": "1bee2e51e693a8a86d87d7ba811ae530e3aa5b180e3fb3b4b9a469e2ebf73d01",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "story-4",
+        "heard": "두 토끼는 이 방에서 더 즐겁게 놀고 싶었어요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script accurately with compatible warm tone.",
+        "sha256": "1bee2e51e693a8a86d87d7ba811ae530e3aa5b180e3fb3b4b9a469e2ebf73d01",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1602,7 +1988,22 @@
         "sha256": "4f63462a20152feee7bd4810edd62fd18ad968f22edc906883ec8edb4232568d",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "child-4",
+        "heard": "이 방에서 딱 하나 바꿀 수 있으면 뭘 바꾸고 싶어?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate delivery matching expected question.",
+        "sha256": "4f63462a20152feee7bd4810edd62fd18ad968f22edc906883ec8edb4232568d",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1661,8 +2062,33 @@
         },
         "createdUTC": "2026-11-19T08:54:47.176331+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "option-child-4-A",
+        "text": "놀이할 자리를 더 만들기",
+        "transcript": "놀이할 자리를 더 만들기",
+        "rawExact": true,
+        "normalizedExact": true,
+        "similarity": 1.0,
+        "endingMatches": true,
+        "sha256": "ec574de89475b93f8e5fbfa65b21bd15a423908d5b1be15cc7fa9d5e5c8b101d",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "option-child-4-A",
+        "heard": "놀이할 자리를 더 만들기",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pacing and pronunciation align with script.",
+        "sha256": "ec574de89475b93f8e5fbfa65b21bd15a423908d5b1be15cc7fa9d5e5c8b101d",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1732,7 +2158,22 @@
         "sha256": "948e866a35afb788baccf40d887a239030b5bc7d159fbc3bd92f04c0c2336b38",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "option-child-4-B",
+        "heard": "물건을 놓을 자리를 더 만들기",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear, well-matched narration without issues.",
+        "sha256": "948e866a35afb788baccf40d887a239030b5bc7d159fbc3bd92f04c0c2336b38",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1741,17 +2182,17 @@
       "id": "choices-ready",
       "text": "마음에 드는 그림을 콕 눌러 줘!",
       "file": "choices-ready.mp3",
-      "seconds": 2.88,
+      "seconds": 3.07,
       "technical": {
         "id": "choices-ready",
-        "sha256": "b28aa22898b1e1581acd696dba3ac37ca3ad9408c570aac6ff7bfa3963534cbe",
-        "seconds": 2.88,
+        "sha256": "36ae43b01990ddd51fd76a0148102315c0ae5ce55d04c212e1e817b9524185b6",
+        "seconds": 3.07,
         "channels": 1,
         "sampleRate": 44100,
-        "bitrate": 131311,
+        "bitrate": 130809,
         "leadingSilenceAtMinus50dB": 0.12,
         "trailingSilenceAtMinus50dB": 0.12,
-        "peak": 0.80865,
+        "peak": 0.82037,
         "voice": "voice_94cruhwim89u",
         "model": "gemini-3.8-flash-lite-tts",
         "fresh": true,
@@ -1759,38 +2200,7 @@
         "processing": "outer silence trim and MP3 encoding only; no gain, pitch, tempo, formant or timbre processing",
         "passed": true
       },
-      "independentCloudTranscription": {
-        "id": "choices-ready",
-        "expected": "마음에 드는 그림을 콕 눌러 줘!",
-        "transcript": "마음에 드는 그림을 콕 불러줘.",
-        "rawExact": false,
-        "normalizedExact": false,
-        "endingMatches": false,
-        "sha256": "b28aa22898b1e1581acd696dba3ac37ca3ad9408c570aac6ff7bfa3963534cbe",
-        "model": "gemini-3.5-transcribe",
-        "mode": "verbatim",
-        "targetScriptProvided": false,
-        "usage": {
-          "total_tokens": 84,
-          "total_input_tokens": 73,
-          "input_tokens_by_modality": [
-            {
-              "modality": "text",
-              "tokens": 1
-            },
-            {
-              "modality": "audio",
-              "tokens": 72
-            }
-          ],
-          "total_cached_tokens": 0,
-          "total_output_tokens": 11,
-          "total_tool_use_tokens": 0,
-          "total_thought_tokens": 0,
-          "initial_input_tokens": 73
-        },
-        "createdUTC": "2026-11-19T08:45:24.440003+00:00"
-      },
+      "independentCloudTranscription": null,
       "independentLocalTranscription": {
         "id": "choices-ready",
         "text": "마음에 드는 그림을 콕 눌러 줘!",
@@ -1799,10 +2209,25 @@
         "normalizedExact": true,
         "similarity": 1.0,
         "endingMatches": true,
-        "sha256": "b28aa22898b1e1581acd696dba3ac37ca3ad9408c570aac6ff7bfa3963534cbe",
+        "sha256": "36ae43b01990ddd51fd76a0148102315c0ae5ce55d04c212e1e817b9524185b6",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "choices-ready",
+        "heard": "마음에 드는 그림을 콕 눌러 줘!",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script perfectly with appropriate friendly tone.",
+        "sha256": "36ae43b01990ddd51fd76a0148102315c0ae5ce55d04c212e1e817b9524185b6",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1872,7 +2297,22 @@
         "sha256": "db5fe45183663fe2fbb56dda5550073841cebae406f3f2140d0e53219a6be0cb",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "scene-tip",
+        "heard": "아래 그림 중에서 골라 줘",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script accurately.",
+        "sha256": "db5fe45183663fe2fbb56dda5550073841cebae406f3f2140d0e53219a6be0cb",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -1942,7 +2382,22 @@
         "sha256": "2ba530b0e9e09971a6cea057631a604b16a226bb5a4ed2e834bb01a3820a6863",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "ask-other",
+        "heard": "이게 제일 먼저 보였어",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script accurately.",
+        "sha256": "2ba530b0e9e09971a6cea057631a604b16a226bb5a4ed2e834bb01a3820a6863",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2001,10 +2456,20 @@
         },
         "createdUTC": "2026-11-19T09:36:36.856043+00:00"
       },
-      "independentLocalTranscription": null,
+      "independentLocalTranscription": {
+        "id": "praise-child-0",
+        "text": "참 잘했어요!",
+        "transcript": "참! 잘했어요!",
+        "rawExact": false,
+        "normalizedExact": true,
+        "similarity": 1.0,
+        "endingMatches": true,
+        "sha256": "03b005e2537f99271ca98b636be43e70e2ab606f1688f702c8597fa63acccd67",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
       "targetAssistedReview": {
         "id": "praise-child-0",
-        "heard": "참 잘했어요.",
+        "heard": "참 잘했어요",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -2012,7 +2477,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Accurate pronunciation matching the reference delivery cleanly.",
+        "reason": "Matches script accurately.",
         "sha256": "03b005e2537f99271ca98b636be43e70e2ab606f1688f702c8597fa63acccd67",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -2087,7 +2552,22 @@
         "sha256": "aeba63ab984f957ba4946a49879eda53bb5e6834d02207bf35bef2198300ca59",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "praise-child-1",
+        "heard": "최고야 끝까지 잘하고 있어",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pronunciation and delivery match the target script smoothly.",
+        "sha256": "aeba63ab984f957ba4946a49879eda53bb5e6834d02207bf35bef2198300ca59",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2159,7 +2639,7 @@
       },
       "targetAssistedReview": {
         "id": "praise-child-2",
-        "heard": "네 생각을 알려줘서 고마워!",
+        "heard": "네 생각을 알려줘서 고마워",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -2167,7 +2647,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Matches script perfectly with appropriate 네/내 pronunciation, lively tone, and complete audio.",
+        "reason": "Vowel merger on '네/내' is standard Korean pronunciation; words match.",
         "sha256": "e091ffc1ddb5e12d95cc096267836849812092a25f9687d5d0dd571856f43d6a",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -2231,10 +2711,20 @@
         },
         "createdUTC": "2026-11-19T08:54:55.310005+00:00"
       },
-      "independentLocalTranscription": null,
+      "independentLocalTranscription": {
+        "id": "praise-child-3",
+        "text": "우와, 척척 해내는구나!",
+        "transcript": "우와! 흐흐, 촉촉해내는구나!",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.7,
+        "endingMatches": true,
+        "sha256": "38af62acaefbb81879c7444d4ef853ce2f45b7a1087c5bf8048befab14a5a7a3",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
       "targetAssistedReview": {
         "id": "praise-child-3",
-        "heard": "우와, 척척 해내는구나!",
+        "heard": "우와 척척 해내는구나",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -2242,7 +2732,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Matches script accurately despite ASR error; clear delivery with natural laughing nuance and good ending.",
+        "reason": "ASR misrecognized onomatopoeia; spoken syllables accurately match.",
         "sha256": "38af62acaefbb81879c7444d4ef853ce2f45b7a1087c5bf8048befab14a5a7a3",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -2317,7 +2807,22 @@
         "sha256": "a6ca293b6b59d146dbd463ea895db50998be23d22318c7e85a5c4b401372645c",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "praise-child-4",
+        "heard": "생각하는 모습이 멋져",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear delivery consistent with reference narrator.",
+        "sha256": "a6ca293b6b59d146dbd463ea895db50998be23d22318c7e85a5c4b401372645c",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2387,7 +2892,22 @@
         "sha256": "9f91c680b0de7795caf4ef120db41e21ec3cd4994698176d866df9591ca9e612",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "praise-child-5",
+        "heard": "좋아 그렇게 생각했구나",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear delivery matching reference tone and script accurately.",
+        "sha256": "9f91c680b0de7795caf4ef120db41e21ec3cd4994698176d866df9591ca9e612",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2457,7 +2977,22 @@
         "sha256": "0a300343807e24a203e848841f43b5bf1e7aa9c4c9c15f0297ea1c10818efa35",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "praise-child-6",
+        "heard": "잘했어 다음 장도 같이 넘겨 보자",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script perfectly with appropriate pacing and warm intonation.",
+        "sha256": "0a300343807e24a203e848841f43b5bf1e7aa9c4c9c15f0297ea1c10818efa35",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2527,7 +3062,22 @@
         "sha256": "27229956796ab0fda378f338e9f88c19526629349d55fd5e6f372abce4cf08e6",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "praise-child-7",
+        "heard": "골라 줘서 고마워 네 생각이 궁금했거든",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate spoken syllables and friendly child-oriented expression.",
+        "sha256": "27229956796ab0fda378f338e9f88c19526629349d55fd5e6f372abce4cf08e6",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2599,7 +3149,7 @@
       },
       "targetAssistedReview": {
         "id": "child-done",
-        "heard": "우와! 내 알이 생겼어! 엄마 아빠 차례가 끝나면 같이 깨 보자. 이제 폰을 부모님께 드려 줘.",
+        "heard": "와 네 알이 생겼어 엄마 아빠 차례가 끝나면 같이 깨 보자 이제 폰을 부모님께 드려 줘",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -2607,7 +3157,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Spoken text accurately reflects the script with standard vowel merging.",
+        "reason": "Spoken text aligns fully; standard pronunciation with natural storybook energy.",
         "sha256": "5f4d7bae17d9367f8779e087b00cd659b206ac80839c564e692ea45261f7afd8",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -2682,7 +3232,22 @@
         "sha256": "683798b2227e00504cee81c98e8e7097b3bfcc83c4ca908cc165e75de11b8257",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "book-adult",
+        "heard": "부모님 차례예요. 아이 답은 끝날 때까지 보이지 않아요. 부모님 생각대로 골라 주세요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear delivery matching the script smoothly with no technical flaws.",
+        "sha256": "683798b2227e00504cee81c98e8e7097b3bfcc83c4ca908cc165e75de11b8257",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2752,7 +3317,22 @@
         "sha256": "fe3f470fc6fd36cb7423389cc42b37cc749302cc35240f7abb90553076d3ce44",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "handoff-child",
+        "heard": "다시 우리 친구 차례야! 알 두 개를 톡톡 깨 볼까?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate pronunciation and expressive narration consistent with reference.",
+        "sha256": "fe3f470fc6fd36cb7423389cc42b37cc749302cc35240f7abb90553076d3ce44",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2832,7 +3412,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Clear reading matching target with appropriate onomatopoeia expression.",
+        "reason": "Matches target script with clear articulation and complete ending.",
         "sha256": "4c932d42d1ecf59f9a088c4dfcacb525f79dbad9ae9cd9b38a17bd653f281902",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -2907,7 +3487,22 @@
         "sha256": "a8eea3797fdaec36794504751561ae2633281c4f23b91913d593036ffbde50f1",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "egg-more",
+        "heard": "조금만 더! 톡톡!",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate onomatopoeia and full delivery matching the script without cutoffs.",
+        "sha256": "a8eea3797fdaec36794504751561ae2633281c4f23b91913d593036ffbde50f1",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -2987,7 +3582,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Text spoken cleanly with standard liaison and good prosody.",
+        "reason": "전체 음절이 대본과 정확하게 일치하며 톤과 화자가 안정적입니다.",
         "sha256": "7e82de97b4240e7266b66a493312a3ab506d94ddd8e467ffb5e71b62819c79ba",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3051,7 +3646,17 @@
         },
         "createdUTC": "2026-11-19T09:36:42.219135+00:00"
       },
-      "independentLocalTranscription": null,
+      "independentLocalTranscription": {
+        "id": "friend-FHMB",
+        "text": "나는 우주대청장 아기물개! 우주 대청소 시작! 하나씩 보며 추억 여행~ 끼룩!",
+        "transcript": "나는 우주 대청장 아기물개! 우주 대청소 시작! 하나씩 보며 추억 여행! 기루!",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.931,
+        "endingMatches": false,
+        "sha256": "5cfeba2c35b97a47d9136b286ecd6445248a9de103e6f87f9aa03dc314ceadc1",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
       "targetAssistedReview": {
         "id": "friend-FHMB",
         "heard": "나는 우주대청장 아기물개! 우주 대청소 시작! 하나씩 보며 추억 여행~ 끼룩!",
@@ -3062,7 +3667,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Script matches cleanly with reference narrator.",
+        "reason": "끝음절 끼룩까지 정확히 발음되었으며 화자 일치도가 양호합니다.",
         "sha256": "5cfeba2c35b97a47d9136b286ecd6445248a9de103e6f87f9aa03dc314ceadc1",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3076,65 +3681,34 @@
       "id": "friend-FHMD",
       "text": "나는 마음부자 쿼카! 히히, 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해.",
       "file": "friend-FHMD.mp3",
-      "seconds": 6.3,
+      "seconds": 8.38,
       "technical": {
         "id": "friend-FHMD",
-        "sha256": "e50a1c23f4d42489a1aab59e92f64404664c2b659ba6a7103daf18f143398d55",
-        "seconds": 6.3,
+        "sha256": "8cd3e99a1866856feffc0f11902f564e3274ab78d8843d615a27d18b7c13a0e2",
+        "seconds": 8.38,
         "channels": 1,
         "sampleRate": 44100,
-        "bitrate": 129555,
+        "bitrate": 128919,
         "leadingSilenceAtMinus50dB": 0.12,
         "trailingSilenceAtMinus50dB": 0.12,
-        "peak": 0.82025,
+        "peak": 1.0,
         "voice": "voice_94cruhwim89u",
         "model": "gemini-3.8-flash-lite-tts",
         "fresh": true,
-        "style": "One consistent warm Korean storybook narrator, lively and vivid, bright smiling delivery, playful curiosity, natural expressive intonation, clear unhurried final syllables. Same character and speaking manner throughout child and parent screens. Never stiff, robotic, shouted, shrill, or overacted.",
+        "style": "One consistent warm Korean storybook narrator, lively and vivid, bright smiling delivery, playful curiosity, natural expressive intonation, clear unhurried final syllables. Same character and speaking manner throughout child and parent screens. Never stiff, robotic, shouted, shrill, or overacted. Pronunciation direction only: 히히 is two distinctly spoken syllables, 히 then 히, not an unvoiced breath, a single 히, or an improvised chuckle. Preserve both syllables of the written script while keeping the same warm narrator and natural expression. Read only the supplied text.",
         "processing": "outer silence trim and MP3 encoding only; no gain, pitch, tempo, formant or timbre processing",
         "passed": true
       },
-      "independentCloudTranscription": {
-        "id": "friend-FHMD",
-        "expected": "나는 마음부자 쿼카! 히히, 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해.",
-        "transcript": "나는 마음 부자 코카. 소중한 건 바로 챙겨서 쏙. 마음이 따뜻해.",
-        "rawExact": false,
-        "normalizedExact": false,
-        "endingMatches": true,
-        "sha256": "e50a1c23f4d42489a1aab59e92f64404664c2b659ba6a7103daf18f143398d55",
-        "model": "gemini-3.5-transcribe",
-        "mode": "verbatim",
-        "targetScriptProvided": false,
-        "usage": {
-          "total_tokens": 184,
-          "total_input_tokens": 159,
-          "input_tokens_by_modality": [
-            {
-              "modality": "text",
-              "tokens": 1
-            },
-            {
-              "modality": "audio",
-              "tokens": 158
-            }
-          ],
-          "total_cached_tokens": 0,
-          "total_output_tokens": 25,
-          "total_tool_use_tokens": 0,
-          "total_thought_tokens": 0,
-          "initial_input_tokens": 159
-        },
-        "createdUTC": "2026-11-19T08:55:42.974595+00:00"
-      },
+      "independentCloudTranscription": null,
       "independentLocalTranscription": {
         "id": "friend-FHMD",
         "text": "나는 마음부자 쿼카! 히히, 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해.",
-        "transcript": "나는 마음 부자 코카! 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해!",
+        "transcript": "나는 마음부자 꼭 가! 소중한 건 바로 챙겨서 쏙! 마음이 따뜻해!",
         "rawExact": false,
         "normalizedExact": false,
-        "similarity": 0.92,
+        "similarity": 0.88,
         "endingMatches": true,
-        "sha256": "e50a1c23f4d42489a1aab59e92f64404664c2b659ba6a7103daf18f143398d55",
+        "sha256": "8cd3e99a1866856feffc0f11902f564e3274ab78d8843d615a27d18b7c13a0e2",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
       "targetAssistedReview": {
@@ -3147,8 +3721,8 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Laughter and text align with target expectations.",
-        "sha256": "e50a1c23f4d42489a1aab59e92f64404664c2b659ba6a7103daf18f143398d55",
+        "reason": "All words match the script accurately with warm tone.",
+        "sha256": "8cd3e99a1866856feffc0f11902f564e3274ab78d8843d615a27d18b7c13a0e2",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
         "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
@@ -3211,10 +3785,20 @@
         },
         "createdUTC": "2026-11-19T09:40:40.269840+00:00"
       },
-      "independentLocalTranscription": null,
+      "independentLocalTranscription": {
+        "id": "friend-FHSB",
+        "text": "나는 블랙홀 판다! 다 놀았으면~ 블랙홀처럼 한 번에 쓰으읍!",
+        "transcript": "나는 블랙홀 판다. 다 놀았으면 블랙홀처럼 한 번에 슈욱",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.8889,
+        "endingMatches": false,
+        "sha256": "c4735e263398cd4acf32bb98d3a2bdd8471499584b2f5b756a8f2afc9a39a53b",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
       "targetAssistedReview": {
         "id": "friend-FHSB",
-        "heard": "나는 블랙홀 판다! 다 놀았으면 블랙홀처럼 한 번에 쓰으읍!",
+        "heard": "나는 블랙홀 판다! 다 놀았으면~ 블랙홀처럼 한 번에 쓰으읍!",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -3222,7 +3806,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "정확한 대본 발음이며 잡음이나 끊김 없이 화자 톤도 자연스럽습니다.",
+        "reason": "의성어 쓰으읍의 종성 ㅂ 받침이 명확하게 발음되어 정상입니다.",
         "sha256": "c4735e263398cd4acf32bb98d3a2bdd8471499584b2f5b756a8f2afc9a39a53b",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3297,7 +3881,22 @@
         "sha256": "4f2430d0ab7545ee29e59353b1924798f549220eaf4ffd0b061cc0938ef731fb",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "friend-FHSD",
+        "heard": "나는 순간포착 고슴도치 다 썼다 바로 그 순간 바구니에 콕",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "대사와 발음이 정확하며 음질 및 톤이 안정적입니다.",
+        "sha256": "4f2430d0ab7545ee29e59353b1924798f549220eaf4ffd0b061cc0938ef731fb",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -3369,7 +3968,7 @@
       },
       "targetAssistedReview": {
         "id": "friend-FVMB",
-        "heard": "나는 벼락치기 몽상가 토끼! 놀 만큼 실컷 놀고! 마음이 오면 한 번에 깡총!",
+        "heard": "나는 벼락치기 몽상가 토끼 놀 만큼 실컷 놀고 마음이 오면 한 번에 깡총",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -3377,7 +3976,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Delivery is complete and matches reference.",
+        "reason": "대본과 일치하며 밝고 경쾌한 톤이 유지되었습니다.",
         "sha256": "d1e02e0cef9e2ea1c45362f995c2e092753b6dc7c4f5202c418c007b1c653478",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3452,7 +4051,22 @@
         "sha256": "2aa13eae162d58e265877ba409c45590f9629dcdec6f0ee8f821af932c202a1c",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "friend-FVMD",
+        "heard": "나는 감성 아티스트 수달 오늘 기분엔 여기가 딱이야 예쁘게 보이게 퐁당",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "낭독이 자연스럽고 결말 끊김 없이 깔끔합니다.",
+        "sha256": "2aa13eae162d58e265877ba409c45590f9629dcdec6f0ee8f821af932c202a1c",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -3522,7 +4136,22 @@
         "sha256": "2393b57f55081ddf378ba1a88a43a99b92f3b54bbe5c94273cb4a0d325d7f71e",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "friend-FVSB",
+        "heard": "나는 번개출동 표범 정리 출동 번개처럼 슝 한 번에 끝낼게",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "의성어 표현과 전체 발화가 대본에 잘 부합합니다.",
+        "sha256": "2393b57f55081ddf378ba1a88a43a99b92f3b54bbe5c94273cb4a0d325d7f71e",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -3531,17 +4160,17 @@
       "id": "friend-FVSD",
       "text": "나는 자유로운 사막여우! 손 닿는 데가 최고! 다 쓰면 보이는 곳에 휙~",
       "file": "friend-FVSD.mp3",
-      "seconds": 6.23,
+      "seconds": 7.35,
       "technical": {
         "id": "friend-FVSD",
-        "sha256": "50e26c3dcd4d95fb03ff17a6aa1b1db08ed0bdffbaaa815b539361878a84d726",
-        "seconds": 6.23,
+        "sha256": "ca9cdca232aa1fd9f9ba1ec0ccc0bac4ecf097fed9307bc95e28e8154d0ce0a5",
+        "seconds": 7.35,
         "channels": 1,
         "sampleRate": 44100,
-        "bitrate": 129400,
+        "bitrate": 129244,
         "leadingSilenceAtMinus50dB": 0.12,
         "trailingSilenceAtMinus50dB": 0.12,
-        "peak": 0.85989,
+        "peak": 0.81418,
         "voice": "voice_94cruhwim89u",
         "model": "gemini-3.8-flash-lite-tts",
         "fresh": true,
@@ -3549,52 +4178,21 @@
         "processing": "outer silence trim and MP3 encoding only; no gain, pitch, tempo, formant or timbre processing",
         "passed": true
       },
-      "independentCloudTranscription": {
-        "id": "friend-FVSD",
-        "expected": "나는 자유로운 사막여우! 손 닿는 데가 최고! 다 쓰면 보이는 곳에 휙~",
-        "transcript": "나는 자유로운 삼항여우. 손 닿는 데가 최고. 닿으면 보이는 곳에",
-        "rawExact": false,
-        "normalizedExact": false,
-        "endingMatches": false,
-        "sha256": "50e26c3dcd4d95fb03ff17a6aa1b1db08ed0bdffbaaa815b539361878a84d726",
-        "model": "gemini-3.5-transcribe",
-        "mode": "verbatim",
-        "targetScriptProvided": false,
-        "usage": {
-          "total_tokens": 179,
-          "total_input_tokens": 157,
-          "input_tokens_by_modality": [
-            {
-              "modality": "text",
-              "tokens": 1
-            },
-            {
-              "modality": "audio",
-              "tokens": 156
-            }
-          ],
-          "total_cached_tokens": 0,
-          "total_output_tokens": 22,
-          "total_tool_use_tokens": 0,
-          "total_thought_tokens": 0,
-          "initial_input_tokens": 157
-        },
-        "createdUTC": "2026-11-19T08:57:08.430103+00:00"
-      },
+      "independentCloudTranscription": null,
       "independentLocalTranscription": {
         "id": "friend-FVSD",
         "text": "나는 자유로운 사막여우! 손 닿는 데가 최고! 다 쓰면 보이는 곳에 휙~",
-        "transcript": "나는 자유로운 사망요! 손 닿는 데가 최고! 닿으면 보이는 곳에 휘!",
+        "transcript": "나는 자유로운 사망여우! 손 닿는 데가 최고! 닿으면 보이는 곳에 휘!",
         "rawExact": false,
         "normalizedExact": false,
-        "similarity": 0.7843,
+        "similarity": 0.8462,
         "endingMatches": false,
-        "sha256": "50e26c3dcd4d95fb03ff17a6aa1b1db08ed0bdffbaaa815b539361878a84d726",
+        "sha256": "ca9cdca232aa1fd9f9ba1ec0ccc0bac4ecf097fed9307bc95e28e8154d0ce0a5",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
       "targetAssistedReview": {
         "id": "friend-FVSD",
-        "heard": "나는 자유로운 사막여우! 손 닿는 데가 최고! 다 쓰면 보이는 곳에 휙~",
+        "heard": "나는 자유로운 사막여우 손 닿는 데가 최고 다 쓰면 보이는 곳에 휙",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -3602,8 +4200,8 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Audio matches expected script with appropriate delivery.",
-        "sha256": "50e26c3dcd4d95fb03ff17a6aa1b1db08ed0bdffbaaa815b539361878a84d726",
+        "reason": "Accurate delivery matching reference tone and text.",
+        "sha256": "ca9cdca232aa1fd9f9ba1ec0ccc0bac4ecf097fed9307bc95e28e8154d0ce0a5",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
         "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
@@ -3679,7 +4277,7 @@
       },
       "targetAssistedReview": {
         "id": "friend-PHMB",
-        "heard": "나는 추억보물상자 아기곰! 꼬옥 안아 주고, 추억 상자에 한가득 담아 줘!",
+        "heard": "나는 추억 보물상자 아기곰 꼭 안아주고 추억상자에 한가득 담아줘",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -3687,7 +4285,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Accurate pronunciation and expressive voice matching the approved style.",
+        "reason": "Matches script with natural expression.",
         "sha256": "f383bc563e2ea4a7fb006cde653efc941b6ef9568c8c671589a8aed09379b7b7",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3762,7 +4360,22 @@
         "sha256": "e01c58317b554c6e0abca69ffb6b85be72c3d278a001bfa78715a4a1a7786eb9",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "friend-PHMD",
+        "heard": "나는 비밀일기 사슴 쉿 소중한 건 보물함에 살며시 넣어둘래",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate pronunciation and tone.",
+        "sha256": "e01c58317b554c6e0abca69ffb6b85be72c3d278a001bfa78715a4a1a7786eb9",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -3832,7 +4445,22 @@
         "sha256": "537d9bae0408c422a98010756af3331f87ced91dd8d189c8b90b35f7d382dba3",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "friend-PHSB",
+        "heard": "나는 비밀창고 햄스터 볼에 가득 모았다가 정한 날 창고에 쏙쏙",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Accurate delivery matching script.",
+        "sha256": "537d9bae0408c422a98010756af3331f87ced91dd8d189c8b90b35f7d382dba3",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -3904,7 +4532,7 @@
       },
       "targetAssistedReview": {
         "id": "friend-PHSD",
-        "heard": "나는 칼각 박스 비버! 각 맞춰 서랍에 착! 잊기 전에 바로 넣어야지.",
+        "heard": "나는 칼각 박스 비버! 각 맞춰 서랍에 착! 잊기 전에 바로 넣어야지?",
         "spokenWordsMatch": true,
         "uncertain": false,
         "endingComplete": true,
@@ -3912,7 +4540,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Clear diction and lively performance aligning with the script.",
+        "reason": "Pronunciation and delivery match expected script; minor question-like inflection at ending is natural.",
         "sha256": "98f7e009f5863334c4ac01bbbbcaf98d5ed1e2e85812dbd5b7d59efefc945a7f",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -3997,7 +4625,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Spoken text fully matches script and maintains proper delivery.",
+        "reason": "Spoken words match script with good expressive storybook tone.",
         "sha256": "b78d7ea11dfcfad864464b0b64eff882ca7dd5317cfa612e35d8f8befa60fc24",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -4082,7 +4710,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Clear delivery matching the script and speaker profile.",
+        "reason": "Spoken syllables match accurately with approved narrator voice.",
         "sha256": "613766c1ac7af94b0941765f206e7bb66640f1cdb058455e43df813089e91de8",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -4167,7 +4795,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Matches script perfectly, lively and warm delivery.",
+        "reason": "Matches expected script clearly and fits narrator style.",
         "sha256": "e9c7eed7a68be0a08da51c8dcfcfb5870dc4c73a9204d6644346958e93dcacf5",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -4181,65 +4809,34 @@
       "id": "friend-PVSD",
       "text": "나는 각각각 다람쥐! 도토리처럼 딱! 쓰고 나면 바로 제자리에 쏙!",
       "file": "friend-PVSD.mp3",
-      "seconds": 7.3,
+      "seconds": 7.16,
       "technical": {
         "id": "friend-PVSD",
-        "sha256": "370d4bf0ac875c4d7f12a1a0e1f84c896874eaba052a84fc6aa5f52fcd451af5",
-        "seconds": 7.3,
+        "sha256": "b32ed4df79203d1a404330e6f5d5ada7ea9039b08862988204d56661e778b1ae",
+        "seconds": 7.16,
         "channels": 1,
         "sampleRate": 44100,
-        "bitrate": 129213,
+        "bitrate": 129404,
         "leadingSilenceAtMinus50dB": 0.12,
         "trailingSilenceAtMinus50dB": 0.12,
-        "peak": 0.80142,
+        "peak": 0.82562,
         "voice": "voice_94cruhwim89u",
         "model": "gemini-3.8-flash-lite-tts",
         "fresh": true,
-        "style": "One consistent warm Korean storybook narrator, lively and vivid, bright smiling delivery, playful curiosity, natural expressive intonation, clear unhurried final syllables. Same character and speaking manner throughout child and parent screens. Never stiff, robotic, shouted, shrill, or overacted.",
+        "style": "One consistent warm Korean storybook narrator, lively and vivid, bright smiling delivery, playful curiosity, natural expressive intonation, clear unhurried final syllables. Same character and speaking manner throughout child and parent screens. Never stiff, robotic, shouted, shrill, or overacted. Pronunciation direction only: the name 각각각 contains three complete 각 syllables. Articulate each 각 with its closing ㄱ; do not shorten to 까까깍. Same warm saved narrator and natural expression. Read only the supplied text.",
         "processing": "outer silence trim and MP3 encoding only; no gain, pitch, tempo, formant or timbre processing",
         "passed": true
       },
-      "independentCloudTranscription": {
-        "id": "friend-PVSD",
-        "expected": "나는 각각각 다람쥐! 도토리처럼 딱! 쓰고 나면 바로 제자리에 쏙!",
-        "transcript": "나는 까까깍 다람쥐. 도토리처럼 딱 쓰고 나면 바로 제자리에 쏙.",
-        "rawExact": false,
-        "normalizedExact": false,
-        "endingMatches": true,
-        "sha256": "370d4bf0ac875c4d7f12a1a0e1f84c896874eaba052a84fc6aa5f52fcd451af5",
-        "model": "gemini-3.5-transcribe",
-        "mode": "verbatim",
-        "targetScriptProvided": false,
-        "usage": {
-          "total_tokens": 206,
-          "total_input_tokens": 184,
-          "input_tokens_by_modality": [
-            {
-              "modality": "text",
-              "tokens": 1
-            },
-            {
-              "modality": "audio",
-              "tokens": 183
-            }
-          ],
-          "total_cached_tokens": 0,
-          "total_output_tokens": 22,
-          "total_tool_use_tokens": 0,
-          "total_thought_tokens": 0,
-          "initial_input_tokens": 184
-        },
-        "createdUTC": "2026-11-19T08:58:25.797317+00:00"
-      },
+      "independentCloudTranscription": null,
       "independentLocalTranscription": {
         "id": "friend-PVSD",
         "text": "나는 각각각 다람쥐! 도토리처럼 딱! 쓰고 나면 바로 제자리에 쏙!",
-        "transcript": "나는 깍깍깍! 다람쥐! 흐흐, 도토리처럼 딱 쓰고 나면 바로 제자리에 쏘!",
+        "transcript": "나는 각각각 타람쥐, 도토리처럼 딱 쓰고 나면 바로 제자리에 쏘!",
         "rawExact": false,
         "normalizedExact": false,
-        "similarity": 0.8077,
+        "similarity": 0.92,
         "endingMatches": false,
-        "sha256": "370d4bf0ac875c4d7f12a1a0e1f84c896874eaba052a84fc6aa5f52fcd451af5",
+        "sha256": "b32ed4df79203d1a404330e6f5d5ada7ea9039b08862988204d56661e778b1ae",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
       "targetAssistedReview": {
@@ -4252,8 +4849,8 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Vocalized '각각각' naturally with lively storybook tone matching reference.",
-        "sha256": "370d4bf0ac875c4d7f12a1a0e1f84c896874eaba052a84fc6aa5f52fcd451af5",
+        "reason": "Spoken words match script with proper intonation and clear audio.",
+        "sha256": "b32ed4df79203d1a404330e6f5d5ada7ea9039b08862988204d56661e778b1ae",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
         "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
@@ -4327,7 +4924,22 @@
         "sha256": "8d218d44b2c5c1a14142fb09259fca2ccd84ad8c9fe500cc582d36ea6d5df478",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "meet",
+        "heard": "두 친구가 만났어 이제 정리하는 법을 같이 볼까",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script cleanly with appropriate delivery.",
+        "sha256": "8d218d44b2c5c1a14142fb09259fca2ccd84ad8c9fe500cc582d36ea6d5df478",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4397,7 +5009,22 @@
         "sha256": "0ee88cd5f8e8e32b3d022878fb21a4d2a629b8d3146fc46a96ee043e336e9017",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-0-0",
+        "heard": "장난감 셋 중에 공의 자리를 먼저 정해요",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script accurately and naturally.",
+        "sha256": "0ee88cd5f8e8e32b3d022878fb21a4d2a629b8d3146fc46a96ee043e336e9017",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4467,7 +5094,22 @@
         "sha256": "96184a268cf15c45433e58b1b455d07f8409bf6bae1b8d6b49fc10c3b584eb3a",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-0-1",
+        "heard": "나머지 둘도 하나씩 들고 자리를 찾아요",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches script accurately and naturally.",
+        "sha256": "96184a268cf15c45433e58b1b455d07f8409bf6bae1b8d6b49fc10c3b584eb3a",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4537,7 +5179,22 @@
         "sha256": "3298f2b4ca8318b49a5e228b5e911d5eb96689ac0a70470b59fc186481ce6fa2",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-1-0",
+        "heard": "상자 앞에 붙일 블록 그림을 하나 골라요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Audio matches expected script cleanly with correct tone.",
+        "sha256": "3298f2b4ca8318b49a5e228b5e911d5eb96689ac0a70470b59fc186481ce6fa2",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4607,7 +5264,22 @@
         "sha256": "b43006fc574045136bc1d1fee5a45db88ec6f9ba31fece982360498715a0bc7c",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-1-1",
+        "heard": "블록을 상자에 넣고 그림 표시를 붙여요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pronounced accurately with proper liaison and friendly delivery.",
+        "sha256": "b43006fc574045136bc1d1fee5a45db88ec6f9ba31fece982360498715a0bc7c",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4677,7 +5349,22 @@
         "sha256": "441158be7e988031f3aa919e371cb35668de79af9ace2aa5583087928249d6b5",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-2-0",
+        "heard": "매일 쓰는 크레파스는 꺼내기 쉬운 선반에 놓아요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pacing, script match, and narrator consistency are well maintained.",
+        "sha256": "441158be7e988031f3aa919e371cb35668de79af9ace2aa5583087928249d6b5",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4747,7 +5434,22 @@
         "sha256": "a3b46692924440a8c4c7ca623073b6040b2c3f4dea032d172e03df0faa381736",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-2-1",
+        "heard": "소중한 별은 보물상자에 쏙 넣어요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear and expressive picture-book style with accurate wording.",
+        "sha256": "a3b46692924440a8c4c7ca623073b6040b2c3f4dea032d172e03df0faa381736",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -4827,7 +5529,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Spoken correctly; '공과' vocalized accurately despite ASR confusion.",
+        "reason": "Clear delivery matching script with no audio defects.",
         "sha256": "0d20f0a663d7ea432fec5e566d93bebe337347636a1759cab8de31b29328fa92",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -4912,7 +5614,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "The spoken words fully match the script and delivery is natural.",
+        "reason": "Accurate narration consistent with reference style.",
         "sha256": "755c547aa96f3ba8f0f94ca2e64402df86501395bd039097b58bb405072f09df",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -4987,7 +5689,22 @@
         "sha256": "4d84105d6e7377155fb1483b356d66da26ee3dda5707516724d0061498d8b145",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-3-2",
+        "heard": "작품은 시계가 알려 줄 때 나중에 같이 정리해요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Script matches cleanly with natural picture-book tone.",
+        "sha256": "4d84105d6e7377155fb1483b356d66da26ee3dda5707516724d0061498d8b145",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5046,8 +5763,33 @@
         },
         "createdUTC": "2026-11-19T08:59:34.666470+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "motion-4-0",
+        "text": "자동차의 자리를 함께 골라요.",
+        "transcript": "자동차의 자리를 함께 골라요.",
+        "rawExact": true,
+        "normalizedExact": true,
+        "similarity": 1.0,
+        "endingMatches": true,
+        "sha256": "69963c83f1d3894ed05fcbad536fd37e5610e83f2b2f95f6974c36dc14cded65",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "motion-4-0",
+        "heard": "자동차의 자리를 함께 골라요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Complete delivery matching target script without defects.",
+        "sha256": "69963c83f1d3894ed05fcbad536fd37e5610e83f2b2f95f6974c36dc14cded65",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5117,7 +5859,22 @@
         "sha256": "7072c009c132097170f1eb45056069ad717ad7bfcce5c38e409f0d9066248bdc",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "motion-4-1",
+        "heard": "손이 닿는 낮은 곳에 두면 내일도 꺼낼 수 있어요.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pronunciation aligns closely with script; pitch and cadence fit storybook standard.",
+        "sha256": "7072c009c132097170f1eb45056069ad717ad7bfcce5c38e409f0d9066248bdc",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5187,7 +5944,22 @@
         "sha256": "5723062849df9c43516fe9c835d1d2e6cdad40fc7be257d20d7e676037ee4732",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "mission-done-mobile",
+        "heard": "우리도 지금 같이 정리해 볼까?",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Pacing and tone match baseline reference well without audible errors.",
+        "sha256": "5723062849df9c43516fe9c835d1d2e6cdad40fc7be257d20d7e676037ee4732",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5257,7 +6029,22 @@
         "sha256": "3b62fded782b79d7b2338f12e00ee7861ea38da5a734c87a29c69b41bcf317ba",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "result-child",
+        "heard": "다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Clear, cheerful delivery matching the target line naturally.",
+        "sha256": "3b62fded782b79d7b2338f12e00ee7861ea38da5a734c87a29c69b41bcf317ba",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5327,7 +6114,22 @@
         "sha256": "74cf68b999d5e7ba412c9a82511db57c0866a53339594d6a8e2992fcdda3058c",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "hp-pick",
+        "heard": "우리 집 사진으로 놀아 볼까? 장난감이 있는 사진을 골라 줘.",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Delivery matches script text accurately with clear pronunciation.",
+        "sha256": "74cf68b999d5e7ba412c9a82511db57c0866a53339594d6a8e2992fcdda3058c",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5397,7 +6199,22 @@
         "sha256": "69e006a12d7e8da8308527f9b0c568b80f6e38756da764586035a3076080a040",
         "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
       },
-      "targetAssistedReview": null,
+      "targetAssistedReview": {
+        "id": "hp-look",
+        "heard": "어디가 제일 먼저 보여? 사진에서 콕 짚어 줘!",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches the script accurately with consistent delivery.",
+        "sha256": "69e006a12d7e8da8308527f9b0c568b80f6e38756da764586035a3076080a040",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5456,8 +6273,33 @@
         },
         "createdUTC": "2026-11-19T09:36:46.887429+00:00"
       },
-      "independentLocalTranscription": null,
-      "targetAssistedReview": null,
+      "independentLocalTranscription": {
+        "id": "hp-play",
+        "text": "어디서 놀고 싶어? 사진에서 콕 짚어 줘!",
+        "transcript": "어디서 놀고 싶어? 사진에서 콕 찝어줘!",
+        "rawExact": false,
+        "normalizedExact": false,
+        "similarity": 0.9333,
+        "endingMatches": false,
+        "sha256": "e892375c4ac13256fd486b8b1736879d349ceabce4dd31e8c5e5812b79d4b1d2",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
+      "targetAssistedReview": {
+        "id": "hp-play",
+        "heard": "어디서 놀고 싶어? 사진에서 콕 짚어 줘!",
+        "spokenWordsMatch": true,
+        "uncertain": false,
+        "endingComplete": true,
+        "noiseProblem": false,
+        "sameNarratorCompatible": true,
+        "warmLivelyStorybook": true,
+        "needsRetake": false,
+        "reason": "Matches the expected script with proper tone and complete ending.",
+        "sha256": "e892375c4ac13256fd486b8b1736879d349ceabce4dd31e8c5e5812b79d4b1d2",
+        "model": "gemini-3.8-flash",
+        "targetProvided": true,
+        "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
+      },
       "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
@@ -5537,7 +6379,7 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Script matched accurately with appropriate warm intonation.",
+        "reason": "Spoken syllables match the script clearly.",
         "sha256": "f80515645076d907c034dd3ce8f0c85c0414e9675f1a8ba0f81f98a6be94287a",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
@@ -5601,7 +6443,17 @@
         },
         "createdUTC": "2026-11-19T09:36:52.336585+00:00"
       },
-      "independentLocalTranscription": null,
+      "independentLocalTranscription": {
+        "id": "hp-promise",
+        "text": "놀 자리는 남겨 두고, 바꾸고 싶은 곳부터 같이 정리해 볼까?",
+        "transcript": "놀자리는 남겨두고 바꾸고 싶은 곳부터 같이 정리해 볼까?",
+        "rawExact": false,
+        "normalizedExact": true,
+        "similarity": 1.0,
+        "endingMatches": true,
+        "sha256": "ee3fff5558694c5793ac05336eabf4d013d1086fb82a9137cbdc99bb2c719ceb",
+        "method": "local faster-whisper-small; no target script supplied; automated, not human listening"
+      },
       "targetAssistedReview": {
         "id": "hp-promise",
         "heard": "놀 자리는 남겨 두고, 바꾸고 싶은 곳부터 같이 정리해 볼까?",
@@ -5612,15 +6464,77 @@
         "sameNarratorCompatible": true,
         "warmLivelyStorybook": true,
         "needsRetake": false,
-        "reason": "Matches expected script accurately with compatible voice.",
+        "reason": "Clearly speaks 놀 자리는 despite independent ASR error.",
         "sha256": "ee3fff5558694c5793ac05336eabf4d013d1086fb82a9137cbdc99bb2c719ceb",
         "model": "gemini-3.8-flash",
         "targetProvided": true,
         "method": "target-assisted automated audio comparison with approved v13 reference; not independent transcription or human listening"
       },
-      "acceptanceMethod": "target-assisted-automated-audio-match",
+      "acceptanceMethod": "independent-ASR-normalized-match",
       "automatedCheckAccepted": true,
       "humanListening": false
     }
-  ]
+  ],
+  "supplementaryBlindAudioTranscription": {
+    "clips": [
+      {
+        "id": "choices-ready",
+        "transcript": "마음에 드는 그림을 콕 눌러줘!",
+        "uncertain": false,
+        "sha256": "36ae43b01990ddd51fd76a0148102315c0ae5ce55d04c212e1e817b9524185b6",
+        "model": "gemini-3.8-flash",
+        "targetScriptProvided": false,
+        "method": "general audio model blind transcription; not human listening"
+      },
+      {
+        "id": "friend-FHMD",
+        "transcript": "나는 마음 부자 쿼카. 소중한 건 바로 챙겨서 쏙. 마음이 따뜻해.",
+        "uncertain": false,
+        "sha256": "8cd3e99a1866856feffc0f11902f564e3274ab78d8843d615a27d18b7c13a0e2",
+        "model": "gemini-3.8-flash",
+        "targetScriptProvided": false,
+        "method": "general audio model blind transcription; not human listening"
+      },
+      {
+        "id": "friend-FVSD",
+        "transcript": "나는 자유로운 사막여우. 손 닿는 데가 최고. 다 쓰면 보이는 곳에 휙.",
+        "uncertain": false,
+        "sha256": "ca9cdca232aa1fd9f9ba1ec0ccc0bac4ecf097fed9307bc95e28e8154d0ce0a5",
+        "model": "gemini-3.8-flash",
+        "targetScriptProvided": false,
+        "method": "general audio model blind transcription; not human listening"
+      },
+      {
+        "id": "friend-PVSD",
+        "transcript": "나는 깍깍깍 다람쥐. 도토리처럼 딱 쓰고 나면 바로 제자리에 쏙.",
+        "uncertain": false,
+        "sha256": "b32ed4df79203d1a404330e6f5d5ada7ea9039b08862988204d56661e778b1ae",
+        "model": "gemini-3.8-flash",
+        "targetScriptProvided": false,
+        "method": "general audio model blind transcription; not human listening"
+      }
+    ]
+  },
+  "supplementaryQuotaReview": {
+    "ttsLimitPerDayObserved": 100,
+    "ttsUsedBeforeReviewObserved": 88,
+    "additionalTTSRequests": 6,
+    "ttsUsedAfterReviewEstimated": 94,
+    "remainingEstimated": 6,
+    "experimentalGroupedRequest": 1,
+    "experimentInstalled": false,
+    "individualRetakeRequests": 5,
+    "replacedIds": [
+      "choices-ready",
+      "friend-FHMD",
+      "friend-FVSD",
+      "friend-PVSD"
+    ],
+    "wholeBatchRegenerated": false,
+    "postReviewQuotaUIRechecked": false,
+    "dedicatedCloudTranscriptionLimitReached": true,
+    "localIndependentASRFallbackUsed": true,
+    "generalAudioModelBlindTranscriptionUsed": true,
+    "humanListeningPerformed": false
+  }
 }
