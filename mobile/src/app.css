@@ -828,3 +828,8 @@ body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabb
 .sp-card img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto; }
 .mission-wait { margin: 0; padding: 40px 12px; text-align: center; font-weight: 700; color: var(--sub); animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .45; } }
+
+/* 부모님 안내: 답이 쓰이는 방법 */
+.notice { background: #F4EFE6; border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+.notice-title { margin: 0 0 6px; font-size: 14px; font-weight: 800; color: var(--sub); }
+.notice ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.5; }

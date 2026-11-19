@@ -553,7 +553,14 @@ function guideHtml() {
         <li><span class="n egg">3</span><p>아이가 <b>알 두 개</b>를 깨요</p></li>
         <li><span class="n done">4</span><p>정리 친구의 <b>시범</b>과 <b>결과지</b>를 봐요</p></li>
       </ol>
-      <p class="small">정답은 없어요. 고른 답과 적은 말만 저장하고, 목소리는 녹음하지 않아요.</p>
+      <div class="notice" role="note">
+        <p class="notice-title">답은 이렇게 쓰여요</p>
+        <ul>
+          <li>정답은 없어요. ${ONLINE ? '고른 답과 적은 말은 <b>이름 없이</b> 모여, 이 놀이를 더 좋게 만드는 데만 쓰여요.' : '고른 답과 적은 말은 이 휴대폰에만 남아요.'}</li>
+          <li>이름·연락처·사진은 받지 않고, 목소리는 녹음하지 않아요.</li>
+          <li>적는 말에는 <b>아이 이름이나 연락처를 적지 말아 주세요.</b></li>
+        </ul>
+      </div>
     </div>
   </div>`;
 }
@@ -590,7 +597,7 @@ function qHtml() {
           <div class="reason" data-reason ${open ? '' : 'hidden'}>
             <label for="reason">${reasonAsk[role][i]}</label>
             ${role === 'adult' && micSupported() ? `<div class="mic-row"><button class="btn-soft mic" type="button" data-act="mic" aria-pressed="false">${I.mic}<span>말로 적기</span></button><span class="mic-status" role="status"></span></div>` : ''}
-            <textarea id="reason" name="reason" maxlength="180" rows="2" placeholder="${role === 'child' ? '아이가 한 말 그대로' : '짧게 적어 주세요'}">${esc(a.reason)}</textarea>
+            <textarea id="reason" name="reason" maxlength="180" rows="2" placeholder="${role === 'child' ? '아이가 한 말 그대로 (이름·연락처는 빼고)' : '짧게 적어 주세요 (이름·연락처는 빼고)'}">${esc(a.reason)}</textarea>
           </div>
         </div>
       </div>
