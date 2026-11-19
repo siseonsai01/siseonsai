@@ -24,6 +24,18 @@ for folder,target in [(src/'egg',client/'src/egg'),(src/'assets',client/'assets'
     for p in folder.rglob('*'):
         if not p.is_file() or (folder.name=='assets' and p.name not in active):continue
         dest=target/p.relative_to(folder);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,dest)
+# 모바일 한 대 설문(/mobile/): mobile/에서 이미 만든 preview.html(완성 문서)과 음성·그림·알깨기를 그대로 실어요.
+mobile=root.parent/'mobile'
+mout=out/'client/mobile'
+if mout.exists():shutil.rmtree(mout)
+mout.mkdir(parents=True)
+mhtml=(mobile/'preview.html').read_text(encoding='utf-8')
+assert '/api/mobile-records' in mhtml and 'const VOICES = new Set([' in mhtml
+(mout/'index.html').write_text(mhtml,encoding='utf-8')
+shutil.copy2(mobile/'collect.html',mout/'collect.html')
+for folder in ['assets','egg']:
+    for p in (mobile/folder).rglob('*'):
+        if p.is_file():dest=mout/folder/p.relative_to(mobile/folder);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,dest)
 (out/'server').mkdir(exist_ok=True)
 shutil.copy2(root/'worker/index.js',out/'server/index.js')
 (out/'.openai').mkdir(exist_ok=True)

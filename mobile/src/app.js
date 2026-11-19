@@ -299,14 +299,26 @@ function db() { return dbP || (dbP = cap('db')); }
 function userCap() { return userP || (userP = cap('user')); }
 function downloads() { return dlP || (dlP = cap('downloads')); }
 let saveState = 'idle';
+/* 운영 사이트(/mobile/)에서 열렸을 때는 같은 사이트의 설문 서버로 답을 보내요. Claude 검토 링크에서는 지금처럼 Claude 저장소를 써요 */
+const ONLINE = /^\/mobile(\/|$)/.test(location.pathname) && !window.claude?.use;
 async function saveRecord() {
-  if (S.savedId) { saveState = 'ok'; return; }
+  if (S.savedId) { saveState = 'ok'; paintSave(); return; }
   saveState = 'saving'; paintSave();
+  /* 같은 가족 기록은 한 번만 저장되도록 번호를 한 번만 만들고 다시 보낼 때도 같은 번호를 써요 */
+  if (!S.recordId) { S.recordId = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); persist(); }
+  const id = S.recordId;
+  const pack = (role) => ({ code: code(role), name: characters[code(role)] || '', answers: S.answers[role].map((a, i) => ({ q: i + 1, title: Q[i].title, choice: a.choice, label: optionLabel(role, i, a.choice), reason: a.reason.trim(), point: a.point, toy: a.toy || '' })) });
+  const record = { surveyVersion: SURVEY_VERSION, sourceRelease: SOURCE_RELEASE, stimulus: STIMULUS, mode: 'one-phone', test: !!S.test, startedAt: S.startedAt, finishedAt: S.finishedAt || new Date().toISOString(), child: pack('child'), adult: pack('adult') };
+  if (ONLINE) {
+    try {
+      const r = await fetch('/api/mobile-records', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, ...record }), cache: 'no-store' });
+      if (!r.ok) throw new Error('http ' + r.status);
+      S.savedId = id; persist(); saveState = 'ok';
+    } catch { saveState = 'err'; }
+    paintSave(); return;
+  }
   const store = await db();
   if (!store) { saveState = 'local'; paintSave(); return; }
-  const id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-  const pack = (role) => ({ code: code(role), answers: S.answers[role].map((a, i) => ({ q: i + 1, title: Q[i].title, choice: a.choice, label: optionLabel(role, i, a.choice), reason: a.reason.trim(), point: a.point, toy: a.toy || '' })) });
-  const record = { surveyVersion: SURVEY_VERSION, sourceRelease: SOURCE_RELEASE, stimulus: STIMULUS, mode: 'one-phone', test: !!S.test, startedAt: S.startedAt, finishedAt: S.finishedAt || new Date().toISOString(), child: pack('child'), adult: pack('adult') };
   try {
     await store.collection('mobileRecords').doc(id).set(record);
     S.savedId = id; persist(); saveState = 'ok';
@@ -318,9 +330,9 @@ function paintSave() {
   if (!el) return;
   const map = {
     idle: ['', ''], saving: ['', '결과를 저장하고 있어요…'],
-    ok: ['ok', '우리 가족 결과를 저장했어요.'],
+    ok: ['ok', ONLINE ? '우리 가족 답을 잘 보냈어요. 함께해 주셔서 고마워요.' : '우리 가족 결과를 저장했어요.'],
     local: ['', ''],
-    err: ['err', '인터넷 연결이 불안정해 저장하지 못했어요. 아래 버튼을 눌러 다시 저장해 주세요.'],
+    err: ['err', '인터넷 연결이 불안정해 답을 보내지 못했어요. 아래 버튼을 눌러 다시 보내 주세요.'],
   };
   const [cls, text] = map[saveState] || map.idle;
   el.className = 'save-line ' + cls; el.textContent = text;
@@ -717,7 +729,7 @@ function resultHtml() {
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
     </section>
-    <p class="save-line" data-save role="status"></p><button class="btn-soft" type="button" data-act="save-retry" hidden>다시 저장하기</button>
+    <p class="save-line" data-save role="status"></p><button class="btn-soft" type="button" data-act="save-retry" hidden>다시 보내기</button>
     <div data-owner hidden class="stack"><button class="btn-soft" type="button" data-act="export">진행자 · 모바일 기록 내려받기 (CSV)</button><p class="small" data-export-status role="status" style="margin:0"></p></div>
     <p class="small">재미로 보는 시선 놀이예요. 심리검사가 아니에요.</p>
   </div></div>`;
@@ -1234,6 +1246,13 @@ async function saveSheet(kind) {
       try { await dl.save({ filename, data }); say(kind === 'pdf' ? 'PDF를 받았어요. 파일 앱에서 열어 인쇄할 수 있어요.' : '결과지 사진을 저장했어요.'); return; }
       catch (err) { if (err?.code === 'declined') { say('저장을 취소했어요.'); return; } }
     }
+    if (!window.claude?.use) {
+      /* 운영 사이트: 파일로 바로 받아요. iPhone은 미리보기가 열리면 공유 버튼으로 저장해요 */
+      const url = URL.createObjectURL(data), a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+      say(kind === 'pdf' ? 'PDF를 받았어요. 파일 앱에서 열어 인쇄할 수 있어요.' : '결과지 사진을 받았어요. 사진이 안 보이면 다운로드 폴더를 확인해 주세요.');
+      return;
+    }
     /* 이 링크에서 파일 받기가 허락되지 않은 휴대폰: 결과지 사진을 크게 띄워 길게 눌러 저장하게 해요 */
     await showSheetPreview(jpg, kind);
     say(kind === 'pdf' ? '이 화면에서는 PDF를 바로 받을 수 없어요. 결과지 사진을 길게 눌러 저장해 주세요.' : '결과지 사진을 길게 눌러 사진첩에 저장해 주세요.');
@@ -1367,7 +1386,7 @@ document.addEventListener('click', (e) => {
       sheet({ title: '첫 화면으로 갈까요?', body: '지금까지 고른 답은 이 휴대폰에 그대로 남아 있어요. 첫 화면에서 ‘이어서 하기’를 누르면 같은 곳부터 다시 열려요.', yes: '첫 화면으로 가기', no: '계속하기', onYes: async () => { await micSettle(); const ta = stage.querySelector('#reason'); if (ta && S.screen === 'q') S.answers[S.role][S.index].reason = ta.value; persist(); S.resumeScreen = S.screen; S.screen = 'home'; render('back'); } });
       break;
     case 'ask-new':
-      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '아직 저장되지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; S = fresh(); persist(); render('back'); } });
+      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? (ONLINE ? '우리 가족 답은 이미 잘 보냈어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.') : '아직 보내지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; S = fresh(); persist(); render('back'); } });
       break;
     case 'mic': {
       if (!rec) return;

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>시선사이 모바일 · 모인 답</title>
+<style>
+  :root { --ink: #3B2C1E; --sub: #7A6A55; --line: #E6D9C6; --bg: #FBF4E8; --card: #FFFDF8; --accent: #8A5A2B; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; word-break: keep-all; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+  h1 { margin: 0; font-size: 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .nums { display: flex; flex-wrap: wrap; gap: 12px; }
+  .num { flex: 1 1 140px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .num b { display: block; font-size: 28px; line-height: 1.1; }
+  .num span { color: var(--sub); font-size: 14px; }
+  button { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 12px 18px; background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  label { display: inline-flex; gap: 6px; align-items: center; color: var(--sub); font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .status { margin: 0; color: var(--sub); }
+  .status.err { color: #B23B2A; font-weight: 700; }
+  .wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; white-space: nowrap; }
+  th { color: var(--sub); font-weight: 600; }
+  td.diff { color: #B23B2A; font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+  <h1>시선사이 모바일 · 모인 답</h1>
+  <p class="status" id="status" role="status">불러오는 중…</p>
+  <section class="card nums" aria-label="모인 답 수">
+    <div class="num"><b id="n-all">–</b><span>모인 가족</span></div>
+    <div class="num"><b id="n-real">–</b><span>시험 기록 제외</span></div>
+    <div class="num"><b id="n-last">–</b><span>마지막으로 받은 때</span></div>
+  </section>
+  <section class="card row">
+    <button type="button" id="csv" disabled>엑셀용 CSV 내려받기</button>
+    <label><input type="checkbox" id="with-test"> 시험 기록도 넣기</label>
+    <button type="button" id="reload" style="background:#fff;color:var(--accent);border:1px solid var(--line)">새로 불러오기</button>
+  </section>
+  <section class="card">
+    <p class="status" style="margin-bottom:8px">최근 20가족 (빨간 칸: 아이와 부모님이 다르게 고른 장)</p>
+    <div class="wrap"><table id="recent"><thead></thead><tbody></tbody></table></div>
+  </section>
+  <p class="status">이 주소에는 진행자 전용 키가 들어 있어요. 다른 사람과 나누지 마세요. 답에는 이름·연락처가 들어 있지 않아요.</p>
+</main>
+<script>
+(() => {
+  const key = new URLSearchParams(location.hash.slice(1)).get('access') || '';
+  const $ = (id) => document.getElementById(id);
+  const say = (t, err) => { $('status').textContent = t; $('status').className = 'status' + (err ? ' err' : ''); };
+  let records = [];
+  const fmt = (sec) => { if (!sec) return ''; const d = new Date(typeof sec === 'number' ? sec * 1000 : sec); return isNaN(d) ? '' : d.toLocaleString('ko-KR', { hour12: false }); };
+  async function load() {
+    if (!/^[a-f0-9]{64}$/.test(key)) { say('진행자 전용 주소로 열어 주세요. (주소 끝의 #access=… 가 필요해요)', true); return; }
+    say('불러오는 중…'); $('csv').disabled = true; records = [];
+    try {
+      let cursor = '';
+      for (let n = 0; n < 500; n++) {
+        const r = await fetch('/api/mobile-records' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''), { headers: { authorization: 'Bearer ' + key }, cache: 'no-store' });
+        const body = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(body.error || ('연결 오류 ' + r.status));
+        records.push(...body.records); cursor = body.nextCursor; if (!cursor) break;
+      }
+      render(); say(records.length ? '모두 불러왔어요.' : '아직 모인 답이 없어요.');
+      $('csv').disabled = !records.length;
+    } catch (e) { say(e.message || '불러오지 못했어요.', true); }
+  }
+  function render() {
+    const real = records.filter((r) => !r.test);
+    $('n-all').textContent = records.length; $('n-real').textContent = real.length;
+    const last = records.reduce((m, r) => Math.max(m, r.receivedAt || 0), 0); $('n-last').textContent = last ? fmt(last) : '–';
+    const t = $('recent');
+    t.tHead.innerHTML = '<tr><th>받은 때</th><th>아이 친구</th><th>부모님 친구</th>' + [1, 2, 3, 4, 5].map((n) => `<th>${n}장 아이 / 부모님</th>`).join('') + '<th>시험</th></tr>';
+    const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    t.tBodies[0].innerHTML = [...records].sort((a, b) => (b.receivedAt || 0) - (a.receivedAt || 0)).slice(0, 20).map((r) => '<tr>' +
+      `<td>${esc(fmt(r.receivedAt))}</td><td>${esc(r.child?.name || r.child?.code)}</td><td>${esc(r.adult?.name || r.adult?.code)}</td>` +
+      [0, 1, 2, 3, 4].map((i) => { const c = r.child?.answers?.[i], a = r.adult?.answers?.[i]; return `<td class="${c?.choice !== a?.choice ? 'diff' : ''}">${esc(c?.choice)} / ${esc(a?.choice)}</td>`; }).join('') +
+      `<td>${r.test ? '예' : ''}</td></tr>`).join('');
+  }
+  function csv() {
+    const rows = records.filter((r) => $('with-test').checked || !r.test);
+    const cell = (v) => { let s = String(v ?? ''); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
+    const head = ['기록ID', '받은때', '시작', '마침', '시험여부', '조사버전', '아이 유형', '아이 정리친구', '부모님 유형', '부모님 정리친구', '다르게 고른 장 수'];
+    for (let i = 1; i <= 5; i++) head.push(`${i}장 제목`, `${i}장 아이 선택`, `${i}장 아이 보기`, `${i}장 아이가 한 말`, `${i}장 부모님 선택`, `${i}장 부모님 보기`, `${i}장 부모님 이유`, `${i}장 같음`);
+    head.push('1장 아이 위치 x%', '1장 아이 위치 y%', '1장 아이 장난감', '1장 부모님 위치 x%', '1장 부모님 위치 y%', '1장 부모님 장난감');
+    const lines = [head];
+    rows.forEach((r) => {
+      const C = r.child?.answers || [], A = r.adult?.answers || [];
+      const diff = [0, 1, 2, 3, 4].filter((i) => C[i]?.choice !== A[i]?.choice).length;
+      const line = [r.id, fmt(r.receivedAt), fmt(r.startedAt), fmt(r.finishedAt), r.test ? '예' : '', r.surveyVersion, r.child?.code, r.child?.name, r.adult?.code, r.adult?.name, diff];
+      for (let i = 0; i < 5; i++) line.push(C[i]?.title || A[i]?.title || '', C[i]?.choice, C[i]?.label, C[i]?.reason, A[i]?.choice, A[i]?.label, A[i]?.reason, C[i]?.choice === A[i]?.choice ? '같음' : '다름');
+      line.push(C[0]?.point?.x, C[0]?.point?.y, C[0]?.toy, A[0]?.point?.x, A[0]?.point?.y, A[0]?.toy);
+      lines.push(line);
+    });
+    const text = '﻿' + lines.map((l) => l.map(cell).join(',')).join('\r\n');
+    const url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })), a = document.createElement('a');
+    const d = new Date(); a.href = url; a.download = `siseonsai-mobile-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.csv`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+    say(`${rows.length}가족을 CSV로 내려받았어요.`);
+  }
+  $('csv').addEventListener('click', csv); $('reload').addEventListener('click', load);
+  load();
+})();
+</script>
+</body>
+</html>
