@@ -819,3 +819,12 @@ body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabb
 .gap-pick figcaption { font-size: 13px; line-height: 1.35; font-weight: 600; }
 .gap-vs { font: 800 22px/1 var(--font-title, inherit); color: #C9B79C; }
 .gap-row.diff .gap-vs { color: #E07A5F; font-size: 28px; }
+
+/* 결과지 사진: 길게 눌러 저장 */
+.sheet-preview { position: fixed; inset: 0; z-index: 90; background: rgba(40, 28, 16, .72); display: grid; place-items: center; padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom)); }
+.sp-card { width: min(520px, 100%); max-height: 100%; overflow: auto; background: var(--card); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.sp-tip { margin: 0; font-size: 15px; line-height: 1.45; text-align: center; }
+.sp-tip span { font-size: 13px; color: var(--sub); }
+.sp-card img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto; }
+.mission-wait { margin: 0; padding: 40px 12px; text-align: center; font-weight: 700; color: var(--sub); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .45; } }

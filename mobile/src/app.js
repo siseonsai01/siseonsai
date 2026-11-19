@@ -266,17 +266,24 @@ function childGuide() {
 /* 음성을 폰에 미리 받아 두고(작은 파일 묶음), 장이 바뀌면 받아 둔 것에서 바로 틀어요 */
 const clipCache = new Map();
 function clipSrc(f) { return clipCache.get(f) || 'assets/voice/' + f + '.mp3'; }
+/* 받는 중인 파일은 같은 약속을 돌려줘서, 기다리는 쪽이 끝까지 받을 때까지 기다릴 수 있어요 */
 function cacheClip(f) {
-  if (clipCache.has(f) || cacheClip.busy.has(f)) return Promise.resolve();
-  cacheClip.busy.add(f);
-  return fetch('assets/voice/' + f + '.mp3').then((r) => r.ok ? r.blob() : null).then((b) => { if (b && b.size) clipCache.set(f, URL.createObjectURL(b)); }).catch(() => {}).finally(() => cacheClip.busy.delete(f));
+  if (clipCache.has(f) || !hasVoice(f)) return Promise.resolve();
+  if (cacheClip.busy.has(f)) return cacheClip.busy.get(f);
+  const p = fetch('assets/voice/' + f + '.mp3').then((r) => r.ok ? r.blob() : null).then((b) => { if (b && b.size) clipCache.set(f, URL.createObjectURL(b)); }).catch(() => {}).finally(() => cacheClip.busy.delete(f));
+  cacheClip.busy.set(f, p);
+  return p;
 }
-cacheClip.busy = new Set();
+cacheClip.busy = new Map();
 function warmVoice(i) { if (i < 0 || i >= Q.length) return; questionVoice(i).forEach(({ f }) => cacheClip(f)); }
 /* 앞 장부터 차례로 받아요: 1장 → 2장 … 그다음 알·친구 안내 */
 async function warmAll() {
   for (let i = 0; i < Q.length; i++) await Promise.all(questionVoice(i).map(({ f }) => cacheClip(f)));
-  for (const f of ['egg-ready', 'egg-more', 'egg-error']) await cacheClip(f);
+  for (const f of ['handoff-child', 'egg-loading', 'egg-ready', 'egg-more', 'egg-error']) await cacheClip(f);
+  /* 그다음 친구·시범·결과지·사진 놀이 음성도 미리 받아 둬요 (처음 재생 때 늦게 시작해 잘리지 않도록) */
+  const rest = [...VOICES].filter((f) => !clipCache.has(f)).sort((a, b) => rank(a) - rank(b));
+  for (const f of rest) await cacheClip(f);
+  function rank(f) { return /^friend-/.test(f) ? 0 : f === 'meet' ? 1 : /^motion-|^mission-done-mobile$/.test(f) ? 2 : f === 'result-child' ? 3 : /^hp-/.test(f) ? 4 : 5; }
 }
 
 /* ---------- 말로 적기 (원본 speech-input.js) ---------- */
@@ -312,7 +319,7 @@ function paintSave() {
   const map = {
     idle: ['', ''], saving: ['', '결과를 저장하고 있어요…'],
     ok: ['ok', '우리 가족 결과를 저장했어요.'],
-    local: ['', '결과는 이 휴대폰에 남아 있어요. 진행자에게 이 화면을 보여 주세요.'],
+    local: ['', ''],
     err: ['err', '인터넷 연결이 불안정해 저장하지 못했어요. 아래 버튼을 눌러 다시 저장해 주세요.'],
   };
   const [cls, text] = map[saveState] || map.idle;
@@ -440,11 +447,22 @@ function swapDoneLine() {
   const cap = stage.querySelector('#mission-motion .smm-caption');
   if (cap && /집으로 가서/.test(cap.textContent)) cap.textContent = MOBILE_DONE;
 }
-function mountMission() {
+let missionMountToken = 0;
+async function mountMission() {
   const host = stage.querySelector('#mission-motion');
   const c = code('child');
   if (!host || !c || !window.SiseonMission) return;
   const plan = missionPlan();
+  /* 시범은 정해진 시간마다 장면이 넘어가요. 음성을 다 받기 전에 시작하면 첫 재생에서 말이 잘려서, 먼저 받아 둬요 */
+  const token = ++missionMountToken;
+  const clips = [...new Set(Object.values(motionVoiceCaptions).map((v) => v.scene === 'mission-done' ? 'mission-done-mobile' : v.scene))].filter((f) => f.startsWith('motion-' + plan.pattern + '-') || f === 'mission-done-mobile');
+  if (soundOn && clips.some((f) => !clipCache.has(f))) {
+    const wait = document.createElement('p'); wait.className = 'mission-wait'; wait.setAttribute('role', 'status'); wait.textContent = '정리 친구가 시범을 준비하고 있어요…';
+    host.appendChild(wait);
+    await Promise.race([Promise.all(clips.map(cacheClip)), new Promise((r) => setTimeout(r, 15000))]);
+    wait.remove();
+    if (token !== missionMountToken || S.screen !== 'mission' || !host.isConnected) return;
+  }
   try {
     missionInst = window.SiseonMission.create(host, {
       code: c, name: characters[c], imageSrc: `assets/mission/mission_${c}.webp`,
@@ -875,7 +893,7 @@ function afterRender() {
   if (S.screen === 'mission') mountMission();
   if (S.screen === 'egg' && S.eggs[S.eggStage] && soundOn) play([{ f: 'friend-' + code(S.eggStage) }]);
   syncTouchChip();
-  if (S.screen === 'result') { paintSave(); saveRecord(); showOwnerTools(); }
+  if (S.screen === 'result') { paintSave(); saveRecord(); }
 }
 
 /* ---------- 공통 방 그림 (1장: 원본 입체방 엔진 그대로) ---------- */
@@ -1212,11 +1230,25 @@ async function saveSheet(kind) {
     const data = kind === 'pdf' ? await sheetPdf(jpg, cv.width, cv.height) : jpg;
     const filename = kind === 'pdf' ? 'siseonsai-result-A4.pdf' : 'siseonsai-result.jpg';
     const dl = await downloads();
-    if (dl) { await dl.save({ filename, data }); say(kind === 'pdf' ? 'PDF를 받았어요. 파일 앱에서 열어 인쇄할 수 있어요.' : '결과지 사진을 저장했어요.'); return; }
-    const url = URL.createObjectURL(data), a = document.createElement('a');
-    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
-    say(kind === 'pdf' ? 'PDF를 받았어요. 파일 앱에서 열어 인쇄할 수 있어요.' : '결과지 사진을 받았어요.');
-  } catch (err) { say(err?.code === 'declined' ? '저장을 취소했어요.' : '결과지를 저장하지 못했어요. 다시 눌러 주세요.'); }
+    if (dl) {
+      try { await dl.save({ filename, data }); say(kind === 'pdf' ? 'PDF를 받았어요. 파일 앱에서 열어 인쇄할 수 있어요.' : '결과지 사진을 저장했어요.'); return; }
+      catch (err) { if (err?.code === 'declined') { say('저장을 취소했어요.'); return; } }
+    }
+    /* 이 링크에서 파일 받기가 허락되지 않은 휴대폰: 결과지 사진을 크게 띄워 길게 눌러 저장하게 해요 */
+    await showSheetPreview(jpg, kind);
+    say(kind === 'pdf' ? '이 화면에서는 PDF를 바로 받을 수 없어요. 결과지 사진을 길게 눌러 저장해 주세요.' : '결과지 사진을 길게 눌러 사진첩에 저장해 주세요.');
+  } catch (err) { say('결과지를 만들지 못했어요. 다시 눌러 주세요.'); }
+}
+async function showSheetPreview(jpg, kind) {
+  const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(jpg); });
+  document.querySelector('.sheet-preview')?.remove();
+  const box = document.createElement('div');
+  box.className = 'sheet-preview'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', '결과지 사진 저장');
+  box.innerHTML = `<div class="sp-card"><p class="sp-tip"><b>사진을 길게 눌러</b> ‘사진에 저장’ 또는 ‘이미지 저장’을 골라 주세요.${kind === 'pdf' ? '<br><span>저장한 사진으로 인쇄할 수 있어요.</span>' : ''}</p>
+    <img src="${url}" alt="우리 가족 결과지 사진"><button class="btn-main" type="button" data-sp-close><span class="label">닫기</span></button></div>`;
+  box.addEventListener('click', (e) => { if (e.target === box || e.target.closest('[data-sp-close]')) box.remove(); });
+  document.body.appendChild(box);
+  box.querySelector('[data-sp-close]').focus({ preventScroll: true });
 }
 
 /* ---------- 진행자 내보내기 ---------- */
