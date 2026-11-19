@@ -149,7 +149,7 @@ const fillEl = document.getElementById('fill'), meterEl = document.getElementByI
 const soundBtn = document.getElementById('sound'), voiceBtn = document.getElementById('voiceBtn'), voiceFile = document.getElementById('voiceFile');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const NEED = 70, GLOW_AT = 0.8;   // each hit adds (2 + 2*strength)/NEED; cracks up to 80%, then light, 100% bursts (about 20 s of tapping)
+const TAP_TARGET = 3, GLOW_AT = 0.8; // Every third tap hatches, independent of pressure or frame rate.
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lerp = (a, b, t) => a + (b - a) * t;
 const easeOut = t => 1 - (1 - clamp(t)) ** 3;
@@ -225,7 +225,7 @@ function newState() {
     ['#ff96a0', '#ffcd64', '#8ccdeb', '#aadca0', '#d2aaf0'][Math.floor(rnd(0, 4.99))], rnd(10, 18)]);
   const spark = Array.from({ length: 14 }, () => [rnd(100, 980), rnd(650, 1650), rnd(0, 6.28), rnd(14, 30)]);
   const beams = Array.from({ length: 16 }, (_, i) => [-Math.PI + 2 * Math.PI * ((i * 7) % 16) / 16 + rnd(-0.12, 0.12), 0.08 + 0.75 * i / 16, rnd(0.6, 1)]);
-  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
+  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, taps: 0, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
 }
 const power = () => st.strength;
 
@@ -256,9 +256,21 @@ function curPose(now) { const [A, B] = armState(now); return [A, B]; }
 
 function tap(e) {
   const now = nowS();
-  if (st.done) { st = newState(); updateHud(); return; }
-  if (st.burstT !== null) return;
-  if (!st.called) { st.called = true; callOut(now, INTRO); updateHud(); return; }
+  if (st.done) { if (!EMBEDDED) { st = newState(); updateHud(); } return; }
+  if (st.burstT !== null || e?.repeat) return;
+  st.taps++;
+  if (!st.called) { st.called = true; callOut(now, INTRO); }
+  if (st.taps === TAP_TARGET) {
+    st.p = 1; st.burstT = now; st.swing = null; st.queued = 0;
+    updateHud();
+    const burstState = st;
+    // A throttled iframe animation must still notify the book after three taps.
+    setTimeout(() => {
+      if (st !== burstState || st.done) return;
+      st.done = true; updateHud();
+    }, 1800);
+    return;
+  }
   // how hard: fast taps (and a firm press where the screen reports pressure) lift the hammer higher
   const dt = now - st.lastTap; st.lastTap = now;
   let s = clamp((0.9 - dt) / 0.65);
@@ -360,7 +372,7 @@ function drawCheer(now) {
 function onContact(now) {
   const k = st.hits; st.hits++; st.hitTimes.push(now);
   const s = st.swing ? st.swing.s : power();
-  const amt = (2 + 2 * s) / NEED; st.p = Math.min(1, st.p + amt); st.prog.push([now, amt]);
+  const amt = Math.max(0, Math.min(1, st.taps / TAP_TARGET) - st.p); st.p = Math.min(1, st.taps / TAP_TARGET); st.prog.push([now, amt]);
   // mallet: soft at first, louder and deeper as the egg breaks (a fast hit adds a little more)
   const loud = 2.2 + 3.5 * st.p + 0.8 * s;
   play('knock', loud, 1.15 - 0.3 * st.p + 0.04 * Math.random());

@@ -249,7 +249,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .icon-btn svg { width: 22px; height: 22px; display: block; flex: none; margin: 0 0 0 1px; }   /* 스피커 모양은 오른쪽 물결 때문에 1px 오른쪽이 눈으로 가운데예요 */
 
 /* ---------- 책장 ---------- */
-.stage { position: relative; z-index: 1; perspective: 1400px; }
+.stage { position: relative; z-index: 1; perspective: 1400px; padding-bottom: calc(var(--bar-real, 160px) + 48px + env(safe-area-inset-bottom, 0px)); }
+html { scroll-padding-bottom: calc(var(--bar-real, 160px) + 48px + env(safe-area-inset-bottom, 0px)); }
+.choice, .scene-tip, .reason { scroll-margin-bottom: calc(var(--bar-real, 160px) + 48px); }
+body.typing .stage { padding-bottom: 24px; }
 .page {
   min-height: calc(100dvh - var(--head-h) - env(safe-area-inset-top, 0px));
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -633,7 +636,8 @@ details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: 
 .marks.child { fill: var(--child); stroke: #FFFDF8; stroke-width: 1.3; }
 .marks.adult { fill: #FFFDF8; stroke: var(--adult); stroke-width: 2.2; }
 .chart-labels { fill: var(--ink); font-size: 11.5px; font-weight: 500; font-family: var(--font-body); }
-.chart-labels .axis-code { font-size: 15px; font-weight: 700; fill: #3D6152; }
+.chart-labels .axis-code { font-size: 12px; font-weight: 700; fill: #3D6152; }
+.chart-direction { margin: -4px -8px 0; font-size: clamp(9px, 2.65vw, 12px); color: var(--sub); text-align: center; white-space: nowrap; }
 .chart-plot { animation: chartOpen .7s cubic-bezier(.2,.67,.28,1) both; transform-origin: 144px 116px; }
 @keyframes chartOpen { from { transform: scale(.2); opacity: 0; } to { transform: none; opacity: 1; } }
 .chart-controls { display: flex; gap: 8px; justify-content: center; }
@@ -758,7 +762,7 @@ details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: 
 .mission-host { width: 100%; }
 .paw-next.ready .paw-badge { animation: glow 1.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .pal img { animation: none !important; } }
-.page { padding-bottom: calc(var(--bar-real, 150px) + 24px); }
+.page { padding-bottom: 24px; }
 body.typing .page { padding-bottom: 24px; }
 h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 .reveal-wrap .trait { position: static; margin-top: -8px; }
@@ -3717,15 +3721,15 @@ function headHtml() {
 }
 
 /* ---------- 선택 비교 그래프 (원본 choicePicture와 같은 축·같은 안쪽/바깥쪽) ----------
-   위: 장난감 생각(P 안쪽 / F 바깥쪽) · 오른쪽: 놀고 싶은 곳(V / H) · 아래: 바꾸고 싶은 것(S / M) · 왼쪽: 만들던 놀이(D / B) */
+   바깥쪽은 앞 글자(P/V/S/D), 안쪽은 뒤 글자(F/H/M/B). 유형 계산은 그대로예요. */
 const graphAxes = [
-  { slot: 0, q: 1, inner: 'P', outer: 'F' },
-  { slot: 1, q: 3, inner: 'V', outer: 'H' },
-  { slot: 2, q: 4, inner: 'S', outer: 'M' },
-  { slot: 3, q: 2, inner: 'D', outer: 'B' },
+  { slot: 0, q: 1, inner: 'F', outer: 'P', label: 'P(놀이) / F(제자리)' },
+  { slot: 1, q: 3, inner: 'H', outer: 'V', label: 'V(바닥) / H(책상)' },
+  { slot: 2, q: 4, inner: 'M', outer: 'S', label: 'S(놀이공간) / M(수납공간)' },
+  { slot: 3, q: 2, inner: 'B', outer: 'D', label: 'D(그대로) / B(옮기기)' },
 ];
 function choicePicture() {
-  const center = [144, 116], dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+  const center = [160, 125], dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
   const pos = (i, r) => dirs[i].map((d, j) => center[j] + d * r);
   const ring = (r) => dirs.map((_, i) => pos(i, r).join(',')).join(' ');
   const pts = {};
@@ -3733,17 +3737,21 @@ function choicePicture() {
   const spokes = dirs.map((_, i) => { const [x, y] = pos(i, 66); return `<line x1="${center[0]}" y1="${center[1]}" x2="${x}" y2="${y}"/>`; }).join('');
   const lines = Object.entries(pts).map(([role, a]) => `<g class="trace ${role}">${a.map((p, i) => { const n = a[(i + 1) % a.length]; return p && n ? `<line x1="${p[0]}" y1="${p[1]}" x2="${n[0]}" y2="${n[1]}"/>` : ''; }).join('')}</g>`).join('');
   const marks = Object.entries(pts).map(([role, a]) => `<g class="marks ${role}">${a.map((p) => !p ? '' : role === 'adult' ? `<rect x="${p[0] - 6}" y="${p[1] - 6}" width="12" height="12" rx="2"/>` : `<circle cx="${p[0]}" cy="${p[1]}" r="4.5"/>`).join('')}</g>`).join('');
-  const labels = [[144, 17], [249, 111], [144, 205], [39, 111]];
+  const labels = [[160, 17], [277, 109], [160, 225], [43, 109]];
   const desc = graphAxes.map((ax) => `${Q[ax.q].title}, 아이 ${optionLabel('child', ax.q, S.answers.child[ax.q].choice)}, 부모님 ${optionLabel('adult', ax.q, S.answers.adult[ax.q].choice)}`).join('. ');
-  return `<svg class="choice-picture" viewBox="0 0 288 228" role="img" aria-labelledby="cp-t cp-d"><title id="cp-t">아이와 부모님이 고른 네 가지</title><desc id="cp-d">${esc(desc)}</desc>
+  return `<svg class="choice-picture" viewBox="0 0 320 250" role="img" aria-labelledby="cp-t cp-d"><title id="cp-t">아이와 부모님이 고른 네 가지</title><desc id="cp-d">${esc(desc)}</desc>
     <g class="chart-guide"><polygon points="${ring(36)}"/><polygon points="${ring(66)}"/>${spokes}</g>
     <g class="chart-plot">${lines}${marks}</g>
-    <g class="chart-labels">${labels.map(([x, y], i) => `<text x="${x}" y="${y}" text-anchor="middle" class="axis-code">${graphAxes[i].inner} / ${graphAxes[i].outer}</text><text x="${x}" y="${y + 15}" text-anchor="middle">${Q[graphAxes[i].q].title}</text>`).join('')}</g>
+    <g class="chart-labels">${labels.map(([x, y], i) => {
+      const ax = graphAxes[i], side = i % 2 === 1, [first, last] = ax.label.split(' / ');
+      return `<text x="${x}" y="${y}" text-anchor="middle" class="axis-code">${side ? `<tspan x="${x}">${first} /</tspan><tspan x="${x}" dy="16">${last}</tspan>` : ax.label}</text><text x="${x}" y="${y + (side ? 33 : 17)}" text-anchor="middle">${Q[ax.q].title}</text>`;
+    }).join('')}</g>
   </svg>`;
 }
 function graphSection(label) {
   return `<section class="graph" data-chart-view="both"><span class="sec-label">${label} · 두 사람의 선택 비교</span>
     <div class="chart-key"><span class="child">● 아이</span><span class="adult">□ 부모님</span></div>
+    <p class="chart-direction">바깥쪽 = 앞 글자(P·V·S·D) | 안쪽 = 뒤 글자(F·H·M·B)</p>
     ${choicePicture()}
     <p class="small" style="margin:0;text-align:center">동그라미와 네모가 겹치면 같은 답이에요. 안쪽과 바깥쪽은 서로 다른 보기예요.</p>
     <div class="chart-controls" role="group" aria-label="그래프에서 강조할 답">${[['both', '같이 보기'], ['child', '아이'], ['adult', '부모님']].map(([v, l]) => `<button class="btn-soft" type="button" data-act="chart-view" data-v="${v}" aria-pressed="${v === 'both'}">${l}</button>`).join('')}</div>
@@ -3896,8 +3904,8 @@ function bookHtml(role) {
       <span class="book-plate"><span class="book-title">${roleName[role]}의 책</span><span class="book-sub">같은 방, 다른 시선</span></span>
     </div>
     ${role === 'child'
-      ? '<p class="lead">그림 <b>다섯 장</b>을 보고<br>마음에 드는 걸 <b>콕</b> 골라 봐!</p>'
-      : '<p class="lead">아이 답은 끝날 때까지 보이지 않아요.<br><b>부모님 생각</b>대로 골라 주세요.</p>'}
+      ? '<p class="lead">그림 <b>다섯 장</b>을 보고 <br>마음에 드는 걸 <b>콕</b> 골라 봐!</p>'
+      : '<p class="lead">아이 답은 끝날 때까지 보이지 않아요. <br><b>부모님 생각</b>대로 골라 주세요.</p>'}
   </div></div>`;
 }
 const childBookBar = () => `<div class="bar-row"><button class="paw-back" type="button" data-act="guide-back"><span class="paw-badge">${I.pawArrow}</span><span>안내</span></button><button class="paw-next" type="button" data-act="open-child"><span class="label">책 펼치기</span>${pawBadge()}</button></div>`;
@@ -4024,7 +4032,7 @@ function meetHtml() {
   const c = code('child'), p = code('adult');
   return `<div class="page"><div class="center">
     <div class="meet" aria-hidden="true"><div class="l">${friendFigure(c)}</div><div class="r">${friendFigure(p)}</div>${I.heart}</div>
-    <h1 class="h2" tabindex="-1">${esc(josa(characters[c], '와', '과'))}<br>${esc(josa(characters[p], '가', '이'))} 만났어요!</h1>
+    <h1 class="h2" tabindex="-1">${esc(josa(characters[c], '와', '과'))} <br>${esc(josa(characters[p], '가', '이'))} 만났어요!</h1>
     <div class="duo">
       <p class="speech small-speech" style="--pc:${pv(c).color}"><span class="role-tag child">아이 친구</span>“${pv(c).say}”</p>
       <p class="speech small-speech" style="--pc:${pv(p).color}"><span class="role-tag adult">부모님 친구</span>“${pv(p).say}”</p>
@@ -4078,7 +4086,7 @@ function resultHtml() {
   }).join('');
   const axisRows = axes.map((ax) => { const [x, y] = ax.pair.split('/'); return `<li><b>${x}</b> ${codeNames[x]} · <b>${y}</b> ${codeNames[y]} <span class="small">(${ax.title})</span></li>`; }).join('');
   return `<div class="page"><div class="report">
-    <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족<br><span class="blue">정리 이야기</span></h1><p class="lead">같은 방을 보고도 <b class="gap-num">${Q.length - same}장</b>에서 서로 다르게 봤어요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
+    <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족 <br><span class="blue">정리 이야기</span></h1><p class="lead">같은 방을 보고도 <b class="gap-num">${Q.length - same}장</b>에서 서로 다르게 봤어요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
     ${gapSection()}
     <section><span class="sec-label">우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
     <section class="msg parent-msg"><span class="sec-label">부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
@@ -4169,6 +4177,9 @@ let shownScreen = null, renderedAt = 0;
 /* 아래 고정 바의 실제 높이만큼 페이지 아래를 비워, 마지막 버튼이 바에 가리지 않게 해요 */
 function syncBarSpace() { const h = barEl.getBoundingClientRect().height; if (h) document.documentElement.style.setProperty('--bar-real', Math.ceil(h) + 'px'); }
 addEventListener('resize', () => requestAnimationFrame(syncBarSpace));
+if (typeof ResizeObserver !== 'undefined') new ResizeObserver(syncBarSpace).observe(barEl);
+window.visualViewport?.addEventListener('resize', syncBarSpace);
+document.fonts?.ready.then(syncBarSpace);
 function makeLeaf(dir) {
   const oldPage = stage.firstElementChild;
   if (!oldPage || reduced() || !(window.CSS && 'registerProperty' in CSS)) return null;
@@ -4481,7 +4492,7 @@ function hatched(role) {
 }
 addEventListener('message', (e) => {
   const frame = document.getElementById('egg-frame');
-  if (!frame || e.source !== frame.contentWindow || S.screen !== 'egg') return;
+  if (e.origin !== location.origin || !frame || e.source !== frame.contentWindow || S.screen !== 'egg') return;
   const d = e.data || {};
   if (d.code !== code(S.eggStage)) return;
   if (d.type === 'siseon-egg-guide') {
@@ -4491,7 +4502,13 @@ addEventListener('message', (e) => {
     if (st && d.stage === 'error') { st.textContent = '그림을 불러오지 못했어요. 아래 버튼으로 친구를 바로 만나요.'; showSkip(); play([{ f: 'egg-error' }]); }
     return;
   }
-  if (d.type === 'siseon-egg-hatched') setTimeout(() => hatched(S.eggStage), 1400);
+  if (d.type === 'siseon-egg-hatched') {
+    const role = S.eggStage;
+    clearTimeout(eggTimer); clearTimeout(skipTimer);
+    setTimeout(() => {
+      if (S.screen === 'egg' && S.eggStage === role && document.getElementById('egg-frame') === frame) hatched(role);
+    }, 500);
+  }
 });
 
 /* ---------- 시트 ---------- */
