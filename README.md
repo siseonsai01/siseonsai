@@ -1,5 +1,8 @@
 # 시선사이 · 두 토끼의 방, 두 권의 이야기
 
+> **자료 찾기:** 모든 자료의 위치·링크·브랜치는 [자료-안내.md](자료-안내.md)에 정리되어 있습니다.
+> 휴대폰 한 대로 하는 **모바일판**은 [`mobile/`](mobile/README.md)에 있습니다.
+
 2026-11-13 최종 검토 v7 원안입니다.
 
 - [상시 운영 사이트](https://siseonsai-family-book.buoyantfig.chatgpt.site/app/index.html)
