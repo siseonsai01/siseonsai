@@ -477,8 +477,8 @@ const introLines = {
   child: { f: 'cover', orig: 16.33, stop: 16.4, caps: [[0, '안녕, 우리 친구! 여기는 토끼들의 방이야.'], [4.8, '우리 친구와 부모님이 좋아하는 걸 서로 알아보는 그림 놀이야!'], [9.9, '어떤 걸 선택해도 맞고 틀리는 건 없어.'], [13.4, '재미로 우리 집 정리 친구를 만나 보자!']] },
   adult: { f: 'parent-cover', orig: 18.768, stop: 16.35, caps: [[0, '부모님, 반갑습니다!'], [2.286, '아이와 같은 방을 서로의 눈으로 살펴보는 그림 놀이예요.'], [6.646, '다섯 질문에 각자 답하며 서로의 생각을 알아보세요.'], [10.766, '정답은 없어요.'], [12.566, '재미로 정리 친구를 만나고 함께할 정리 놀이를 찾아봐요.']] },
 };
-function playIntro(who) {
-  const L0 = introLines[who]; if (!L0 || !soundOn || !hasVoice(L0.f)) return;
+function playIntro(who, onDone, onError) {
+  const L0 = introLines[who]; if (!L0 || !soundOn || !hasVoice(L0.f)) { onError?.(); return; }
   /* 새로 녹음한 소개 파일이면(길이가 다르면) 끝까지 듣고, 자막은 글자 수 비율로 나눠 맞춰요 */
   const dur = VOICE_SEC[L0.f];
   let L = L0;
@@ -488,13 +488,21 @@ function playIntro(who) {
   }
   stopVoice();
   const token = ++playToken, cap = stage.querySelector('[data-intro-cap]');
-  voice.src = clipSrc(L.f); voice.onended = null; voice.onerror = null;
+  let settled = false;
+  const finish = () => { if (token !== playToken || settled) return; settled = true; voice.ontimeupdate = null; onDone?.(); };
+  const fail = (err) => {
+    if (token !== playToken || settled) return;
+    settled = true; voice.ontimeupdate = null;
+    if (onError) onError(err);
+    else if (err?.name === 'NotAllowedError') { blocked(); pending = { intro: who }; }
+  };
+  voice.src = clipSrc(L.f); voice.onended = finish; voice.onerror = fail;
   voice.ontimeupdate = () => {
     if (token !== playToken) { voice.ontimeupdate = null; return; }
-    if (voice.currentTime >= L.stop) { voice.pause(); voice.ontimeupdate = null; return; }
+    if (voice.currentTime >= L.stop) { voice.pause(); finish(); return; }
     if (cap) { let line = L.caps[0][1]; for (const [s, txt] of L.caps) if (voice.currentTime >= s) line = txt; if (cap.textContent !== line) cap.textContent = line; }
   };
-  voice.play().catch((err) => { if (token === playToken && err?.name === 'NotAllowedError') { blocked(); pending = { intro: who }; } });
+  try { voice.play()?.catch(fail); } catch (err) { fail(err); }
 }
 let missionInst = null;
 /* 원본 엔진의 마지막 자막('이제 집으로 가서…')은 태블릿 현장용이라, 집에서 쓰는 모바일에 맞는 말로 바꿔 보여 줘요 (엔진 파일은 그대로) */
@@ -543,6 +551,51 @@ async function mountMission() {
 }
 function destroyMission() { try { missionInst?.destroy(); } catch {} missionInst = null; }
 
+/* ---------- 표지: 소리를 켜는 입구는 버튼 하나 ---------- */
+let coverOpening = false;
+function coverButtonLabel() { return S.finishedAt ? '소리 켜고 결과지 보기' : S.startedAt ? '소리 켜고 이어서 하기' : '소리 켜고 동화 열기'; }
+function paintCoverOpening(message = '') {
+  if (S.screen !== 'home') return;
+  const button = barEl.querySelector('[data-act="cover-open"]');
+  if (button) { button.textContent = coverOpening ? '토끼 이야기를 듣고 있어요' : coverButtonLabel(); button.setAttribute('aria-busy', String(coverOpening)); }
+  const status = barEl.querySelector('[data-cover-status]');
+  if (status) status.textContent = message;
+}
+function resetCoverOpening(message = '') { coverOpening = false; paintCoverOpening(message); }
+function unlockCoverAudio() {
+  // Invoke both APIs directly in the button's click stack. Do not await resume or loading.
+  try {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (Context) {
+      actx = actx || new Context();
+      actx.resume()?.catch(() => {});
+      const source = actx.createBufferSource();
+      source.buffer = actx.createBuffer(1, 1, actx.sampleRate);
+      source.connect(actx.destination); source.start(0);
+    }
+  } catch {} // Existing recorded narration can still play without Web Audio support.
+}
+function openCover() {
+  if (S.screen !== 'home' || (coverOpening && !voice.paused)) return;
+  soundOn = true;
+  try { localStorage.setItem(SOUND_KEY, 'on'); } catch {}
+  pending = null; needTouch = false; document.body.classList.remove('need-touch'); syncTouchChip();
+  unlockCoverAudio();
+  if (S.finishedAt) { go('result'); return; }
+  if (S.startedAt) { resume(); return; }
+  const owner = S;
+  coverOpening = true;
+  paintCoverOpening('이야기가 끝나면 다음 장이 열려요.');
+  // The existing Audio element begins playing before this click handler returns.
+  playIntro('child', () => {
+    if (!coverOpening || S !== owner || S.screen !== 'home') return;
+    coverOpening = false; S.startedAt = new Date().toISOString(); go('guide');
+  }, () => {
+    if (S !== owner || S.screen !== 'home') return;
+    resetCoverOpening('소리를 재생하지 못했어요. 위 버튼을 한 번 더 눌러 주세요.');
+  });
+}
+
 /* ---------- 화면 (글은 꼭 필요한 것만) ---------- */
 function homeHtml() {
   return `<div class="page no-head home">
@@ -550,7 +603,6 @@ function homeHtml() {
     <div class="cover-body">
       <h1 class="title">시선사이<br><span class="blue">같은 방, 다른 시선</span></h1>
       <div class="intro-rabbit"><span class="rabbit-tap"><img src="assets/rabbit-star.webp" alt=""><i class="ripple" aria-hidden="true"></i></span><p class="speech" data-intro-cap>안녕, 우리 친구! 여기는 토끼들의 방이야.</p></div>
-      <button class="btn-soft listen-intro" type="button" data-act="intro-listen">${I.speaker}<span>토끼 이야기 듣기</span></button>
       ${S.startedAt && !S.finishedAt ? '<p class="note"><b>하던 곳부터 이어서 할 수 있어요.</b></p>' : ''}
       ${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}
       <p class="small">재미로 보는 시선 놀이예요. 심리검사가 아니에요.</p>
@@ -558,11 +610,7 @@ function homeHtml() {
   </div>`;
 }
 function homeBar() {
-  if (S.finishedAt) return `<div class="bar-row"><button class="btn-main" type="button" data-act="open-result">${I.check} 우리 가족 결과지 보기</button></div>
-    <button class="btn-text" type="button" data-act="ask-new">새 가족으로 처음부터</button>`;
-  if (S.startedAt) return `<div class="bar-row"><button class="btn-main" type="button" data-act="resume">${I.camera} 방사진 놀이 이어서 하기</button></div>
-    <button class="btn-text" type="button" data-act="ask-new">처음부터 다시 하기</button>`;
-  return `<div class="bar-row"><button class="btn-main" type="button" data-act="start">${I.camera} 방사진 놀이 시작</button></div>`;
+  return `<div class="bar-row"><button class="btn-main cover-open" type="button" data-act="cover-open" aria-busy="false">${coverButtonLabel()}</button></div><p class="cover-status" data-cover-status role="status" aria-live="polite"></p>`;
 }
 
 /* 표지 그림: 원본 ‘책 표지’ 움직이는 그림(book-cover-full-motion) — 방 전체가 화면을 채워요 */
@@ -927,7 +975,7 @@ function render(dir = 'next', opts = {}) {
   afterRender();
 }
 /* 화면이 열리면 바로 들려줄 말 (아이가 글을 못 읽어도 따라올 수 있게). 아직 녹음 전인 줄은 건너뛰어요 */
-let homeSpoke = false, spokenKey = '';
+let spokenKey = '';
 const screenVoice = {
   childBook: () => ['book-child'],
   handoffParent: () => ['book-adult'],
@@ -941,11 +989,11 @@ const touchChip = document.createElement('button');
 touchChip.type = 'button'; touchChip.className = 'touch-chip'; touchChip.hidden = true;
 touchChip.innerHTML = `${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3Z"/><path d="M16 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg>'}<span>화면을 톡! 누르면 토끼가 말해요</span>`;
 document.body.appendChild(touchChip);
-function syncTouchChip() { touchChip.hidden = !(needTouch && soundOn && pending); }
+function syncTouchChip() { touchChip.hidden = S.screen === 'home' || !(needTouch && soundOn && pending); }
 /* 첫 톡(손을 뗄 때 = 브라우저가 소리를 허락하는 순간)에 막혔던 말을 바로 이어서 틀어요.
    버튼을 눌렀다면 그 버튼이 여는 화면의 말이 나오니 따로 틀지 않아요 */
 function firstTouch(e) {
-  if (audioUnlocked || !needTouch) return;
+  if (S.screen === 'home' || audioUnlocked || !needTouch) return;
   const p = pending; pending = null; needTouch = false; document.body.classList.remove('need-touch'); syncTouchChip();
   if (!p || !soundOn) return;
   const onControl = e.target.closest?.('[data-act]:not(.touch-chip):not([data-act="scene-tap"]), [data-ask], input, textarea, label, a, iframe');
@@ -966,7 +1014,7 @@ function afterRender() {
   const key = S.screen === 'q' ? '' : S.screen + ':' + (say || []).join(',');
   if (key && key !== spokenKey) { stopVoice(); if (say) play(say.map((f) => ({ f }))); }
   spokenKey = key;
-  if (S.screen === 'home' && !homeSpoke) { homeSpoke = true; playIntro('child'); }
+  if (S.screen === 'home') { pending = null; needTouch = false; resetCoverOpening(); }
   if (S.screen === 'guide') playIntro('adult');
   if (S.screen === 'photo' && photoUrl && S.hp && S.hp.step >= 1 && S.hp.step <= hpSteps.length && S.hp.turn === 'child' && !S.hp.pins[hpSteps[S.hp.step - 1].key].child) later(() => pointAt(stage.querySelector('.hp-photo')), 1200);
   if (['childBook', 'childDone', 'handoffChild', 'meet', 'guide', 'handoffParent'].includes(S.screen) || (S.screen === 'egg' && S.eggs[S.eggStage])) later(() => pointAt(barEl.querySelector('.paw-next')), 2000);
@@ -1393,10 +1441,10 @@ document.addEventListener('click', (e) => {
   const t = e.target.closest('[data-act]');
   if (!t || t.disabled) return;
   const act = t.dataset.act;
+  if (act === 'cover-open') { openCover(); return; } // First tap also works immediately after QR entry.
   // 화면이 막 바뀐 직후의 두 번째 톡은 무시해요 (아이가 연달아 눌러 다음 화면까지 넘어가지 않게)
   if (act !== 'sound' && act !== 'choose' && performance.now() - renderedAt < 700) return;
   switch (act) {
-    case 'start': S = fresh(); S.startedAt = new Date().toISOString(); go('guide'); break;
     case 'resume': resume(); break;
     case 'open-result': go('result'); break;
     case 'home': go('home', 'back'); break;
@@ -1511,7 +1559,7 @@ document.addEventListener('focusout', (e) => {
 });
 document.addEventListener('pointerdown', (e) => { const b = e.target.closest('.btn-main, .btn-soft, .btn-photo, .paw-next, .paw-back'); if (b && !b.disabled) b.classList.add('pressed'); }, { passive: true });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach((n) => document.addEventListener(n, () => document.querySelectorAll('.pressed').forEach((b) => b.classList.remove('pressed')), { passive: true }));
-document.addEventListener('visibilitychange', () => { if (document.hidden) { stopVoice(); missionInst?.pause(); persist(); } else if (S.screen === 'mission') missionInst?.play(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { if (S.screen === 'home') resetCoverOpening('다시 버튼을 누르면 이야기가 시작돼요.'); stopVoice(); missionInst?.pause(); persist(); } else if (S.screen === 'mission') missionInst?.play(); });
 addEventListener('pagehide', () => { persist(); destroyRoom(); destroyMission(); });
 
 /* ---------- 글꼴: 제목 히피체 (SIL OFL 1.1, © AI올컷). 본문은 Noto Sans KR ---------- */

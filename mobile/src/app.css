@@ -863,3 +863,8 @@ body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabb
 .family-heart .msg-row { align-items: center; gap: 10px; }
 .family-heart .msg-row .pal.mini { flex: 0 0 76px; }
 @media (max-width: 380px) { .report .family-heart { padding: 20px 12px; } .family-heart .msg { padding: 18px 14px; } .family-heart .msg-row { flex-direction: column; align-items: flex-start; } .family-heart .msg-row .pal.mini { flex-basis: auto; } }
+
+/* 표지 하단: 소리를 켜고 이야기를 여는 버튼 하나만 보여요. */
+.cover-open { min-height: 72px; width: 100%; font-size: 21px; font-weight: 700; touch-action: manipulation; }
+.cover-status { margin: 0; text-align: center; font-size: 14px; line-height: 1.5; color: var(--sub); }
+.cover-status:empty { display: none; }
