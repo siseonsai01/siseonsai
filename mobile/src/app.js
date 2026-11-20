@@ -762,10 +762,14 @@ function resultHtml() {
   const axisRows = axes.map((ax) => { const [x, y] = ax.pair.split('/'); return `<li><b>${x}</b> ${codeNames[x]} · <b>${y}</b> ${codeNames[y]} <span class="small">(${ax.title})</span></li>`; }).join('');
   return `<div class="page"><div class="report">
     <div class="stack" style="gap:4px"><h1 class="title" tabindex="-1">우리 가족 <br><span class="blue">정리 이야기</span></h1><p class="lead">같은 방을 보고도 <b class="gap-num">${Q.length - same}장</b>에서 서로 다르게 봤어요.</p>${S.test ? '<span class="test-badge">테스트 모드</span>' : ''}</div>
+    <section class="family-heart" aria-labelledby="family-heart-title">
+      <h2 id="family-heart-title" class="family-heart-title">서로에게 전하는 마음</h2>
+      <p class="family-heart-intro">아이의 마음을 알아주고, 함께 정리하는 약속이에요.</p>
+      <section class="msg parent-msg" aria-labelledby="parent-heart-title"><h3 id="parent-heart-title" class="heart-audience">부모님께</h3><p class="msg-title">아이의 “더 놀고 싶은 마음”</p>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
+      <section class="msg child-msg" style="--pc:${pv(c).color}" aria-labelledby="child-heart-title"><h3 id="child-heart-title" class="heart-audience">아이에게 들려주기</h3><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
+    </section>
     ${gapSection()}
     <section><span class="sec-label">우리 가족 정리 친구</span><div class="friends">${card('child', c)}${card('adult', p)}</div></section>
-    <section class="msg parent-msg"><span class="sec-label">부모님께</span><h2 class="msg-title">아이의 “더 놀고 싶은 마음”</h2>${forParent().map((l) => `<p>${l}</p>`).join('')}</section>
-    <section class="msg child-msg" style="--pc:${pv(c).color}"><span class="sec-label">아이에게 들려주기</span><div class="msg-row">${friendFigure(c, 'mini')}<p class="speech">“다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”</p></div><button class="btn-soft" type="button" data-act="to-mission">정리 시범 다시 보기</button></section>
     <section class="photo-cta"><img class="cta-rabbit" src="assets/rabbit-star-laugh.webp" alt="">
       <span class="sec-label">이제 진짜 우리 집에서!</span>
       <h2 class="msg-title">우리 집 사진 놀이</h2>
@@ -1274,14 +1278,14 @@ async function renderSheet() {
   graphAxes.forEach((ax, i) => { const [x, y] = labelAt[i], al = i === 1 ? 'left' : i === 3 ? 'right' : 'center'; write(`${ax.inner} / ${ax.outer}`, x, y, 200, 22, 700, '#3D6152', body, al); write(Q[ax.q].title, x, y + 28, 200, 19, 500, '#2A2622', body, al); });
   write('● 아이   □ 부모님', 570, 616, 300, 20, 700, '#5E5348', body, 'right');
   // 부모님께 · 아이에게
-  rect(640, 590, 520, 470, '#F2E6D6', 28);
-  write('부모님께', 670, 612, 460, 22, 700, '#7A4F2A');
-  let y = write('아이의 “더 놀고 싶은 마음”', 670, 645, 460, 34, 400, '#2A2622', title);
+  rect(640, 590, 520, 470, '#F2E6D6', 28, '#9A6B43');
+  write('부모님께', 670, 612, 460, 28, 700, '#7A4F2A');
+  let y = write('아이의 “더 놀고 싶은 마음”', 670, 658, 460, 34, 400, '#2A2622', title);
   forParent().forEach((l) => { y = write('· ' + plain(l), 670, y + 6, 460, 23, 500); });
-  rect(80, 1090, 1080, 150, '#FFFDF8', 28, '#E4D6BF');
+  rect(80, 1090, 1080, 150, '#E3EAF4', 28, '#2E5B92');
   fit(rb, 100, 1100, 120, 130);
-  write('아이에게', 240, 1112, 900, 22, 700, '#2E5B92');
-  write(`${characters[c]}: “다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”`, 240, 1148, 900, 27, 600);
+  write('아이에게 들려주기', 240, 1112, 900, 28, 700, '#2E5B92');
+  write(`${characters[c]}: “다 놀고 제자리에 두면, 내일 또 금방 찾을 수 있어!”`, 240, 1161, 900, 26, 600);
   // 다섯 장
   write('같은 방, 두 사람의 선택', 80, 1270, 1080, 26, 700);
   rect(80, 1312, 1080, 46, '#2E5B92', 12);

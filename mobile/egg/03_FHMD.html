@@ -149,7 +149,9 @@ const fillEl = document.getElementById('fill'), meterEl = document.getElementByI
 const soundBtn = document.getElementById('sound'), voiceBtn = document.getElementById('voiceBtn'), voiceFile = document.getElementById('voiceFile');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const TAP_TARGET = 5, GLOW_AT = 0.8; // Five taps: small cracks, glowing cracks, then the original burst.
+const TAP_TARGET = 5, GLOW_AT = 0.8;
+const HATCH_SECONDS = 10, BURST_SECONDS = 1.8;
+const TAP_INTERVAL = (HATCH_SECONDS - BURST_SECONDS) / (TAP_TARGET - 1);
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lerp = (a, b, t) => a + (b - a) * t;
 const easeOut = t => 1 - (1 - clamp(t)) ** 3;
@@ -225,7 +227,7 @@ function newState() {
     ['#ff96a0', '#ffcd64', '#8ccdeb', '#aadca0', '#d2aaf0'][Math.floor(rnd(0, 4.99))], rnd(10, 18)]);
   const spark = Array.from({ length: 14 }, () => [rnd(100, 980), rnd(650, 1650), rnd(0, 6.28), rnd(14, 30)]);
   const beams = Array.from({ length: 16 }, (_, i) => [-Math.PI + 2 * Math.PI * ((i * 7) % 16) / 16 + rnd(-0.12, 0.12), 0.08 + 0.75 * i / 16, rnd(0.6, 1)]);
-  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, taps: 0, tapTime: -9, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
+  return { called: false, callT: -9, callText: null, idleCalled: false, cheer: null, cheerT: -9, p: 0, taps: 0, requestedTaps: 0, startedAt: null, tapTimer: null, tapTime: -9, prog: [], strength: 0, lastTap: -9, hits: 0, hitTimes: [], swing: null, queued: 0, burstT: null, done: false, flakes: [], pops: [], pv, conf, spark, beams, fired: {} };
 }
 const power = () => st.strength;
 
@@ -233,6 +235,7 @@ function updateHud() {
   cv.dataset.hatchState = st.done ? 'done' : 'playing';
   cv.dataset.typeCode = TYPE_CODE;
   cv.dataset.tapCount = String(st.taps);
+  cv.dataset.requestedTaps = String(st.requestedTaps);
   cv.dataset.eggStage = st.done ? 'friend' : st.burstT !== null ? 'burst' : st.taps >= 3 ? 'glowing-cracks' : st.taps ? 'small-cracks' : 'ready';
   if (st.done && !st.reported) {
     st.reported = true;
@@ -245,6 +248,7 @@ function updateHud() {
   if (st.done) { hintEl.textContent = '다시 하려면 화면을 눌러요'; hitBtn.textContent = '다시 하기'; hitBtn.classList.add('again'); return; }
   hitBtn.classList.remove('again'); hitBtn.textContent = '콩! 두드리기';
   if (st.burstT !== null) hintEl.textContent = '짜잔!';
+  else if (st.requestedTaps >= TAP_TARGET) hintEl.textContent = '좋아! 알이 열리고 있어요.';
   else if (n === 0) hintEl.textContent = st.called ? '망치로 콩콩 두드려서 꺼내 주세요!' : '알 속에서 누가 불러요! 알을 눌러 보세요';
   else hintEl.textContent = '더 세게! 더 빨리!';
 }
@@ -259,7 +263,26 @@ function curPose(now) { const [A, B] = armState(now); return [A, B]; }
 function tap(e) {
   const now = nowS();
   if (st.done) { if (!EMBEDDED) { st = newState(); updateHud(); } return; }
-  if (st.burstT !== null || e?.repeat) return;
+  if (st.burstT !== null || e?.repeat || st.requestedTaps >= TAP_TARGET) return;
+  if (st.startedAt === null) st.startedAt = now;
+  st.requestedTaps++;
+  // Remember fast taps; each crack still gets its own part of the ten-second story.
+  if (st.tapTimer === null) advanceTaps(st);
+  updateHud();
+}
+function advanceTaps(state) {
+  if (st !== state || st.done || st.burstT !== null) return;
+  st.tapTimer = null;
+  if (st.taps >= st.requestedTaps) return;
+  const delay = st.startedAt + st.taps * TAP_INTERVAL - nowS();
+  if (delay > 0.001) {
+    st.tapTimer = setTimeout(() => advanceTaps(state), Math.ceil(delay * 1000));
+    return;
+  }
+  crackTap(nowS());
+  if (st.burstT === null && st.taps < st.requestedTaps) advanceTaps(state);
+}
+function crackTap(now) {
   st.taps++; st.tapTime = now;
   st.p = st.taps / TAP_TARGET;
   updateHud();
@@ -268,17 +291,15 @@ function tap(e) {
     st.p = 1; st.burstT = now; st.swing = null; st.queued = 0;
     updateHud();
     const burstState = st;
-    // A throttled iframe animation must still notify the book after five taps.
+    // Complete even when an iframe's animation frames are throttled.
     setTimeout(() => {
       if (st !== burstState || st.done) return;
       st.done = true; updateHud();
-    }, 1800);
+    }, BURST_SECONDS * 1000);
     return;
   }
-  // how hard: fast taps (and a firm press where the screen reports pressure) lift the hammer higher
   const dt = now - st.lastTap; st.lastTap = now;
-  let s = clamp((0.9 - dt) / 0.65);
-  if (e && e.pointerType === 'touch' && e.pressure > 0 && e.pressure !== 0.5) s = Math.max(s, clamp(e.pressure * 1.3));
+  const s = clamp((0.9 - dt) / 0.65);
   st.strength = clamp(st.strength * 0.5 + s * 0.6);
   if (st.swing && !st.swing.hit) { st.queued = Math.min(st.queued + 1, 2); return; }
   startSwing(now);
@@ -602,7 +623,7 @@ function frame() {
     }
     drawType(s);
     if (s < 0.45) { ctx.fillStyle = `rgba(255,252,240,${0.92 * (1 - s / 0.45) ** 1.5})`; ctx.fillRect(0, 0, W, H); }
-    if (!st.done && s > 1.8) { st.done = true; updateHud(); }
+    if (!st.done && s >= BURST_SECONDS) { st.done = true; updateHud(); }
   }
   if (bs < 0.8) { const [A, B, dx, dy] = armState(now); drawArm(A, B, dx + sx, dy + sy); }
   if (since < 0.16 && bs < 0) {
