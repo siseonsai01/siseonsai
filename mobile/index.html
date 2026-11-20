@@ -3548,8 +3548,8 @@ const praiseAllow = {
   child: (last) => last ? [0, 2, 3, 4, 5, 7] : [0, 1, 2, 3, 4, 5, 6, 7],
   adult: (last) => last ? [4] : [0, 1, 2, 3, 5],
 };
-const childStageCheers = ['좋아, 첫 번째 생각 잘 골랐어!', '재밌는 생각이네, 다음 장도 볼까?', '벌써 절반 넘었어! 잘하고 있어.', '벌써 절반 넘었어! 잘하고 있어.', '최고야! 다섯 장 다 골랐네!'];
-const childStageClips = [5, 6, 1, 1, 0];
+const childStageCheers = ['좋아, 첫 번째 생각 잘 골랐어!', '재밌는 생각이네, 다음 장도 볼까?', '벌써 절반 넘었어! 잘하고 있어.', '생각하는 모습이 멋져!', '최고야! 다섯 장 다 골랐네!'];
+const childStageClips = [5, 6, 1, 4, 0];
 function cheerHtml(role) {
   const p = praise[role], last = S.index === Q.length - 1;
   const message = role === 'child' ? childStageCheers[S.index] : pick(role + 's', p.says, praiseAllow[role](last));
@@ -4058,7 +4058,7 @@ function qHtml() {
   const role = S.role, i = S.index, q = Q[i], a = S.answers[role][i];
   const sc = q.scene;
   const opts = q[role + 'Options'];
-  const open = !!a.reason || S.reasonOpen === `${role}${i}`;
+  const open = role === 'adult' || !!a.reason || S.reasonOpen === `${role}${i}`;
   return `<div class="page ${role}">
     <div class="stack">
       <p class="story"><b>${q.story[0]}</b></p>
@@ -4708,7 +4708,7 @@ async function renderSheet() {
   // 그래프 (원본과 같은 네 갈래·안쪽/바깥쪽)
   rect(80, 590, 520, 470, '#FFFDF8', 28, '#E4D6BF');
   write('두 사람의 선택 비교', 110, 612, 460, 24, 700);
-  const cx = 340, cy = 850, r1 = 62, r2 = 124, dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+  const cx = 340, cy = 848, r1 = 44, r2 = 88, dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
   const pos = (i, r) => [cx + dirs[i][0] * r, cy + dirs[i][1] * r];
   ctx.strokeStyle = '#CDBBA0'; ctx.lineWidth = 2;
   [r1, r2].forEach((r) => { ctx.beginPath(); dirs.forEach((_, i) => { const [x, y] = pos(i, r); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.closePath(); ctx.stroke(); });
@@ -4718,9 +4718,20 @@ async function renderSheet() {
     const P = pts(role === 'child' ? c : p); ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.setLineDash(dash); ctx.beginPath(); P.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
     P.forEach(([x, y]) => { ctx.beginPath(); if (role === 'child') { ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); } else { ctx.rect(x - 11, y - 11, 22, 22); ctx.fillStyle = '#FFFDF8'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = col; ctx.stroke(); } });
   });
-  const labelAt = [[cx, cy - r2 - 60], [cx + r2 + 16, cy - 74], [cx, cy + r2 + 14], [cx - r2 - 16, cy - 74]];
-  graphAxes.forEach((ax, i) => { const [x, y] = labelAt[i], al = i === 1 ? 'left' : i === 3 ? 'right' : 'center'; write(`${ax.inner} / ${ax.outer}`, x, y, 200, 22, 700, '#3D6152', body, al); write(Q[ax.q].title, x, y + 28, 200, 19, 500, '#2A2622', body, al); });
+  // Leave room for full Korean labels on all sides of the plot (box: x80..600, y590..1060).
+  const labelAt = [[cx, 680, 300], [524, 806, 128], [cx, 960, 300], [156, 806, 128]];
+  graphAxes.forEach((ax, i) => {
+    const [x, y, width] = labelAt[i], side = i % 2 === 1;
+    const label = side ? ax.label.replace(' / ', ' /\n') : ax.label;
+    const end = write(label, x, y, width, side ? 18 : 20, 700, '#3D6152', body, 'center');
+    write(Q[ax.q].title, x, end + 2, width, side ? 17 : 18, 500, '#2A2622', body, 'center');
+  });
   write('● 아이   □ 부모님', 570, 616, 300, 20, 700, '#5E5348', body, 'right');
+  const graphHint = '바깥쪽 = 앞 글자(P·V·S·D) | 안쪽 = 뒤 글자(F·H·M·B)';
+  let hintSize = 15;
+  ctx.font = `500 ${hintSize}px ${body}`;
+  while (ctx.measureText(graphHint).width > 464 && hintSize > 12) { hintSize -= .5; ctx.font = `500 ${hintSize}px ${body}`; }
+  write(graphHint, 108, 1027, 464, hintSize, 500, '#5E5348');
   // 부모님께 · 아이에게
   rect(640, 590, 520, 470, '#F2E6D6', 28, '#9A6B43');
   write('부모님께', 670, 612, 460, 28, 700, '#7A4F2A');
