@@ -226,7 +226,32 @@ async function mobileApi(req,db,url,p){
       if(typeof p.feedback!=='string'||!p.feedback.trim()||p.feedback.trim().length>300)fail(400,'소감을 300자 이내로 적어 주세요.');
       record.feedback={comment:p.feedback.trim(),submittedAt:new Date().toISOString()};
     }
+    if(p.satisfaction!==undefined){
+      const value=p.satisfaction;
+      if(p.feedback!==undefined||!value||typeof value!=='object'||Array.isArray(value)||!['ease','conversation','reuse'].every(key=>Number.isInteger(value[key])&&value[key]>=1&&value[key]<=5))fail(400,'세 문항에 1~5점을 골라 주세요.');
+      if(value.comment!==undefined&&typeof value.comment!=='string')fail(400,'의견을 확인해 주세요.');
+      const comment=(value.comment??'').trim();if(comment.length>300)fail(400,'의견은 300자 이내로 적어 주세요.');
+      record.satisfaction={ease:value.ease,conversation:value.conversation,reuse:value.reuse,comment,submittedAt:new Date().toISOString()};
+    }
     const r=await db.prepare('INSERT OR IGNORE INTO mobile_records (id,data,created) VALUES (?,?,?)').bind(id,JSON.stringify(record),now()).run();
+    if(record.satisfaction){
+      const result=stored=>({ok:true,id,duplicate:!changed(r),satisfactionSaved:true,satisfaction:stored.satisfaction});
+      if(changed(r))return result(record);
+      for(let attempt=0;attempt<3;attempt++){
+        const row=await db.prepare('SELECT data FROM mobile_records WHERE id=?').bind(id).first();
+        if(!row)fail(409,'가족 답을 다시 확인해 주세요.');
+        const stored=JSON.parse(row.data);
+        if(!!stored.test!==record.test||JSON.stringify(stored.child)!==JSON.stringify(record.child)||JSON.stringify(stored.adult)!==JSON.stringify(record.adult))fail(409,'의견을 남길 가족 답과 일치하지 않아요.');
+        if(stored.satisfaction){
+          if(!['ease','conversation','reuse','comment'].every(key=>stored.satisfaction[key]===record.satisfaction[key]))fail(409,'이미 만족도 의견을 보냈어요.');
+          return result(stored);
+        }
+        const attached={...stored,satisfaction:record.satisfaction};
+        const updated=await db.prepare('UPDATE mobile_records SET data=? WHERE id=? AND data=?').bind(JSON.stringify(attached),id,row.data).run();
+        if(changed(updated))return result(attached);
+      }
+      fail(409,'의견을 저장 중이에요. 다시 눌러 주세요.');
+    }
     if(!record.feedback)return {ok:true,id,duplicate:!changed(r)};
     if(changed(r))return {ok:true,id,duplicate:false,feedbackSaved:true,feedback:record.feedback};
     const row=await db.prepare('SELECT data FROM mobile_records WHERE id=?').bind(id).first();
