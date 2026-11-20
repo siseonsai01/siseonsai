@@ -5,8 +5,9 @@ const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 let checks=0;
 const cheers=app.slice(app.indexOf('const praise ='),app.indexOf('const reasonAsk ='));
 const c={S:{index:0},Q:Array(5).fill({})};vm.createContext(c);vm.runInContext(cheers,c);
-const phrases=['좋아, 첫 번째 생각 잘 골랐어!','재밌는 생각이네, 다음 장도 볼까?','벌써 절반 넘었어! 잘하고 있어.','벌써 절반 넘었어! 잘하고 있어.','최고야! 다섯 장 다 골랐네!'];
+const phrases=['좋아, 첫 번째 생각 잘 골랐어!','재밌는 생각이네, 다음 장도 볼까?','벌써 절반 넘었어! 잘하고 있어.','생각하는 모습이 멋져!','최고야! 다섯 장 다 골랐네!'];
 for(let i=0;i<5;i++){c.S.index=i;assert.ok(c.cheerHtml('child').includes(phrases[i]));checks++;}
+assert.equal(new Set(phrases).size,5);assert.equal(vm.runInContext('new Set(childStageClips).size',c),5);assert.equal(vm.runInContext('childStageClips[3]',c),4);checks+=3;
 for(let i=0;i<2;i++){c.S.index=i;c.cheerHtml('child');assert.notEqual(vm.runInContext('lastPick.childs',c),1);checks++;}
 
 const photo=app.slice(app.indexOf('const hpSteps ='),app.indexOf('const views ='));
