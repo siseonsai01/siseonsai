@@ -8,36 +8,37 @@ for (const file of fs.readdirSync(new URL('egg/', root)).filter(n => /^\d\d_.*\.
   const html = fs.readFileSync(new URL('egg/' + file, root), 'utf8');
   for (const script of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
   const tap = html.slice(html.indexOf('function tap(e)'), html.indexOf('function startSwing('));
-  const visual = html.slice(html.indexOf('function eggVisual('), html.indexOf('const VOICE ='));
-  const visualContext={};vm.createContext(visualContext);vm.runInContext(visual,visualContext);
-  assert.equal(visualContext.eggVisual(1).glow,0);assert.equal(visualContext.eggVisual(2).glow,0);
-  assert.ok(visualContext.eggVisual(3).glow>0);assert.ok(visualContext.eggVisual(4).glow>visualContext.eggVisual(3).glow);
-  for(let n=1;n<4;n++)assert.ok(visualContext.eggVisual(n+1).level>visualContext.eggVisual(n).level);checks+=7;
   const hud = html.slice(html.indexOf('function updateHud()'), html.indexOf('// ---------- swing:'));
-  for (const spacing of [0, 0.05, 2.05, 10]) {
-    const timers = [], sent = [], cv = {dataset: {}};
-    let timerId=0;
-    const c = {st: {done:false,burstT:null,taps:0,requestedTaps:0,startedAt:null,tapTimer:null,called:false,p:0,hits:0,strength:0,lastTap:-9},
-      TAP_TARGET:Number(html.match(/const TAP_TARGET = (\d+)/)[1]), HATCH_SECONDS:Number(html.match(/HATCH_SECONDS = ([\d.]+)/)[1]), BURST_SECONDS:Number(html.match(/BURST_SECONDS = ([\d.]+)/)[1]), TAP_INTERVAL:2.05, EMBEDDED:true, TYPE_CODE:file.slice(3,7), INTRO:[], now:0,
-      nowS:()=>c.now, clamp:n=>Math.max(0,Math.min(1,n)), callOut(){}, startSwing(){c.st.swing={hit:false};},
-      cv, fillEl:{style:{}}, hintEl:{hidden:false,parentElement:{classList:{toggle(){}}}},
-      hitBtn:{classList:{add(){},remove(){}}}, parent:{postMessage:m=>sent.push({message:m,at:c.now})}, location:{origin:'https://test.example'},
-      setTimeout:(fn,ms)=>{const id=++timerId;timers.push({fn,at:c.now+ms/1000,id});return id;}};
-    assert.equal(c.TAP_TARGET,5);assert.equal(c.HATCH_SECONDS,10);checks+=2;
-    vm.createContext(c);vm.runInContext(hud + '\n' + tap, c);
-    const advance=to=>{while(timers.some(t=>t.at<=to+1e-9)){timers.sort((a,b)=>a.at-b.at);const t=timers.shift();c.now=t.at;t.fn();}c.now=to;};
-    for(let n=1;n<=5;n++){advance((n-1)*spacing);c.tap({});assert.equal(c.st.requestedTaps,n);checks++;}
-    c.tap({});assert.equal(c.st.requestedTaps,5);checks++;
-    if(spacing<2.05){assert.equal(c.st.burstT,null);advance(8.19);assert.equal(c.st.taps,4);assert.equal(sent.length,0);checks+=3;}
-    const expected=Math.max(8.2,4*spacing)+1.8;
-    advance(expected-.001);assert.equal(sent.length,0);checks++;
-    advance(expected+.005);assert.equal(c.st.done,true);assert.equal(c.st.taps,5);assert.equal(sent.length,1);checks+=3;
-    assert.ok(Math.abs(sent[0].at-expected)<.003);assert.equal(sent[0].message.code,file.slice(3,7));checks+=2;
-    c.tap({});advance(expected+20);assert.equal(sent.length,1);checks++;
-    // Old delayed steps cannot mutate a restarted standalone game.
-    c.st={done:false,burstT:null,taps:0,requestedTaps:0,startedAt:null,tapTimer:null,called:false,p:0,hits:0,strength:0,lastTap:-9};
-    c.tap({});c.tap({});const old=c.st;c.st={...old,taps:0,requestedTaps:0};advance(c.now+3);assert.equal(c.st.taps,0);checks++;
+  const contact = html.slice(html.indexOf('function onContact(now)'), html.indexOf('function armState(now)'));
+  const swing = html.slice(html.indexOf('function stepSwing(now)'), html.indexOf('// ---------- drawing'));
+  assert.match(html,/const NEED = 70, GLOW_AT = 0.8/);assert.ok(!html.includes('HATCH_SECONDS'));checks+=2;
+  const runs=[];
+  for(const [spacing,pressure] of [[.25,.5],[.9,.5],[.9,1]]){
+    const sent=[],timers=[],cv={dataset:{}};
+    const c={st:{called:false,done:false,burstT:null,p:0,prog:[],strength:0,lastTap:-9,hits:0,hitTimes:[],swing:null,queued:0,flakes:[],pops:[],cheer:null,cheerT:-9},
+      now:0,nowS:()=>c.now,NEED:70,GLOW_AT:.8,EMBEDDED:true,TYPE_CODE:file.slice(3,7),INTRO:[],CONTACT:.2,FOLLOW:.05,BACK:.32,
+      clamp:n=>Math.max(0,Math.min(1,n)),power:()=>c.st.strength,callOut(){},play(){},rnd:(a,b)=>(a+b)/2,
+      G:{TOP:[0],PAD:0,EA:1},WORDS:['콩','쿵','쾅','빛'],CHEER:[['힘내','좋아'],['금','멋져'],['더','한 번']],navigator:{},
+      startSwing(now){c.st.swing={t0:now,s:c.st.strength,hit:false};},
+      cv,fillEl:{style:{}},hintEl:{parentElement:{classList:{toggle(){}}}},hitBtn:{classList:{add(){},remove(){}}},
+      parent:{postMessage:m=>sent.push(m)},location:{origin:'https://test.example'},setTimeout:(fn,ms)=>timers.push({fn,at:c.now+ms/1000})};
+    vm.createContext(c);vm.runInContext(hud+'\n'+tap+'\n'+contact+'\n'+swing,c);
+    const advance=to=>{while(c.now<to-.00001){c.now=Math.min(to,c.now+.01);c.stepSwing(c.now);for(let i=timers.length-1;i>=0;i--)if(timers[i].at<=c.now){const [t]=timers.splice(i,1);t.fn();}}};
+    c.tap({});assert.equal(c.st.called,true);assert.equal(c.st.swing,null);checks+=2;
+    c.tap({pointerType:'touch',pressure});assert.ok(c.st.swing);assert.equal(c.st.hits,0);checks+=2;
+    advance(.21);assert.equal(c.st.hits,1);assert.ok(c.st.p>0&&c.st.p<.1);checks+=2;
+    for(let i=0;i<4;i++){advance(c.now+spacing);c.tap({pointerType:'touch',pressure});}
+    assert.ok(c.st.p<1);assert.equal(c.st.burstT,null);checks+=2;
+    let n=0;while(c.st.burstT===null&&n++<80){advance(c.now+spacing);c.tap({pointerType:'touch',pressure});}
+    assert.ok(c.st.burstT!==null);assert.equal(c.st.p,1);checks+=2;
+    const hits=c.st.hits;advance(c.st.burstT+1.85);assert.equal(c.st.done,true);assert.equal(sent.length,1);checks+=2;
+    c.tap({});assert.equal(c.st.hits,hits);advance(c.now+5);assert.equal(sent.length,1);checks+=2;
+    runs.push({hits,seconds:c.st.burstT});
+    // Completion also works without any further animation frames after the last contact.
+    c.st={...c.st,done:false,reported:false,p:.999,hits:0,hitTimes:[],prog:[],swing:{s:0},burstT:null};
+    c.onContact(c.now);assert.equal(timers.length,1);const t=timers.pop();t.fn();t.fn();assert.equal(c.st.done,true);assert.equal(sent.length,2);checks+=3;
   }
+  assert.ok(runs[0].hits<runs[1].hits);assert.ok(runs[2].hits<runs[1].hits);assert.ok(runs[0].seconds<runs[1].seconds);checks+=3;
 }
 
 const app = fs.readFileSync(new URL('src/app.js', root), 'utf8');
@@ -67,4 +68,4 @@ for (const label of ['P(놀이) / F(제자리)','V(바닥)','H(책상)','S(놀�
 assert.ok(g.graphSection('함께 보기').includes('바깥쪽 = 앞 글자(P·V·S·D) | 안쪽 = 뒤 글자(F·H·M·B)'));checks++;
 const preview=fs.readFileSync(new URL('preview.html',root),'utf8');
 for (const script of preview.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
-console.log(checks+' mobile checks passed: all 16 ten-second five-tap eggs, queued fast taps, staged cracks/glow, slow taps, frame-independent hatch, role-safe messages and graph meaning.');
+console.log(checks+' mobile checks passed: all 16 original pressure/speed-driven eggs, immediate hammer response, original crack progression, frame-independent completion, role-safe messages and graph meaning.');
