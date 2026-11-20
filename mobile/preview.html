@@ -1042,6 +1042,19 @@ body.voice-on .intro-rabbit img, body.voice-on .guide-line img { animation: rabb
 .cover-status { margin: 0; text-align: center; font-size: 14px; line-height: 1.5; color: var(--sub); }
 .cover-status:empty { display: none; }
 
+/* 기존 결과지 카드와 같은 톤의 선택형 만족도 조사 */
+.satisfaction-card .msg-title { margin: 0; }
+.satisfaction-question { border: 0; padding: 0; margin: 4px 0; min-width: 0; }
+.satisfaction-question legend { padding: 0; margin-bottom: 8px; font-size: 16px; font-weight: 700; line-height: 1.6; }
+.satisfaction-scores { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.satisfaction-score { min-width: 0; min-height: 48px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font-size: 18px; font-weight: 700; }
+.satisfaction-score[aria-checked="true"] { background: var(--adult); border-color: var(--adult); color: #fff; }
+.satisfaction-scale { margin: 0; font-size: 14px; line-height: 1.5; color: var(--sub); }
+.satisfaction-comment-label { font-size: 15px; line-height: 1.6; }
+.satisfaction-card input { width: 100%; min-width: 0; min-height: 48px; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--card); font-size: 16px; }
+
+.satisfaction-card .satisfaction-thanks:disabled { opacity: 1; color: #31543A; background: #EAF2E7; }
+
 </style>
 <header class="head" id="head" hidden></header>
 <main class="stage" id="stage" aria-live="polite"></main>
@@ -3776,6 +3789,67 @@ async function sendFeedback() {
   paintFeedback();
 }
 
+
+/* ---------- 만족도: 답/유형을 바꾸지 않고 같은 가족 기록에 덧붙여요 ---------- */
+const satisfactionQuestions = [
+  { key: 'ease', label: '사용하기 편했나요?' },
+  { key: 'conversation', label: '아이와 대화하는 데 도움이 됐나요?' },
+  { key: 'reuse', label: '앞으로도 또 이용해 보고 싶나요?' },
+];
+let satisfactionState = 'idle', satisfactionError = '';
+function satisfactionDraft() {
+  if (!S.satisfactionDraft) S.satisfactionDraft = { ease: null, conversation: null, reuse: null, comment: '' };
+  return S.satisfactionDraft;
+}
+function satisfactionHtml() {
+  const draft = satisfactionDraft(), sent = !!S.satisfactionSent;
+  return `<section class="satisfaction-card" aria-labelledby="satisfaction-title">
+    <span class="sec-label">만족도 조사</span><h2 id="satisfaction-title" class="msg-title">잠깐! 체험은 어떠셨나요?</h2>
+    ${satisfactionQuestions.map(({key,label}) => `<fieldset class="satisfaction-question"><legend>${label}</legend><div class="satisfaction-scores" role="radiogroup" aria-label="${label}">
+      ${[1,2,3,4,5].map(score => `<button class="satisfaction-score" type="button" role="radio" data-act="satisfaction-rate" data-key="${key}" data-score="${score}" aria-label="${score}점" aria-checked="${draft[key] === score}" ${sent ? 'disabled' : ''}>${score}</button>`).join('')}
+    </div></fieldset>`).join('')}
+    <p class="satisfaction-scale">1점 전혀 아니에요 · 5점 매우 그래요</p>
+    <label class="satisfaction-comment-label" for="satisfaction-comment">좋았던 점이나 바라는 점을 자유롭게 적어주세요. <span class="small">(선택)</span></label>
+    <input id="satisfaction-comment" type="text" maxlength="300" placeholder="한 줄 의견 (선택)" value="${esc(draft.comment)}" ${sent ? 'readonly' : ''}>
+    <button class="btn-soft${sent ? ' satisfaction-thanks' : ''}" type="button" data-act="send-satisfaction" aria-live="polite" ${sent ? 'disabled' : ''}>${sent ? '소중한 의견 감사드립니다!' : '의견 보내기'}</button>
+    <p class="small" data-satisfaction-status role="status" style="margin:0"></p>
+  </section>`;
+}
+function paintSatisfaction() {
+  const draft = satisfactionDraft(), busy = satisfactionState === 'sending', sent = !!S.satisfactionSent;
+  for (const button of stage.querySelectorAll('[data-act="satisfaction-rate"]')) {
+    button.setAttribute('aria-checked', String(draft[button.dataset.key] === Number(button.dataset.score)));
+    button.disabled = busy || sent;
+  }
+  const input = stage.querySelector('#satisfaction-comment'); if (input) input.readOnly = busy || sent;
+  const button = stage.querySelector('[data-act="send-satisfaction"]');
+  if (button) { button.className = 'btn-soft' + (sent ? ' satisfaction-thanks' : ''); button.disabled = busy || sent; button.textContent = sent ? '소중한 의견 감사드립니다!' : busy ? '보내는 중…' : '의견 보내기'; }
+  const status = stage.querySelector('[data-satisfaction-status]');
+  if (status) { status.textContent = sent ? '' : busy ? '만족도 의견을 보내고 있어요…' : satisfactionError; status.classList.toggle('err', !!satisfactionError && !sent); }
+}
+async function sendSatisfaction() {
+  if (satisfactionState === 'sending' || S.satisfactionSent) return;
+  const draft = satisfactionDraft(); satisfactionError = '';
+  if (!satisfactionQuestions.every(({key}) => Number.isInteger(draft[key]) && draft[key] >= 1 && draft[key] <= 5)) {
+    satisfactionError = '세 문항의 점수를 모두 골라 주세요.'; paintSatisfaction(); return;
+  }
+  if (!ONLINE) { satisfactionError = '모바일 설문 링크에서 의견을 보내 주세요.'; paintSatisfaction(); return; }
+  const owner = S, satisfaction = { ease: draft.ease, conversation: draft.conversation, reuse: draft.reuse, comment: String(draft.comment || '').trim() };
+  satisfactionState = 'sending'; paintSatisfaction();
+  try {
+    await saveRecord();
+    if (S !== owner) return;
+    if (!S.savedId) throw new Error('save');
+    const response = await fetch('/api/mobile-records', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...recordPayload(), satisfaction }), cache: 'no-store' });
+    const body = await response.json();
+    if (S !== owner) return;
+    if (!response.ok || !body.satisfactionSaved) throw new Error('satisfaction');
+    S.satisfactionDraft = { ease: body.satisfaction.ease, conversation: body.satisfaction.conversation, reuse: body.satisfaction.reuse, comment: body.satisfaction.comment };
+    S.satisfactionSent = true; persist(); satisfactionState = 'sent';
+  } catch { if (S !== owner) return; satisfactionState = 'error'; satisfactionError = '보내지 못했어요. 고른 점수와 글은 남아 있어요. 다시 눌러 주세요.'; }
+  paintSatisfaction();
+}
+
 /* ---------- 화면 ---------- */
 const stage = document.getElementById('stage');
 const barEl = document.getElementById('bar');
@@ -4234,6 +4308,7 @@ function resultHtml() {
       <button class="btn-soft" type="button" data-act="send-feedback" ${S.feedbackSent ? 'disabled' : ''}>${S.feedbackSent ? '보냈어요' : '보내기'}</button>
       <p class="small" data-feedback-status role="status" aria-live="polite">${S.feedbackSent ? '소중한 의견 고마워요!' : ''}</p>
     </section>
+    ${satisfactionHtml()}
     <p class="save-line" data-save role="status"></p><button class="btn-soft" type="button" data-act="save-retry" hidden>다시 보내기</button>
     <div data-owner hidden class="stack"><button class="btn-soft" type="button" data-act="export">진행자 · 모바일 기록 내려받기 (CSV)</button><p class="small" data-export-status role="status" style="margin:0"></p></div>
     <p class="small">재미로 보는 시선 놀이예요. 심리검사가 아니에요.</p>
@@ -4425,7 +4500,7 @@ function afterRender() {
   if (S.screen === 'mission') mountMission();
   if (S.screen === 'egg' && S.eggs[S.eggStage] && soundOn) play([{ f: 'friend-' + code(S.eggStage) }]);
   syncTouchChip();
-  if (S.screen === 'result') { paintSave(); paintFeedback(); saveRecord(); }
+  if (S.screen === 'result') { paintSave(); paintFeedback(); paintSatisfaction(); saveRecord(); }
 }
 
 /* ---------- 공통 방 그림 (1장: 원본 입체방 엔진 그대로) ---------- */
@@ -4876,6 +4951,13 @@ document.addEventListener('click', (e) => {
     case 'to-result': S.finishedAt = S.finishedAt || new Date().toISOString(); go('result'); break;
     case 'save-retry': S.savedId = null; saveRecord(); break;
     case 'send-feedback': sendFeedback(); break;
+    case 'satisfaction-rate': {
+      if (S.satisfactionSent || satisfactionState === 'sending') break;
+      const score = Number(t.dataset.score), key = t.dataset.key;
+      if (!satisfactionQuestions.some(q => q.key === key) || !Number.isInteger(score) || score < 1 || score > 5) break;
+      satisfactionDraft()[key] = score; satisfactionError = ''; persist(); paintSatisfaction(); break;
+    }
+    case 'send-satisfaction': sendSatisfaction(); break;
     case 'export': exportCsv(); break;
     case 'save-image': saveSheet('jpg'); break;
     case 'save-pdf': saveSheet('pdf'); break;
@@ -4926,7 +5008,7 @@ document.addEventListener('click', (e) => {
       sheet({ title: '첫 화면으로 갈까요?', body: '지금까지 고른 답은 이 휴대폰에 그대로 남아 있어요. 첫 화면에서 ‘이어서 하기’를 누르면 같은 곳부터 다시 열려요.', yes: '첫 화면으로 가기', no: '계속하기', onYes: async () => { await micSettle(); const ta = stage.querySelector('#reason'); if (ta && S.screen === 'q') S.answers[S.role][S.index].reason = ta.value; persist(); S.resumeScreen = S.screen; S.screen = 'home'; render('back'); } });
       break;
     case 'ask-new':
-      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? (ONLINE ? '우리 가족 답은 이미 잘 보냈어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.') : '아직 보내지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; feedbackState = 'idle'; feedbackError = ''; S = fresh(); persist(); render('back'); } });
+      sheet({ title: '새 가족으로 시작할까요?', body: S.savedId ? (ONLINE ? '우리 가족 답은 이미 잘 보냈어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.' : '지금 결과는 모바일 검토 기록에 저장되어 있어요. 이 휴대폰의 답만 비우고 처음 화면으로 가요.') : '아직 보내지 않은 답이 이 휴대폰에서 지워져요. 지우고 새로 시작할까요?', yes: '새 가족 시작', no: '그대로 두기', onYes: () => { if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = null; feedbackState = 'idle'; feedbackError = ''; satisfactionState = 'idle'; satisfactionError = ''; S = fresh(); persist(); render('back'); } });
       break;
     case 'mic': {
       if (!rec) return;
@@ -4939,6 +5021,7 @@ document.addEventListener('click', (e) => {
   }
 });
 document.addEventListener('input', (e) => {
+  if (e.target.id === 'satisfaction-comment' && !S.satisfactionSent && satisfactionState !== 'sending') { satisfactionDraft().comment = e.target.value.slice(0, 300); persist(); }
   if (e.target.id === 'experience-comment' && !S.feedbackSent) { S.feedbackDraft = e.target.value.slice(0, 300); persist(); }
   if (e.target.id === 'reason' && S.screen === 'q') {
     if (e.isTrusted && rec?.active) rec.cancel();
