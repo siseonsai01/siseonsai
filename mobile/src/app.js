@@ -746,10 +746,9 @@ function qHtml() {
       <div data-follow ${a.choice ? '' : 'hidden'}>
         <div class="stack">
           <div class="cheer" data-cheer>${a.choice ? cheerHtml(role) : ''}</div>
-          <button class="btn-text reason-toggle" type="button" data-act="reason-open" ${open ? 'hidden' : ''}>${role === 'child' ? '+ 아이가 한 말 적기' : '+ 이유 적기'} <span class="opt">(선택)</span></button>
+          ${role === 'child' ? `<button class="btn-text reason-toggle" type="button" data-act="reason-open" ${open ? 'hidden' : ''}>+ 아이가 한 말 적기 <span class="opt">(선택)</span></button>` : ''}
           <div class="reason" data-reason ${open ? '' : 'hidden'}>
             <label for="reason">${reasonAsk[role][i]}</label>
-            ${role === 'adult' && micSupported() ? `<div class="mic-row"><button class="btn-soft mic" type="button" data-act="mic" aria-pressed="false">${I.mic}<span>말로 적기</span></button><span class="mic-status" role="status"></span></div>` : ''}
             <textarea id="reason" name="reason" maxlength="180" rows="2" placeholder="${role === 'child' ? '아이가 한 말 그대로 (이름·연락처는 빼고)' : '짧게 적어 주세요 (이름·연락처는 빼고)'}">${esc(a.reason)}</textarea>
           </div>
         </div>
@@ -892,12 +891,6 @@ function resultHtml() {
       <div class="bar-row"><button class="btn-soft" type="button" data-act="save-image" style="flex:1">${I.photo} 결과지 사진으로 저장</button></div>
       <button class="btn-soft" type="button" data-act="save-pdf">인쇄용 PDF (A4) 받기</button>
       <p class="small" data-sheet-status role="status" style="margin:0"></p>
-    </section>
-    <section class="experience-card"><label class="feedback-label" for="experience-comment">오늘 체험 어땠나요? 한 줄 소감 남기기</label>
-      <p class="small">이름·연락처는 적지 말아 주세요.</p>
-      <textarea id="experience-comment" rows="3" maxlength="300" placeholder="편하게 한 줄 남겨 주세요." ${S.feedbackSent ? 'readonly' : ''}>${esc(S.feedbackDraft || '')}</textarea>
-      <button class="btn-soft" type="button" data-act="send-feedback" ${S.feedbackSent ? 'disabled' : ''}>${S.feedbackSent ? '보냈어요' : '보내기'}</button>
-      <p class="small" data-feedback-status role="status" aria-live="polite">${S.feedbackSent ? '소중한 의견 고마워요!' : ''}</p>
     </section>
     ${satisfactionHtml()}
     <p class="save-line" data-save role="status"></p><button class="btn-soft" type="button" data-act="save-retry" hidden>다시 보내기</button>
@@ -1238,7 +1231,12 @@ function choose(v, point = null) {
   if (follow) {
     const wasHidden = follow.hidden; follow.hidden = false;
     if (changed) { const ch = follow.querySelector('[data-cheer]'); if (ch) ch.innerHTML = cheerHtml(S.role); if (S.role === 'child') play([{ f: 'praise-child-' + lastPick.childs }]); }
-    if (wasHidden) setTimeout(() => revealAboveBar(follow.querySelector('[data-cheer]')), 80);
+    if (S.role === 'adult') {
+      const reason = follow.querySelector('[data-reason]');
+      const index = S.index;
+      if (reason) reason.hidden = false;
+      setTimeout(() => { if (S.screen === 'q' && S.role === 'adult' && S.index === index) revealAboveBar(reason); }, 80);
+    } else if (wasHidden) setTimeout(() => revealAboveBar(follow.querySelector('[data-cheer]')), 80);
   }
   const next = barEl.querySelector('[data-act="q-next"]'); if (next) next.disabled = false;
   hidePointer(); if (S.role === 'child') later(childGuide, 1100); else later(() => pointAt(next), 900);

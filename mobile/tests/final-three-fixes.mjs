@@ -11,11 +11,11 @@ for(const role of ['child','adult'])for(let i=0;i<5;i++)for(const choice of [nul
  I:{},esc:s=>s,micSupported:()=>true,cheerHtml:()=>'',otherCardHtml:()=>''};
  vm.createContext(c);vm.runInContext(q,c);const html=c.qHtml();
  const reason=html.match(/<div class="reason" data-reason([^>]*)>/)[1];
- const toggle=html.match(/<button class="btn-text reason-toggle"[^>]*>/)[0];
+ const toggle=html.match(/<button class="btn-text reason-toggle"[^>]*>/)?.[0];
  const follow=html.match(/<div data-follow([^>]*)>/)[1];
- assert.equal(reason.includes('hidden'),role==='child');assert.equal(toggle.includes('hidden'),role==='adult');assert.equal(follow.includes('hidden'),!choice);checks+=3;
+ assert.equal(reason.includes('hidden'),role==='child');assert.equal(!!toggle,role==='child');assert.equal(follow.includes('hidden'),!choice);checks+=3;
  assert.ok(html.includes('<textarea id="reason"'));checks++;
- if(role==='adult'){assert.ok(html.includes('data-act="mic"'));checks++;}
+ if(role==='adult'){assert.ok(!html.includes('data-act="mic"'));assert.ok(!html.includes('mic-status'));checks+=2;}
 }
 const axes=app.slice(app.indexOf('const graphAxes ='),app.indexOf('function choicePicture()'));
 const labels=app.slice(app.indexOf('  const labelAt = [[cx, 680'),app.indexOf('  // 부모님께 · 아이에게'));
@@ -32,3 +32,21 @@ const hint=calls.find(x=>x.text.startsWith('바깥쪽 ='));assert.equal(hint.y,1
 // Side labels stay outside the mark/plot region; upper/lower labels leave room around the outer marks.
 assert.ok(156+128/2<340-88-11);assert.ok(524-128/2>340+88+11);assert.ok(680+30+2+27<848-88-11);assert.ok(960>848+88+11);checks+=4;
 console.log(checks+' parent reason visibility and exported graph label/bounds checks passed.');
+
+// Parent choices reveal the text reason on both first choice and reselection.
+const chooseBlock=app.slice(app.indexOf('function choose(v,'),app.indexOf('function setupMic()'));
+for(const role of ['child','adult'])for(let i=0;i<5;i++)for(const first of [true,false]){
+ const reason={hidden:false,isConnected:true},cheer={innerHTML:''},follow={hidden:first,querySelector:q=>q==='[data-reason]'?reason:cheer};
+ const timers=[],reveals=[],next={disabled:true},hint={};
+ const t={S:{screen:'q',role,index:i,startedAt:'already',answers:{child:Array.from({length:5},()=>({choice:first?null:'A'})),adult:Array.from({length:5},()=>({choice:first?null:'A'}))}},
+ stage:{querySelectorAll:()=>[],querySelector:q=>q==='[data-follow]'?follow:null},barEl:{querySelector:q=>q.includes('q-next')?next:hint},
+ persist(){},stopVoice(){},cheerHtml:()=>'',lastPick:{childs:0},play(){},hidePointer(){},later(){},childGuide(){},pointAt(){},
+ setTimeout:fn=>timers.push(fn),revealAboveBar:el=>reveals.push(el)};
+ vm.createContext(t);vm.runInContext(chooseBlock,t);t.choose('B');timers.forEach(fn=>fn());
+ assert.equal(next.disabled,false);assert.equal(follow.hidden,false);assert.equal(t.S.answers[role][i].choice,'B');checks+=3;
+ assert.deepEqual(reveals,role==='adult'?[reason]:first?[cheer]:[]);checks++;
+ if(role==='adult'){reveals.length=0;t.S.index=(i+1)%5;timers.forEach(fn=>fn());assert.equal(reveals.length,0);checks++;}
+}
+const result=app.slice(app.indexOf('function resultHtml()'),app.indexOf('const resultBar ='));
+assert.ok(!result.includes('experience-card'));assert.ok(!result.includes('send-feedback'));assert.equal((result.match(/satisfactionHtml\(\)/g)||[]).length,1);checks+=3;
+console.log(checks+' total checks including parent auto-scroll, text-only reasons and satisfaction-only results.');
